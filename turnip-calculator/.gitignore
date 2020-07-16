@@ -1,0 +1,4 @@
+/node_modules/
+/public/build/
+*.code-workspace
+.DS_Store
