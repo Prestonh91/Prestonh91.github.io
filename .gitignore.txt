@@ -1,2 +1,3 @@
 *.code-workspace
 .DS_Store
+/turnip-calculator/turnip-calculator.code-workspace
