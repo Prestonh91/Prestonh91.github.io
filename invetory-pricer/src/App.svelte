@@ -1,9 +1,6 @@
 <script>
-import Header from './components/Header.svelte'
-import Calculator from './components/Calculator.svelte'
 </script>
 
 <main class="uk-height-viewport">
-	<Header/>
-	<Calculator/>
+	<h3>Hello Inventory Pricer</h3>
 </main>
