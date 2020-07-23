@@ -44,7 +44,6 @@ function createCart() {
 		setItemCount: (item, newCount) => {
 			update(items => {
 				const itemToUpdate = items.find(x => x.id === item.id)
-				debugger
 				if (!itemToUpdate) {
 					items.push({
 						count: newCount,
