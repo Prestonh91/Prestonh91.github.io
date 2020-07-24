@@ -57,6 +57,7 @@ function createCart() {
 				return items
 			})
 		},
+		reset: () => set(new Array())
 	}
 
 }
