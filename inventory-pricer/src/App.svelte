@@ -1,9 +1,21 @@
 <script>
+	import { onMount, tick } from 'svelte'
 	import ItemTypeList from './components/ItemTypeList.svelte'
 	import Items from './resources/items'
 	import { cart, cartValue } from './resources/store'
 
 	let sortStyle
+
+	onMount(async () => {
+		await tick();
+		var bugs = document.getElementById("Bugs")
+		bugs.removeAttribute("class")
+		console.log(bugs)
+
+		document.getElementById("SeaCreatures").removeAttribute("class")
+
+		document.getElementById("Flowers").removeAttribute("class")
+	})
 </script>
 
 <main class="uk-height-viewport">
@@ -14,7 +26,7 @@
 		>
 			<div class="uk-flex-middle uk-flex-center uk-margin-bottom" uk-grid>
 				<div>
-					<button on:click={cart.reset}>Reset</button>				
+					<button class="button primary" on:click={cart.reset}>Reset</button>				
 				</div>
 
 				<h3 class="uk-text-center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'}).format($cartValue).split('.')[0]}</h3>
@@ -28,14 +40,12 @@
 				</div>
 			</div>
 			
-			<div class="uk-position-relative" uk-slider>
-				<ul uk-tab="connect: .tabs" class="uk-slider-items slider-tabs">
-					<li><a href="#">Fish</a></li>
-					<li><a href="#">Bugs</a></li>
-					<li><a href="#">Sea Creatures</a></li>
-					<li><a href="#">Flowers</a></li>
-				</ul>
-			</div>
+			<ul uk-tab="connect: .tabs" class="uk-flex-center">
+				<li id="Fish"><a href="#">Fish</a></li>
+				<li id="Bugs"><a href="#">Bugs</a></li>
+				<li id="SeaCreatures"><a href="#">Sea Creatures</a></li>
+				<li id="Flowers"><a href="#">Flowers</a></li>
+			</ul>
 		</div>
 
 		<ul class="uk-switcher tabs">
@@ -64,9 +74,5 @@
 .sort-select {
 	top: -50px;
 	right: 10px;
-}
-
-.slider-tabs {
-	flex-wrap: nowrap !important;
 }
 </style>
