@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "gamify-life-2fd87": {
+      "hosting": {
+        "gamify-life": [
+          "gamify-life-2fd87"
+        ]
+      }
+    }
+  }
+}
