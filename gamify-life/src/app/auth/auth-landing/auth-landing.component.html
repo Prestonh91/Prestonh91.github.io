@@ -1,3 +1,9 @@
-<section class="uk-card uk-card-body">
-	<p class="uk-text-center" style="margin: 0px;">testing one two three</p>
+<section class="uk-card uk-card-body uk-height-1-1 uk-background-muted">
+	<div class="uk-margin-auto">
+		<label class="uk-form-label">Email</label>
+		<input type="text" [formControl]="email" class="uk-input uk-form-controls">
+		<label class="uk-form-label">Password</label>
+		<input type="password" [formControl]="password" class="uk-input uk-form-controls">
+		<button class="uk-button" (click)="registerGuardian()">Register</button>
+	</div>
 </section>

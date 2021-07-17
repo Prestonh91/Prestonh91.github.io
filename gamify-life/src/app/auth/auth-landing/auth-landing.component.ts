@@ -1,36 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { User } from 'src/app/classes/user';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-auth-landing',
   templateUrl: './auth-landing.component.html',
-  styleUrls: ['./auth-landing.component.scss']
+  styleUrls: ['./auth-landing.component.scss'],
 })
 export class AuthLandingComponent implements OnInit {
+	email = new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)]);
+	password = new FormControl('', Validators.required);
 
-  constructor(public fireAuth: AngularFireAuth, public fireDB: AngularFireDatabase) { 
+	constructor(public userAuthService: AuthService) { 
 
-  }
+	}
 
-  ngOnInit() {
-	// this.fireAuth.createUserWithEmailAndPassword('preston.higgins91@gmail.com', 'somesecurepass').then(user => {
-	// 	if (user && user.user) {
-	// 		const parent: any = {};
-	// 		parent[user.user.uid] = { verified : true };
-	// 		const url = '/parent/' + user.user.uid
-	// 		const newUser = new User();
-	// 		const data = {
-	// 			...newUser,
-	// 			dateCreated: newUser.dateCreated?.toISOString(),
-	// 			lastUpdated: newUser.lastUpdated ? newUser.lastUpdated.toISOString() : new Date().toISOString(),
-	// 		}
-	// 		debugger
-	// 		this.fireDB.object(url).set(data).then(u => console.log(u));
-	// 	} 
-	// });
-  }
+	ngOnInit() {
+		//   this.userAuthService.registerGuardian('preston.higgins91@gmail.com', 'somesecurepassword');
+	}
 
+	registerGuardian() {
+		if (this.email.valid && this.password.valid) {
+			this.userAuthService.registerGuardian(this.email.value, this.password.value)
+		}
+	}
 }

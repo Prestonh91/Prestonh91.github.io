@@ -1,9 +1,12 @@
-export class User {
+import { User } from '@firebase/auth-types'
+
+export class UserAuth {
 	public dateCreated: Date | null = null;
 	public lastUpdated: Date | null = null;
 	public guardianPin: string | null = null;
+	public user: User | null = null;
 
-	constructor(u: User = {} as User) {
+	constructor(u: UserAuth = {} as UserAuth) {
 		let {
 			dateCreated = new Date(),
 			lastUpdated = new Date(),
@@ -15,9 +18,12 @@ export class User {
 		this.guardianPin = guardianPin
 	}
 
-	createNewUser(uid: string): void {
-		this.dateCreated = new Date();
-		this.guardianPin = uid.substr(2, 6);
+	static createNewUser(user: User): UserAuth {
+		var newUser: UserAuth = new UserAuth()
+		newUser.dateCreated = new Date();
+		newUser.guardianPin = user.uid.substr(2, 6).toUpperCase();
+		newUser.user = user
+		return newUser
 	}
 
 	prepareUserForSave(): any {
