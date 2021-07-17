@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
+import { User } from 'src/app/classes/user';
 
 
 @Component({
@@ -15,13 +16,21 @@ export class AuthLandingComponent implements OnInit {
   }
 
   ngOnInit() {
-	this.fireAuth.createUserWithEmailAndPassword('preston.higgins91@gmail.com', 'somesecurepass').then(user => {
-		if (user && user.user) {
-			const parent: any = {}
-			parent[user.user.uid] = true
-			this.fireDB.object('parents').set(parent)
-		} 
-	});
+	// this.fireAuth.createUserWithEmailAndPassword('preston.higgins91@gmail.com', 'somesecurepass').then(user => {
+	// 	if (user && user.user) {
+	// 		const parent: any = {};
+	// 		parent[user.user.uid] = { verified : true };
+	// 		const url = '/parent/' + user.user.uid
+	// 		const newUser = new User();
+	// 		const data = {
+	// 			...newUser,
+	// 			dateCreated: newUser.dateCreated?.toISOString(),
+	// 			lastUpdated: newUser.lastUpdated ? newUser.lastUpdated.toISOString() : new Date().toISOString(),
+	// 		}
+	// 		debugger
+	// 		this.fireDB.object(url).set(data).then(u => console.log(u));
+	// 	} 
+	// });
   }
 
 }
