@@ -1,0 +1,7 @@
+@import 'variables';
+
+$form-label-font-size: 1.0rem !default;
+
+.uk-label-stacked + input {
+	margin-top: $global-small-margin;
+}

@@ -1,9 +1,13 @@
 <section class="uk-card uk-card-body uk-height-1-1 uk-background-muted">
 	<div class="uk-margin-auto">
-		<label class="uk-form-label">Email</label>
-		<input type="text" [formControl]="email" class="uk-input uk-form-controls">
-		<label class="uk-form-label">Password</label>
-		<input type="password" [formControl]="password" class="uk-input uk-form-controls">
-		<button class="uk-button" (click)="registerGuardian()">Register</button>
+		<div class="uk-margin-bottom">
+			<label class="uk-form-label uk-label-stacked">Email</label>
+			<input type="text" [formControl]="email" class="uk-input uk-form-controls">
+		</div>
+		<div>
+			<label class="uk-form-label uk-label-stacked">Password</label>
+			<input type="password" [formControl]="password" class="uk-input uk-form-controls uk-margin-bottom">
+		</div>
+		<button class="uk-button uk-button-primary" (click)="registerGuardian()">Register</button>
 	</div>
 </section>
