@@ -5,6 +5,7 @@ import { guardianRoutes} from './guardian/guardian-routes'
 import { authRoutes } from './auth/auth.routes';
 
 const routes: Routes = [
+	{ path : '', redirectTo: '/auth', pathMatch: 'full'},
 	...wardRoutes,
 	...guardianRoutes,
 	...authRoutes,

@@ -1,13 +1,22 @@
 <section class="uk-card uk-card-body uk-height-1-1 uk-background-muted">
-	<div class="uk-margin-auto">
+	<form (submit)="handleAuthenticate($event)" class="uk-margin-auto uk-width-3-4 uk-width-1-2@m">
 		<div class="uk-margin-bottom">
-			<label class="uk-form-label uk-label-stacked">Email</label>
-			<input type="text" [formControl]="email" class="uk-input uk-form-controls">
+			<div class="uk-margin-bottom">
+				<label class="uk-form-label uk-label-stacked">Email</label>
+				<input type="text" [formControl]="email" class="uk-input uk-form-controls">
+			</div>
+			<div [ngClass]="showCreateAccount ? 'uk-margin-bottom' : ''">
+				<label class="uk-form-label uk-label-stacked">Password</label>
+				<input type="password" [formControl]="password" class="uk-input uk-form-controls">
+			</div>
+			<div *ngIf="showCreateAccount">
+				<label class="uk-form-label uk-label-stacked">Verify Password</label>
+				<input type="password" [formControl]="verificationPass" class="uk-input uk-form-controls">
+			</div>
 		</div>
-		<div>
-			<label class="uk-form-label uk-label-stacked">Password</label>
-			<input type="password" [formControl]="password" class="uk-input uk-form-controls uk-margin-bottom">
+		<div class="uk-flex uk-flex-between">
+			<span class="gl-pointer-cursor uk-text-small" (click)="toggleCreateOrLogin()">{{ !showCreateAccount ?  "Don't have an account? Create One!" : 'Already have an account? Log in!' }}</span>
+			<button type="submit" class="uk-button uk-button-primary">{{ !showCreateAccount ? 'Login' : 'Register' }}</button>
 		</div>
-		<button class="uk-button uk-button-primary" (click)="registerGuardian()">Register</button>
-	</div>
+	</form>
 </section>

@@ -27,4 +27,16 @@ export class AuthService {
 			lastUpdated:user.lastUpdated ? user.lastUpdated.valueOf() : Date.now(),
 		}
 	}
+
+	loginUser(email: string, password: string) {
+		this.fireAuth.signInWithEmailAndPassword(email, password).then(res => {
+			if (res?.user) {
+				console.log('user', res.user)
+			}
+
+			if (res?.credential) {
+				console.log('cred' , res.credential)
+			}
+		})
+	}
 }
