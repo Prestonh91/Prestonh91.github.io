@@ -12,6 +12,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 // Declarations
 import { AuthLandingComponent } from './auth/auth-landing/auth-landing.component';
 
+// Store
+import { StoreModule } from '@ngrx/store';
+import { userReducer } from 'src/store/user/user-auth.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,6 +29,8 @@ import { AuthLandingComponent } from './auth/auth-landing/auth-landing.component
 	AngularFireModule.initializeApp(environment.firebase),
 	AngularFireAuthModule,
 	AngularFireDatabaseModule,
+	StoreModule.forRoot({ user: userReducer}),
+	StoreDevtoolsModule.instrument(),
   ],
   providers: [
 		{ provide: PERSISTENCE, useValue: 'session' },

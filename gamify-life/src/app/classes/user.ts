@@ -13,9 +13,10 @@ export class UserAuth {
 			guardianPin = null,
 		} = u
 
-		this.dateCreated = dateCreated;
-		this.lastUpdated = lastUpdated;
+		this.dateCreated = new Date(dateCreated || new Date());
+		this.lastUpdated = new Date(lastUpdated || new Date());
 		this.guardianPin = guardianPin
+		debugger
 	}
 
 	static createNewUser(user: User): UserAuth {

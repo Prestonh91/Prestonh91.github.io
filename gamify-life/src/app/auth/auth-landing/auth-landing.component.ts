@@ -20,7 +20,6 @@ export class AuthLandingComponent implements OnInit {
 	handleAuthenticate(e: Event) {
 		e.preventDefault()
 		if (this.email.valid && this.password.valid) {
-			debugger
 			if (this.showCreateAccount && this.verificationPass.valid) {
 				if (this.password.value !== this.verificationPass.value) return
 				this.userAuthService.registerGuardian(this.email.value, this.password.value)
