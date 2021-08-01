@@ -16,6 +16,7 @@ import { AuthLandingComponent } from './auth/auth-landing/auth-landing.component
 import { StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/store/user/user-auth.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { apiErrorReducer } from 'src/store/api/api.store';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 	AngularFireModule.initializeApp(environment.firebase),
 	AngularFireAuthModule,
 	AngularFireDatabaseModule,
-	StoreModule.forRoot({ user: userReducer}),
+	StoreModule.forRoot({ user: userReducer, error: apiErrorReducer}),
 	StoreDevtoolsModule.instrument(),
   ],
   providers: [

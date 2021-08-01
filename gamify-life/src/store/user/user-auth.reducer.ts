@@ -1,14 +1,13 @@
-import { createReducer, on, Action } from "@ngrx/store";
+import { createReducer, on } from "@ngrx/store";
 
 import { clearUser, setUser } from "./user-auth.actions";
 import { UserAuth } from "src/app/classes/user";
 
-export const initalState: Readonly<UserAuth> = new UserAuth();
+export const initialState: Readonly<UserAuth> = new UserAuth();
 
 export const userReducer = createReducer(
-	initalState,
+	initialState,
 	on(setUser, (state, props) => {
-		debugger
 		return props.user
 	}),
 	on(clearUser, (state) => new UserAuth())

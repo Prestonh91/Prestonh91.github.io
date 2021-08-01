@@ -19,4 +19,5 @@
 			<button type="submit" class="uk-button uk-button-primary">{{ !showCreateAccount ? 'Login' : 'Register' }}</button>
 		</div>
 	</form>
+	<p *ngIf="error$ | async as error" class="uk-text-danger uk-text-center">{{ error.uiMessage }}</p>
 </section>

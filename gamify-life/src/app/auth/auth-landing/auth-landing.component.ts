@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { FormControl, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { clearError, getError } from 'src/store/api/api.store';
+import { AppState } from 'src/store/app.state';
+
 @Component({
   selector: 'app-auth-landing',
   templateUrl: './auth-landing.component.html',
@@ -11,15 +15,18 @@ export class AuthLandingComponent implements OnInit {
 	password = new FormControl('', Validators.required);
 	verificationPass = new FormControl('', Validators.required)
 
+	error$ = this.store.pipe(select(getError));
+
 	showCreateAccount: boolean = false;
 
-	constructor(public userAuthService: AuthService) {}
+	constructor(public userAuthService: AuthService, public store: Store<AppState>) {}
 
 	ngOnInit() {}
 
 	handleAuthenticate(e: Event) {
 		e.preventDefault()
 		if (this.email.valid && this.password.valid) {
+			this.store.dispatch(clearError())
 			if (this.showCreateAccount && this.verificationPass.valid) {
 				if (this.password.value !== this.verificationPass.value) return
 				this.userAuthService.registerGuardian(this.email.value, this.password.value)

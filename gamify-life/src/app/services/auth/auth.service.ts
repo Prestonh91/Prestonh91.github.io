@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Store } from '@ngrx/store';
+import { APIErrorResponse } from 'src/app/classes/apiErrorResponse';
 import { UserAuth } from 'src/app/classes/user';
+import { setError } from 'src/store/api/api.store';
 import { setUser } from 'src/store/user/user-auth.actions';
 
 @Injectable({
@@ -17,35 +19,29 @@ export class AuthService {
 		this.fireAuth.createUserWithEmailAndPassword(email, password).then(res => {
 			if (res && res.user) {
 				var newUser: UserAuth = UserAuth.createNewUser(res.user);
-				this.fireDb.object(this.baseURL + res.user.uid).set(this.setupUserForSave(newUser));
+				this.fireDb.object(this.baseURL + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
 			}
 		})
 	}
 
-	setupUserForSave(user: UserAuth): {} {
-		return {
-			guardianPin: user.guardianPin,
-			dateCreated: user.dateCreated?.valueOf(),
-			lastUpdated:user.lastUpdated ? user.lastUpdated.valueOf() : Date.now(),
-		}
-	}
-
 	loginUser(email: string, password: string) {
 		this.fireAuth.signInWithEmailAndPassword(email, password).then(res => {
+			debugger
 			if (res?.user) {
-				console.log('user', res.user)
 				this.fireDb.object('guardians/' + res.user.uid).valueChanges().subscribe((action: any) => {
 					if (action) {
-						var newUser: UserAuth = new UserAuth(action)
-						// newUser.user = res.user
-						this.store.dispatch(setUser({ user: newUser}))
+						var loggedInUser: UserAuth = new UserAuth(action)
+						this.store.dispatch(setUser({ user: loggedInUser}))
 					}
 				})
 			}
 
 			if (res?.credential) {
-				console.log('cred' , res.credential)
 			}
+		}).catch(err => {
+			var apiError = new APIErrorResponse()
+			apiError.setError(err)
+			this.store.dispatch(setError({error: apiError}))
 		})
 	}
 }
