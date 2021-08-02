@@ -26,7 +26,6 @@ export class AuthService {
 
 	loginUser(email: string, password: string) {
 		this.fireAuth.signInWithEmailAndPassword(email, password).then(res => {
-			debugger
 			if (res?.user) {
 				this.fireDb.object('guardians/' + res.user.uid).valueChanges().subscribe((action: any) => {
 					if (action) {
