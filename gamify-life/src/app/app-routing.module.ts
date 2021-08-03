@@ -9,6 +9,7 @@ const routes: Routes = [
 	...wardRoutes,
 	...guardianRoutes,
 	...authRoutes,
+	{ path: '*', redirectTo: '/auth' }
 ];
 
 @NgModule({

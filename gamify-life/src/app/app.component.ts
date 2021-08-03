@@ -25,22 +25,21 @@ export class AppComponent implements OnInit {
 		});
 
 		window.addEventListener('load', async (e) => {
-			var sessionUser = sessionStorage.getItem('user')
-			if (sessionUser) {
-				var loggedInUser = new UserAuth(JSON.parse(sessionUser))
-				this.store.dispatch(setUser({ user: loggedInUser}))
-				sessionStorage.removeItem('user')
-			}
+			this.fireAuth.user.subscribe(user => {
+				if (user) {
+					this.fireDb.object(`guardians/${user.uid}`).valueChanges().subscribe((x:any) => {
+						this.store.dispatch(setUser({ user: new UserAuth(x)}))
+					})
+				} else {
+					var sessionUser = sessionStorage.getItem('user')
+					if (sessionUser) {
+						var loggedInUser = new UserAuth(JSON.parse(sessionUser))
+						this.store.dispatch(setUser({ user: loggedInUser }))
+					}
+				}
 
-			// var fbUser = await this.fireAuth.currentUser
-			// debugger
-			// if (fbUser) {
-			// 	this.fireDb.object('guardians' + fbUser.uid).valueChanges().subscribe((x: any) => {
-			// 		if (x) {
-			// 			this.store.dispatch(setUser({ user: new UserAuth(x)}))
-			// 		}
-			// 	})
-			// }
+				sessionStorage.removeItem('user')
+			})
 		});
 	}
 }

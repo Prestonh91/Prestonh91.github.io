@@ -4,6 +4,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { clearError, getError } from 'src/store/api/api.store';
 import { AppState } from 'src/store/app.state';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-auth-landing',
