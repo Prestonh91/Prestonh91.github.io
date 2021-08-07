@@ -6,6 +6,8 @@ import { APIErrorResponse } from 'src/app/classes/apiErrorResponse';
 import { UserAuth } from 'src/app/classes/user';
 import { setError } from 'src/store/api/api.store';
 import { setUser } from 'src/store/user/user-auth.actions';
+import { map } from 'rxjs/operators';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,24 +26,24 @@ export class AuthService {
 		})
 	}
 
-	loginUser(email: string, password: string) {
-		this.fireAuth.signInWithEmailAndPassword(email, password).then(res => {
-			if (res?.user) {
-				this.fireAuth.currentUser.then(x => console.log(x))
-				this.fireDb.object('guardians/' + res.user.uid).valueChanges().subscribe((action: any) => {
-					if (action) {
-						var loggedInUser: UserAuth = new UserAuth(action)
-						this.store.dispatch(setUser({ user: loggedInUser}))
-					}
-				})
-			}
+	async loginUser(email: string, password: string) {
+		try {
+			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
 
-			if (res?.credential) {
-			}
-		}).catch(err => {
+			return await this.fireDb.object(`guardians/${response.user?.uid}`).valueChanges().pipe(
+				map((user: any) => {
+					if (user) {
+						this.store.dispatch(setUser({ user: new UserAuth(user)}))
+					}
+
+					return user
+				})
+			)
+		} catch (e) {
 			var apiError = new APIErrorResponse()
-			apiError.setError(err)
+			apiError.setError(e)
 			this.store.dispatch(setError({error: apiError}))
-		})
+			return from([false])
+		}
 	}
 }

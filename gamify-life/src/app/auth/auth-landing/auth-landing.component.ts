@@ -5,6 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { clearError, getError } from 'src/store/api/api.store';
 import { AppState } from 'src/store/app.state';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth-landing',
@@ -20,11 +21,11 @@ export class AuthLandingComponent implements OnInit {
 
 	showCreateAccount: boolean = false;
 
-	constructor(public userAuthService: AuthService, public store: Store<AppState>) {}
+	constructor(public userAuthService: AuthService, public store: Store<AppState>, public router: Router) {}
 
 	ngOnInit() {}
 
-	handleAuthenticate(e: Event) {
+	async handleAuthenticate(e: Event) {
 		e.preventDefault()
 		if (this.email.valid && this.password.valid) {
 			this.store.dispatch(clearError())
@@ -34,7 +35,11 @@ export class AuthLandingComponent implements OnInit {
 			}
 
 			if (!this.showCreateAccount)
-				this.userAuthService.loginUser(this.email.value, this.password.value)
+				(await this.userAuthService.loginUser(this.email.value, this.password.value)).subscribe(user => {
+					if (user) {
+						this.router.navigate(['guardian'])
+					}
+				})
 		}
 	}
 
