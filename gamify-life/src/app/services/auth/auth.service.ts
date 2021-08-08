@@ -20,7 +20,7 @@ export class AuthService {
 	registerGuardian(email: string, password: string) {
 		this.fireAuth.createUserWithEmailAndPassword(email, password).then(res => {
 			if (res && res.user) {
-				var newUser: UserAuth = UserAuth.createNewUser(res.user);
+				var newUser: UserAuth = UserAuth.createNewGuardian(res.user);
 				this.fireDb.object(this.baseURL + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
 			}
 		})

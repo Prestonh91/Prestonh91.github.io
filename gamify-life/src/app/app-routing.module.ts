@@ -11,11 +11,11 @@ import { setUser } from 'src/store/user/user-auth.actions';
 import { UserAuth } from './classes/user';
 
 const routes: Routes = [
-	{ path : '', redirectTo: '/auth', pathMatch: 'full'},
+	{ path : '', redirectTo: '/auth-guardian', pathMatch: 'full'},
 	...wardRoutes,
 	...guardianRoutes,
 	...authRoutes,
-	{ path: '*', redirectTo: '/auth' }
+	{ path: '*', redirectTo: '/auth-guardian' }
 ];
 
 @NgModule({

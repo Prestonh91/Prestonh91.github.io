@@ -10,7 +10,8 @@ import { environment } from 'src/environments/environment';
 import { ReactiveFormsModule } from '@angular/forms';
 
 // Declarations
-import { AuthLandingComponent } from './auth/auth-landing/auth-landing.component';
+import { AuthGuardianComponent } from './auth/auth-guardian/auth-guardian.component';
+import { AuthWardComponent } from './auth/auth-ward/auth-ward.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
@@ -21,7 +22,8 @@ import { apiErrorReducer } from 'src/store/api/api.store';
 @NgModule({
   declarations: [
     AppComponent,
-	AuthLandingComponent,
+	AuthGuardianComponent,
+	AuthWardComponent,
   ],
   imports: [
     BrowserModule,
