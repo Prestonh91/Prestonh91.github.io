@@ -5,10 +5,11 @@ export class APIErrorResponse {
 
 	constructor() {}
 
-	setError(error: any) {
+	setError(error: any): APIErrorResponse {
 		this.code = error.code
 		this.apiMessage = error.message
 		this.transformApiMessage()
+		return this
 	}
 
 	transformApiMessage() {
@@ -19,6 +20,12 @@ export class APIErrorResponse {
 				break;
 			case 'auth/too-many-requests':
 				this.uiMessage = this.apiMessage
+				break;
+			case 'auth/guardian-does-not-exist':
+				this.uiMessage = 'Could not find a Guardian with the given pin. Please confirm the pin is correct and try again'
+				break
+			default:
+				this.uiMessage = 'Oh uh! Something went wrong!'
 		}
 	}
 }
