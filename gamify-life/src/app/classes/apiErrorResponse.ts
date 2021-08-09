@@ -13,6 +13,7 @@ export class APIErrorResponse {
 	}
 
 	transformApiMessage() {
+		debugger
 		switch (this.code) {
 			case 'auth/user-not-found':
 			case 'auth/wrong-password':
@@ -23,6 +24,12 @@ export class APIErrorResponse {
 				break;
 			case 'auth/guardian-does-not-exist':
 				this.uiMessage = 'Could not find a Guardian with the given pin. Please confirm the pin is correct and try again'
+				break
+			case 'auth/weak-password':
+				this.uiMessage = "The password is too weak!"
+				break
+			case "auth/email-already-in-use":
+				this.uiMessage = "This email is already in use"
 				break
 			default:
 				this.uiMessage = 'Oh uh! Something went wrong!'

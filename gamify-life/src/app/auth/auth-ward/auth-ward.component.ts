@@ -35,7 +35,8 @@ export class AuthWardComponent implements OnInit {
 			this.verificationPass.markAsTouched()
 			this.guardianId.markAsTouched()
 			if (this.email.valid && this.password.valid && this.verificationPass.valid && this.guardianId.valid) {
-				this.authService.registerWard(this.email.value, this.password.value, this.guardianId.value)
+				await this.authService.registerWard(this.email.value, this.password.value, this.guardianId.value)
+				this.router.navigate(['ward'])
 			}
 		} else {
 			this.email.markAsTouched()

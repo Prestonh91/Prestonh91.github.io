@@ -18,12 +18,14 @@ import { StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/store/user/user-auth.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { apiErrorReducer } from 'src/store/api/api.store';
+import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
 
 @NgModule({
   declarations: [
     AppComponent,
 	AuthGuardianComponent,
 	AuthWardComponent,
+	WardLandingComponent,
   ],
   imports: [
     BrowserModule,
