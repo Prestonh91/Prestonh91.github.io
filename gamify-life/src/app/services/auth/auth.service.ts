@@ -35,10 +35,18 @@ export class AuthService {
 			var guardianKeyRes = await this.fireDb.object('guardianPins').query.orderByKey().equalTo(guardianId.toUpperCase()).get()
 			var guardianKey = guardianKeyRes.val()
 
-			if (guardianKey) {
+			if (guardianKey[guardianId]) {
 				var userRes = await this.fireAuth.createUserWithEmailAndPassword(email, password)
 
-				if (userRes.user) {
+				if (userRes.user !== null) {
+					this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).query.once('value').then(x => {
+						if (x.val()) {
+							const wardsGuardian = new Guardian(x.val())
+							wardsGuardian.addWardToGuardian(userRes?.user?.uid || "")
+							this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).set(wardsGuardian.prepareUserForSave())
+						}
+					})
+
 					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId);
 					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave());
 				}

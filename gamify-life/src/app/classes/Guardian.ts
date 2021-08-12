@@ -52,6 +52,13 @@ export class Guardian {
 		return newUser
 	}
 
+	addWardToGuardian(guardianUid: string): void {
+		this.wards = this.wards || new Array()
+		if (!this.wards.find(x => x === guardianUid)) {
+			this.wards.push(guardianUid)
+		}
+	}
+
 	prepareUserForSave(): any {
 		return {
 			...this,
