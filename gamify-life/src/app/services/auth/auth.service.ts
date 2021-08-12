@@ -3,7 +3,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Store } from '@ngrx/store';
 import { APIErrorResponse } from 'src/app/classes/apiErrorResponse';
-import { UserAuth } from 'src/app/classes/user';
+import { Guardian } from 'src/app/classes/Guardian';
+import { Ward } from 'src/app/classes/Ward';
 import { setError } from 'src/store/api/api.store';
 import { setUser } from 'src/store/user/user-auth.actions';
 import { map } from 'rxjs/operators';
@@ -17,12 +18,12 @@ export class AuthService {
 	private guardianPinUrl = "guardianPins/"
 	private wardUrl = "wards/";
 
-	constructor(public fireAuth: AngularFireAuth, public fireDb: AngularFireDatabase, private store: Store<{ user: UserAuth}>) { }
+	constructor(public fireAuth: AngularFireAuth, public fireDb: AngularFireDatabase, private store: Store<{ user: Guardian}>) { }
 
 	registerGuardian(email: string, password: string) {
 		this.fireAuth.createUserWithEmailAndPassword(email, password).then(res => {
 			if (res && res.user) {
-				var newUser: UserAuth = UserAuth.createNewGuardian(res.user);
+				var newUser: Guardian = Guardian.createNewGuardian(res.user);
 				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
 				this.fireDb.object(`${this.guardianPinUrl}${newUser.guardianPin}`).set(newUser.uid)
 			}
@@ -38,8 +39,8 @@ export class AuthService {
 				var userRes = await this.fireAuth.createUserWithEmailAndPassword(email, password)
 
 				if (userRes.user) {
-					var newUser: UserAuth = UserAuth.createNewWard(userRes.user, guardianId);
-					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
+					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId);
+					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave());
 				}
 			}
 		} catch (e: any) {
@@ -56,7 +57,7 @@ export class AuthService {
 			return await this.fireDb.object(`guardians/${response.user?.uid}`).valueChanges().pipe(
 				map((user: any) => {
 					if (user) {
-						this.store.dispatch(setUser({ user: new UserAuth(user)}))
+						this.store.dispatch(setUser({ user: new Guardian(user)}))
 					}
 
 					return user

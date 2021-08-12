@@ -1,13 +1,13 @@
 import { createAction, props } from "@ngrx/store";
-import { UserAuth } from "src/app/classes/user";
+import { Guardian } from "src/app/classes/Guardian";
 
 export const setUser = createAction(
 	'Set User',
-	props<{ user: UserAuth }>()
+	props<{ user: Guardian }>()
 );
 
 export const clearUser = createAction(
 	'Clear User',
-	props<{ user: UserAuth }>()
+	props<{ user: Guardian }>()
 );
 
