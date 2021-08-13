@@ -19,6 +19,7 @@ export class AuthGuardianComponent implements OnInit {
 	error$ = this.store.pipe(select(getError));
 
 	showCreateAccount: boolean = false;
+	showSamePasswordError: boolean = false;
 
 	constructor(public userAuthService: AuthService, public store: Store<AppState>, public router: Router) {}
 
@@ -29,7 +30,9 @@ export class AuthGuardianComponent implements OnInit {
 		if (this.email.valid && this.password.valid) {
 			this.store.dispatch(clearError())
 			if (this.showCreateAccount && this.verificationPass.valid) {
-				if (this.password.value !== this.verificationPass.value) return
+				if (this.password.value !== this.verificationPass.value) {
+					this.showSamePasswordError = true
+				}
 				this.userAuthService.registerGuardian(this.email.value, this.password.value)
 			}
 
@@ -42,10 +45,20 @@ export class AuthGuardianComponent implements OnInit {
 		}
 	}
 
+	clearPasswordError() {
+		this.showSamePasswordError = false
+	}
+
 	toggleCreateOrLogin() {
 		this.showCreateAccount = !this.showCreateAccount
-		this.email.setValue('')
 		this.password.setValue('')
 		this.verificationPass.setValue('')
+		this.resetForm()
+	}
+
+	resetForm() {
+		this.email.reset()
+		this.password.reset()
+		this.verificationPass.reset()
 	}
 }

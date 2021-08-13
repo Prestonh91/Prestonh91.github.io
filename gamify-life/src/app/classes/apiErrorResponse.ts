@@ -13,7 +13,6 @@ export class APIErrorResponse {
 	}
 
 	transformApiMessage() {
-		debugger
 		switch (this.code) {
 			case 'auth/user-not-found':
 			case 'auth/wrong-password':

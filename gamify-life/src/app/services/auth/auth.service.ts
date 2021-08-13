@@ -27,6 +27,8 @@ export class AuthService {
 				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
 				this.fireDb.object(`${this.guardianPinUrl}${newUser.guardianPin}`).set(newUser.uid)
 			}
+		}).catch(err => {
+			this.store.dispatch(setError({error: new APIErrorResponse().setError(err)}))
 		})
 	}
 

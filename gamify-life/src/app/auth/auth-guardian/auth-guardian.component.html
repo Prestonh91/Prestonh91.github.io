@@ -3,15 +3,15 @@
 		<div class="uk-margin-bottom">
 			<div class="uk-margin-bottom">
 				<label class="uk-form-label uk-label-stacked">Email</label>
-				<input type="text" [formControl]="email" class="uk-input uk-form-controls">
+				<input type="text" [formControl]="email" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger' : email.touched && email.invalid }">
 			</div>
-			<div [ngClass]="showCreateAccount ? 'uk-margin-bottom' : ''">
+			<div [class]="{ 'uk-margin-bottom' : showCreateAccount }">
 				<label class="uk-form-label uk-label-stacked">Password</label>
-				<input type="password" [formControl]="password" class="uk-input uk-form-controls">
+				<input type="password" [formControl]="password" (input)="clearPasswordError()" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger' : password.touched && password.invalid }">
 			</div>
 			<div *ngIf="showCreateAccount">
 				<label class="uk-form-label uk-label-stacked">Verify Password</label>
-				<input type="password" [formControl]="verificationPass" class="uk-input uk-form-controls">
+				<input type="password" [formControl]="verificationPass" (input)="clearPasswordError()" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger' : verificationPass.touched && verificationPass.invalid }">
 			</div>
 		</div>
 		<div class="uk-flex uk-flex-between">
@@ -20,4 +20,5 @@
 		</div>
 	</form>
 	<p *ngIf="error$ | async as error" class="uk-text-danger uk-text-center">{{ error.uiMessage }}</p>
+	<p *ngIf="showSamePasswordError" class="uk-text-danger">Passwords don't match.</p>
 </section>
