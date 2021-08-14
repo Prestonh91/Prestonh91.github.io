@@ -15,10 +15,11 @@ import { AuthWardComponent } from './auth/auth-ward/auth-ward.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
-import { userReducer } from 'src/store/user/user-auth.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { apiErrorReducer } from 'src/store/api/api.store';
 import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
+import { guardianReducer } from 'src/store/guardian/guardian.store';
+import { wardReducer } from 'src/store/ward/ward.store';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import { WardLandingComponent } from './ward/ward-landing/ward-landing.component
 	AngularFireModule.initializeApp(environment.firebase),
 	AngularFireAuthModule,
 	AngularFireDatabaseModule,
-	StoreModule.forRoot({ user: userReducer, error: apiErrorReducer}),
+	StoreModule.forRoot({ guardian: guardianReducer, ward: wardReducer, error: apiErrorReducer}),
 	StoreDevtoolsModule.instrument(),
   ],
   providers: [

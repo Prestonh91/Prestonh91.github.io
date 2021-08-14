@@ -6,9 +6,9 @@ import { APIErrorResponse } from 'src/app/classes/apiErrorResponse';
 import { Guardian } from 'src/app/classes/Guardian';
 import { Ward } from 'src/app/classes/Ward';
 import { setError } from 'src/store/api/api.store';
-import { setUser } from 'src/store/user/user-auth.actions';
-import { map } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { setGuardian } from 'src/store/guardian/guardian.store';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class AuthService {
 		this.fireAuth.createUserWithEmailAndPassword(email, password).then(res => {
 			if (res && res.user) {
 				var newUser: Guardian = Guardian.createNewGuardian(res.user);
-				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setUser({ user: newUser})));
+				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setGuardian({ guardian: newUser})));
 				this.fireDb.object(`${this.guardianPinUrl}${newUser.guardianPin}`).set(newUser.uid)
 			}
 		}).catch(err => {
@@ -60,14 +60,14 @@ export class AuthService {
 		}
 	}
 
-	async loginUser(email: string, password: string) {
+	async loginGuardian(email: string, password: string) {
 		try {
 			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
 
-			return await this.fireDb.object(`guardians/${response.user?.uid}`).valueChanges().pipe(
+			return await this.fireDb.object(this.guardianUrl + response.user?.uid).valueChanges().pipe(
 				map((user: any) => {
 					if (user) {
-						this.store.dispatch(setUser({ user: new Guardian(user)}))
+						this.store.dispatch(setGuardian({ guardian: new Guardian(user)}))
 					}
 
 					return user
@@ -80,4 +80,23 @@ export class AuthService {
 			return from([false])
 		}
 	}
+
+	// async loginWard(email: string, password: string) {
+	// 	try {
+	// 		var loginResponse = await this.fireAuth.signInWithEmailAndPassword(email, password);
+
+	// 		return this.fireDb.object(this.wardUrl + loginResponse.user?.uid).valueChanges().pipe(
+	// 			take(1),
+	// 			tap(x => {
+	// 				if (x) {
+	// 					this.store.dispatch(setGuardian({ ward: new Ward(user)}))
+	// 				}
+	// 			})
+	// 		)
+
+	// 	} catch (e) {
+	// 		this.store.dispatch(setError({ error: new APIErrorResponse().setError(e)}))
+	// 		return from [false]
+	// 	}
+	// }
 }

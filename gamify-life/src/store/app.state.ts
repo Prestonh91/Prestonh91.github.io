@@ -1,7 +1,9 @@
 import { APIErrorResponse } from "src/app/classes/apiErrorResponse";
 import { Guardian } from "src/app/classes/Guardian";
+import { Ward } from "src/app/classes/Ward";
 
 export interface AppState {
-	user: Readonly<Guardian>;
+	guardian: Readonly<Guardian>;
+	ward: Readonly<Ward>;
 	error: Readonly<APIErrorResponse>;
 }

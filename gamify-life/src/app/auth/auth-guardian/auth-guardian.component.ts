@@ -37,7 +37,7 @@ export class AuthGuardianComponent implements OnInit {
 			}
 
 			if (!this.showCreateAccount)
-				(await this.userAuthService.loginUser(this.email.value, this.password.value)).subscribe(user => {
+				(await this.userAuthService.loginGuardian(this.email.value, this.password.value)).subscribe(user => {
 					if (user) {
 						this.router.navigate(['guardian'])
 					}

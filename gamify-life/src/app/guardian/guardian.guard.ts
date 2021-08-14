@@ -6,8 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { AppState } from 'src/store/app.state';
-import { setUser } from 'src/store/user/user-auth.actions';
-import { selectUser } from 'src/store/user/user-auth.selectors';
+import { selectgaurdian, setGuardian } from 'src/store/guardian/guardian.store';
 import { Guardian } from '../classes/Guardian';
 
 @Injectable({
@@ -15,19 +14,19 @@ import { Guardian } from '../classes/Guardian';
 })
 export class GuardianGuard implements CanActivate {
 	private user$ = this.store.pipe(
-		select(selectUser),
+		select(selectgaurdian),
 		tap(user => {
 			if (!user?.uid) {
 				this.fireAuth.user.subscribe(fbUser => {
 					if (fbUser?.uid) {
 						this.fireDb.object(`guardians/${fbUser.uid}`).valueChanges().subscribe((dbUser: any) => {
-							this.store.dispatch(setUser({ user: new Guardian(dbUser)}))
+							this.store.dispatch(setGuardian({ guardian: new Guardian(dbUser)}))
 						})
 					}
 					else {
 						var sessionUser = sessionStorage.getItem('user')
 						if (sessionUser)
-							this.store.dispatch(setUser({ user: new Guardian(JSON.parse(sessionUser))}))
+							this.store.dispatch(setGuardian({ guardian: new Guardian(JSON.parse(sessionUser))}))
 					}
 				})
 			}
