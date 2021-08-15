@@ -7,8 +7,9 @@ import { Guardian } from 'src/app/classes/Guardian';
 import { Ward } from 'src/app/classes/Ward';
 import { setError } from 'src/store/api/api.store';
 import { map, take, tap } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { setGuardian } from 'src/store/guardian/guardian.store';
+import { setWard } from 'src/store/ward/ward.store';
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +21,22 @@ export class AuthService {
 
 	constructor(public fireAuth: AngularFireAuth, public fireDb: AngularFireDatabase, private store: Store<{ user: Guardian}>) { }
 
-	registerGuardian(email: string, password: string) {
-		this.fireAuth.createUserWithEmailAndPassword(email, password).then(res => {
-			if (res && res.user) {
+	async registerGuardian(email: string, password: string): Promise<Observable<Guardian | boolean>> {
+		try {
+			var res = await this.fireAuth.createUserWithEmailAndPassword(email, password)
+
+			if (res?.user) {
 				var newUser: Guardian = Guardian.createNewGuardian(res.user);
 				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setGuardian({ guardian: newUser})));
-				this.fireDb.object(`${this.guardianPinUrl}${newUser.guardianPin}`).set(newUser.uid)
+				this.fireDb.object(this.guardianPinUrl + newUser.guardianPin).set(newUser.uid)
+				return from([newUser])
 			}
-		}).catch(err => {
-			this.store.dispatch(setError({error: new APIErrorResponse().setError(err)}))
-		})
+
+			return from([false])
+		} catch (e) {
+			this.store.dispatch(setError({error: new APIErrorResponse().setError(e)}))
+			return from([false])
+		}
 	}
 
 	async registerWard(email: string, password: string, guardianId: string) {
@@ -41,22 +48,24 @@ export class AuthService {
 				var userRes = await this.fireAuth.createUserWithEmailAndPassword(email, password)
 
 				if (userRes.user !== null) {
-					this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).query.once('value').then(x => {
-						if (x.val()) {
-							const wardsGuardian = new Guardian(x.val())
-							wardsGuardian.addWardToGuardian(userRes?.user?.uid || "")
-							this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).set(wardsGuardian.prepareUserForSave())
-						}
-					})
+					var wardsGuardianRes = await this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).query.once('value')
+
+					if (wardsGuardianRes.val()) {
+						var g = new Guardian(wardsGuardianRes.val())
+						g.addWardToGuardian(userRes?.user?.uid || "")
+						this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).set(g.prepareUserForSave())
+					}
 
 					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId);
 					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave());
+					return from([newUser])
 				}
+
 			}
+			return from([false])
 		} catch (e: any) {
-			var apiError = new APIErrorResponse()
-			apiError.setError(e)
-			this.store.dispatch(setError({error: apiError}))
+			this.store.dispatch(setError({error: new APIErrorResponse().setError(e)}))
+			return from([false])
 		}
 	}
 
@@ -64,7 +73,7 @@ export class AuthService {
 		try {
 			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
 
-			return await this.fireDb.object(this.guardianUrl + response.user?.uid).valueChanges().pipe(
+			return this.fireDb.object(this.guardianUrl + response.user?.uid).valueChanges().pipe(
 				map((user: any) => {
 					if (user) {
 						this.store.dispatch(setGuardian({ guardian: new Guardian(user)}))
@@ -81,22 +90,22 @@ export class AuthService {
 		}
 	}
 
-	// async loginWard(email: string, password: string) {
-	// 	try {
-	// 		var loginResponse = await this.fireAuth.signInWithEmailAndPassword(email, password);
+	async loginWard(email: string, password: string) {
+		try {
+			var loginResponse = await this.fireAuth.signInWithEmailAndPassword(email, password);
 
-	// 		return this.fireDb.object(this.wardUrl + loginResponse.user?.uid).valueChanges().pipe(
-	// 			take(1),
-	// 			tap(x => {
-	// 				if (x) {
-	// 					this.store.dispatch(setGuardian({ ward: new Ward(user)}))
-	// 				}
-	// 			})
-	// 		)
+			return this.fireDb.object(this.wardUrl + loginResponse.user?.uid).valueChanges().pipe(
+				take(1),
+				tap((x: any) => {
+					if (x) {
+						this.store.dispatch(setWard({ ward: new Ward(x)}))
+					}
+				})
+			)
 
-	// 	} catch (e) {
-	// 		this.store.dispatch(setError({ error: new APIErrorResponse().setError(e)}))
-	// 		return from [false]
-	// 	}
-	// }
+		} catch (e) {
+			this.store.dispatch(setError({ error: new APIErrorResponse().setError(e)}))
+			return from([false])
+		}
+	}
 }

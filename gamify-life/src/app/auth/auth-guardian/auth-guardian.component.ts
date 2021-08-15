@@ -33,11 +33,15 @@ export class AuthGuardianComponent implements OnInit {
 				if (this.password.value !== this.verificationPass.value) {
 					this.showSamePasswordError = true
 				}
-				this.userAuthService.registerGuardian(this.email.value, this.password.value)
+				(await this.userAuthService.registerGuardian(this.email.value, this.password.value)).subscribe(user => {
+					if (user)
+						this.router.navigate(['guardian'])
+				})
 			}
 
 			if (!this.showCreateAccount)
-				(await this.userAuthService.loginGuardian(this.email.value, this.password.value)).subscribe(user => {
+				(await this.userAuthService.loginGuardian(this.email.value, this.password.value))
+				.subscribe(user => {
 					if (user) {
 						this.router.navigate(['guardian'])
 					}
@@ -57,7 +61,6 @@ export class AuthGuardianComponent implements OnInit {
 	}
 
 	resetForm() {
-		this.email.reset()
 		this.password.reset()
 		this.verificationPass.reset()
 	}
