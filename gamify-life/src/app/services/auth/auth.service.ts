@@ -27,7 +27,9 @@ export class AuthService {
 
 			if (res?.user) {
 				var newUser: Guardian = Guardian.createNewGuardian(res.user);
-				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() => this.store.dispatch(setGuardian({ guardian: newUser})));
+				this.fireDb.object(this.guardianUrl + res.user.uid).set(newUser.prepareUserForSave()).then(() =>{
+					this.store.dispatch(setGuardian({ guardian: newUser}))
+				});
 				this.fireDb.object(this.guardianPinUrl + newUser.guardianPin).set(newUser.uid)
 				return from([newUser])
 			}
@@ -56,8 +58,9 @@ export class AuthService {
 						this.fireDb.object(this.guardianUrl + guardianKey[guardianId]).set(g.prepareUserForSave())
 					}
 
-					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId);
+					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId, guardianKey[guardianId]);
 					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave());
+					this.store.dispatch(setWard({ ward: newUser }))
 					return from([newUser])
 				}
 

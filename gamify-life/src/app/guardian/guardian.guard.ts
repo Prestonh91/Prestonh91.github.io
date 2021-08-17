@@ -19,8 +19,9 @@ export class GuardianGuard implements CanActivate {
 			if (!user?.uid) {
 				this.fireAuth.user.subscribe(fbUser => {
 					if (fbUser?.uid) {
-						this.fireDb.object(`guardians/${fbUser.uid}`).valueChanges().subscribe((dbUser: any) => {
-							this.store.dispatch(setGuardian({ guardian: new Guardian(dbUser)}))
+						this.fireDb.object(`guardians/${fbUser.uid}`).query.once('value').then((dbUser: any) => {
+							if (dbUser.val())
+								this.store.dispatch(setGuardian({ guardian: new Guardian(dbUser.val())}))
 						})
 					}
 					else {

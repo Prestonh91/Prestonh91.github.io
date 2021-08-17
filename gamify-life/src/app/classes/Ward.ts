@@ -4,6 +4,7 @@ export class Ward {
 	public dateCreated: Date | null = null;
 	public lastUpdated: Date | null = null;
 	public guardianId: string | null = null;
+	public guardianUid: string | null = null;
 	public displayName: string | null = null;
 	public email: string | null = null;
 	public emailVerified: boolean | null = null;
@@ -35,10 +36,11 @@ export class Ward {
 		this.uid = uid
 	}
 
-	static createNewWard(user: User, guardianId: string): Ward {
+	static createNewWard(user: User, guardianId: string, guardianUid: string): Ward {
 		var newWard: Ward = new Ward()
 		newWard.dateCreated = new Date()
 		newWard.guardianId = guardianId
+		newWard.guardianUid = guardianUid
 		newWard.displayName = user.displayName
 		newWard.email = user.email
 		newWard.emailVerified = user.emailVerified

@@ -1,3 +1,4 @@
 <p>
-  guardian-layout works!
+	guardian-layout works!
 </p>
+<p *ngIf="user$ | async as user">{{ user.displayName }}</p>

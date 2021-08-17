@@ -12,12 +12,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 // Declarations
 import { AuthGuardianComponent } from './auth/auth-guardian/auth-guardian.component';
 import { AuthWardComponent } from './auth/auth-ward/auth-ward.component';
+import { GuardianLayoutComponent } from './guardian/guardian-layout/guardian-layout.component';
+import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { apiErrorReducer } from 'src/store/api/api.store';
-import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
 import { guardianReducer } from 'src/store/guardian/guardian.store';
 import { wardReducer } from 'src/store/ward/ward.store';
 
@@ -27,6 +28,7 @@ import { wardReducer } from 'src/store/ward/ward.store';
 	AuthGuardianComponent,
 	AuthWardComponent,
 	WardLandingComponent,
+	GuardianLayoutComponent
   ],
   imports: [
     BrowserModule,
