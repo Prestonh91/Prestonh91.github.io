@@ -1,9 +1,15 @@
 import { GuardianLayoutComponent } from "./guardian-layout/guardian-layout.component";
-// import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import { GuardianSummaryComponent } from "./guardian-summary/guardian-summary.component";
 import { GuardianGuard } from "./guardian.guard";
 
-// const redirectUnauthorizedToAuth = () => redirectUnauthorizedTo(['auth'])
-
 export const guardianRoutes = [
-	{ path: 'guardian', component: GuardianLayoutComponent, canActivate: [GuardianGuard] }
+	{
+		path: 'guardian',
+		// canActivateChild: [GuardianGuard],
+		canActivate: [GuardianGuard],
+		component: GuardianLayoutComponent,
+		children: [
+			{ path: 'summary', component: GuardianSummaryComponent }
+		],
+	}
 ]

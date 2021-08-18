@@ -22,7 +22,7 @@ export const guardianReducer = createReducer(
 	on(clearGuardian, (state) => new Guardian())
 )
 
-export const selectgaurdian = createSelector(
+export const selectGuardian = createSelector(
 	(state: AppState) => state.guardian,
 	(guardian: Readonly<Guardian>) => guardian,
 );

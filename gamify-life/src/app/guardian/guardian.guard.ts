@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivate } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { combineLatest, from, Observable } from 'rxjs';
+import { filter, map, take, tap } from 'rxjs/operators';
 import { AppState } from 'src/store/app.state';
-import { selectgaurdian, setGuardian } from 'src/store/guardian/guardian.store';
+import { selectGuardian, setGuardian } from 'src/store/guardian/guardian.store';
 import { Guardian } from '../classes/Guardian';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GuardianGuard implements CanActivate {
+export class GuardianGuard implements CanActivate, CanActivateChild {
 	private user$ = this.store.pipe(
-		select(selectgaurdian),
+		select(selectGuardian),
 		tap(user => {
 			if (!user?.uid) {
 				this.fireAuth.user.subscribe(fbUser => {
@@ -32,28 +32,34 @@ export class GuardianGuard implements CanActivate {
 				})
 			}
 		}),
-		filter((user: any) => user.uid !== null)
+		// filter((user: any) => user.uid !== null)
 	)
 
 	constructor(public fireAuth: AngularFireAuth, public fireDb: AngularFireDatabase, private router: Router, public store: Store<AppState>) {}
 
 	canActivate(
     	route: ActivatedRouteSnapshot,
-    	state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
+    	state: RouterStateSnapshot): Observable<boolean | UrlTree>
 	{
 		return combineLatest([this.fireAuth.user, this.user$])
 		.pipe(
 			map((values) => {
 				var loggedInUser = values[0]
-				var storedUsed = values[1]
+				var storedUser = values[1]
 
-				if (loggedInUser && storedUsed.guardianPin) {
+				if (loggedInUser && storedUser.guardianPin) {
 					return true
 				}
 				else
-					return this.router.parseUrl('auth')
+					return this.router.parseUrl('/auth-guardian')
 			}),
 		)
   	}
 
+	  canActivateChild(
+    	route: ActivatedRouteSnapshot,
+    	state: RouterStateSnapshot): Observable<boolean | UrlTree>
+	{
+		return this.canActivate(route, state)
+	}
 }

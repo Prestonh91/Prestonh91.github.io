@@ -14,6 +14,7 @@ import { AuthGuardianComponent } from './auth/auth-guardian/auth-guardian.compon
 import { AuthWardComponent } from './auth/auth-ward/auth-ward.component';
 import { GuardianLayoutComponent } from './guardian/guardian-layout/guardian-layout.component';
 import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
+import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-summary.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
@@ -28,7 +29,8 @@ import { wardReducer } from 'src/store/ward/ward.store';
 	AuthGuardianComponent,
 	AuthWardComponent,
 	WardLandingComponent,
-	GuardianLayoutComponent
+	GuardianLayoutComponent,
+	GuardianSummaryComponent
   ],
   imports: [
     BrowserModule,

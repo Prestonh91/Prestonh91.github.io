@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/store/app.state';
-import { selectgaurdian, setGuardian } from 'src/store/guardian/guardian.store';
+import { selectGuardian, setGuardian } from 'src/store/guardian/guardian.store';
 import { selectWard, setWard } from 'src/store/ward/ward.store';
 import { Guardian } from './classes/Guardian';
 import { Ward } from './classes/Ward';
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 
 	ngOnInit() {
 		window.addEventListener('beforeunload', (e) => {
-			this.store.pipe(select(selectgaurdian)).subscribe(fetchedUser => {
+			this.store.pipe(select(selectGuardian)).subscribe(fetchedUser => {
 				if (fetchedUser.uid) {
 					sessionStorage.setItem('guardian', JSON.stringify(fetchedUser))
 				}
