@@ -53,9 +53,14 @@ $global-small-font-size:                         0.875rem !default; // 14px
 // Colors
 //
 
-$global-color:                                   #666 !default;
-$global-emphasis-color:                          #333 !default;
-$global-muted-color:                             #999 !default;
+$global-color-primary: #623bb3;
+$color2: #ffffff;
+$global-color-secondary: #050202;
+$global-color-tertiary: #4489c1;
+
+$global-color:                                   #999 !default;
+$global-emphasis-color:                          #fff !default;
+$global-muted-color:                             #333 !default;
 
 $global-link-color:                              #1e87f0 !default;
 $global-link-hover-color:                        #0f6ecd !default;
@@ -69,8 +74,8 @@ $global-inverse-color:                           #fff !default;
 $global-background:                              #fff !default;
 
 $global-muted-background:                        #dfdfdf !default;
-$global-primary-background:                      #1e87f0 !default;
-$global-secondary-background:                    #222 !default;
+$global-primary-background:                      #623bb3 !default;
+$global-secondary-background:                    #050202 !default;
 
 $global-success-background:                      #32d296 !default;
 $global-warning-background:                      #faa05a !default;
@@ -109,6 +114,13 @@ $global-gutter:                                  30px !default;
 $global-small-gutter:                            15px !default;
 $global-medium-gutter:                           40px !default;
 $global-large-gutter:                            70px !default;
+
+// radius
+$global-radius-tiny: 2px !default;
+$global-radius-small: 5px !default;
+$global-radius-medium: 15px !default;
+$global-radius-large: 25px !default;
+$global-radius-xlarge: 50px !default;
 
 //
 // Controls

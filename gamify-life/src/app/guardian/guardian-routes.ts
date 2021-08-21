@@ -5,7 +5,11 @@ import { GuardianGuard } from "./guardian.guard";
 export const guardianRoutes = [
 	{
 		path: 'guardian',
-		// canActivateChild: [GuardianGuard],
+		redirectTo: 'guardian/summary'
+	},
+	{
+		path: 'guardian',
+		canActivateChild: [GuardianGuard],
 		canActivate: [GuardianGuard],
 		component: GuardianLayoutComponent,
 		children: [
