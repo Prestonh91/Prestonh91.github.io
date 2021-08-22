@@ -22,6 +22,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { apiErrorReducer } from 'src/store/api/api.store';
 import { guardianReducer } from 'src/store/guardian/guardian.store';
 import { wardReducer } from 'src/store/ward/ward.store';
+import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { wardReducer } from 'src/store/ward/ward.store';
 	AuthWardComponent,
 	WardLandingComponent,
 	GuardianLayoutComponent,
-	GuardianSummaryComponent
+	GuardianSummaryComponent,
+	CreateQuestComponent
   ],
   imports: [
     BrowserModule,

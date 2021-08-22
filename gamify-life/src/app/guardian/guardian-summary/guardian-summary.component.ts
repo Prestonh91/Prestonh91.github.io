@@ -6,10 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./guardian-summary.component.scss']
 })
 export class GuardianSummaryComponent implements OnInit {
+  	constructor() { }
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+	ngOnInit(): void {}
 }

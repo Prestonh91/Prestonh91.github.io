@@ -4,6 +4,7 @@
 	background-color: $global-color-primary;
 	border-radius: $global-radius-medium;
 	color: $global-emphasis-color;
+	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
 	text-align: center;
@@ -13,5 +14,14 @@
 }
 
 .gl-button-secondary {
-
+	background-color: $global-emphasis-color;
+	border-radius: $global-radius-medium;
+	color: $global-color;
+	cursor: pointer;
+	padding: 10px 15px;
+	font-size: 0.9rem;
+	text-align: center;
+	vertical-align: middle;
+	border: none;
+	min-width: 75px;
 }

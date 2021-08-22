@@ -1,0 +1,17 @@
+<section>
+	<div class="uk-background-default uk-width-expand">
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title uk-text-primary uk-heading-large">Create A Quest</h2>
+        </div>
+		<div class="uk-modal-body">
+			<form [formGroup]="form">
+				<span class="gl-text-medium uk-text-bold">Name:</span>
+				<input formControlName="name" class="uk-margin-left gl-header-input" [class]="{ 'uk-form-danger': form.get('name')?.touched === true && form.get('name')?.invalid === true }" type="text">
+			</form>
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button (click)="resetForm()" class="gl-button-secondary uk-modal-close uk-margin-right" type="button">Cancel</button>
+            <button (click)="saveQuest()" class="gl-button-primary" type="button">Save</button>
+        </div>
+	</div>
+</section>

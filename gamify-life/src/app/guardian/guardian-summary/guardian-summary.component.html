@@ -5,19 +5,33 @@
 				<div>
 					<h3 class="uk-text-center uk-text-primary uk-heading-small">Quests</h3>
 					<div class="uk-text-center uk-margin-bottom">
-						<button class="gl-button-primary uk-width-1-1 uk-width-1-2@s uk-with-1-4@l" type="button">Add New</button>
+						<button class="gl-button-primary uk-width-1-1 uk-width-1-2@s uk-with-1-4@l" type="button" uk-toggle="target: #createQuest">Add New</button>
 					</div>
 					<div class="uk-text-center">
 						<button class="gl-button-primary uk-width-1-1 uk-width-1-2@s uk-with-1-4@l" type="button">View All</button>
 					</div>
 				</div>
 
-				<div class="uk-flex uk-flex-column uk-flex-center">
+				<div class="uk-flex uk-flex-column uk-flex-center uk-text-center">
 					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Unclaimed:</span> 0</p>
 					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress:</span> 0</p>
 					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
 				</div>
+
+				<div>
+					<h3 class="uk-text-center uk-text-primary">Unclaimed</h3>
+				</div>
+
+				<div>
+					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
+				</div>
+
+				<div>
+					<h3 class="uk-text-center uk-text-primary">Complete</h3>
+				</div>
 			</div>
 		</div>
 	</div>
+
+	<create-quest id="createQuest" uk-modal></create-quest>
 </section>

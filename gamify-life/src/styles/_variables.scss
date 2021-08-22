@@ -58,9 +58,9 @@ $color2: #ffffff;
 $global-color-secondary: #050202;
 $global-color-tertiary: #4489c1;
 
-$global-color:                                   #999 !default;
+$global-color:                                   $global-color-primary !default;
 $global-emphasis-color:                          #fff !default;
-$global-muted-color:                             #333 !default;
+$global-muted-color:                             #050202 !default;
 
 $global-link-color:                              #1e87f0 !default;
 $global-link-hover-color:                        #0f6ecd !default;

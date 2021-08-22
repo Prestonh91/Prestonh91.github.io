@@ -5,3 +5,18 @@ $form-label-font-size: 1.0rem !default;
 .uk-label-stacked + input {
 	margin-top: $global-small-margin;
 }
+
+.gl-header-input {
+	border-bottom: 1px $global-color solid;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	vertical-align: middle;
+	color: $global-color;
+	padding: 0 10px;
+	font-size: $global-medium-font-size;
+}
+
+.gl-header-input:focus {
+	outline: none;
+}
