@@ -6,7 +6,7 @@ $form-label-font-size: 1.0rem !default;
 	margin-top: $global-small-margin;
 }
 
-.gl-header-input {
+.gl-text-input {
 	border-bottom: 1px $global-color solid;
 	border-top: none;
 	border-left: none;
@@ -17,6 +17,19 @@ $form-label-font-size: 1.0rem !default;
 	font-size: $global-medium-font-size;
 }
 
-.gl-header-input:focus {
+.gl-text-input:focus {
+	outline: none;
+}
+
+.gl-textarea {
+	resize: none;
+	border-radius: $global-radius-large;
+	border: 1px $global-color solid;
+	padding: $global-tiny-margin $global-margin;
+	font-size: $global-medium-font-size;
+	color: $global-color;
+}
+
+.gl-textarea:focus {
 	outline: none;
 }

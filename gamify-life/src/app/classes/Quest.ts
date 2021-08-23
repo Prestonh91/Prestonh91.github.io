@@ -25,6 +25,18 @@ export class Quest {
 			objectives = null,
 			reward = null
 		} = d
+
+		this.author = author
+		this.assignee = assignee
+		this.completor = completor
+		this.dateCreated = dateCreated
+		this.dateCompleted = dateCompleted
+		this.dateUpdated = dateUpdated
+		this.description = description
+		this.dueDate = dueDate
+		this.name = name
+		this.objectives = objectives || new Array<string>()
+		this.reward = reward
 	}
 
 	prepareForSave(): any {

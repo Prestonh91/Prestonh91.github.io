@@ -7,7 +7,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule, PERSISTENCE } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from 'src/environments/environment';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Declarations
 import { AuthGuardianComponent } from './auth/auth-guardian/auth-guardian.component';
@@ -37,6 +37,7 @@ import { CreateQuestComponent } from './components/modals/create-quest/create-qu
   imports: [
     BrowserModule,
 	ReactiveFormsModule,
+	FormsModule,
     AppRoutingModule,
 	AngularFireModule.initializeApp(environment.firebase),
 	AngularFireAuthModule,
