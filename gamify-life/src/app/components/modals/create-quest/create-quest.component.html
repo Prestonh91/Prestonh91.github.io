@@ -14,29 +14,44 @@
 						type="text"
 					>
 				</div>
-				<!-- <div class="uk-margin-bottom">
+				<div class="uk-margin-bottom">
+					<span class="gl-text-medium uk-text-bold">Reward:</span>
+					<input
+						formControlName="reward"
+						class="uk-margin-left gl-text-input"
+						[class]="{ 'uk-form-danger': quest.get('reward')?.touched && quest.get('reward')?.invalid }"
+						type="number"
+						(keydown.arrowup)="(false)"
+						(keydown.arrowdown)="(false)"
+					>
+				</div>
+				<div class="uk-margin-bottom">
 					<span class="gl-text-medium uk-text-bold uk-text-top">Description:</span>
 					<textarea
-						[(ngModel)]="quest.description"
+						formControlName="description"
 						class="gl-textarea uk-margin-left uk-width-3-4"
-						[class]="{ 'uk-form-danger': attemptedToSubmit && !quest.description }"
+						[class]="{ 'uk-form-danger': quest.get('description')?.touched && quest.get('description')?.invalid }"
 						rows="6"
-						(input)="resetAttemptedToSubmit()"
 					></textarea>
 				</div>
 				<div>
 					<p class="gl-text-medium uk-text-bold uk-text-top">Objectives:</p>
-					<div *ngFor="let obj of quest.objectives; let i=index">
+					<div
+						formArrayName="objectives"
+						*ngFor="let obj of getObjectiveControls(); let i=index"
+						uk-grid
+						class="uk-grid-small uk-flex-bottom"
+					>
 						<span class="gl-text-medium">{{ i + 1 }}</span>
 						<input
-							[(ngModel)]="quest.objectives[i]"
+							[formControl]="getObjControl(i)"
 							type="text"
 							class="gl-text-input uk-margin-small-left"
-							[class]="{ 'uk-form-danger': attemptedToSubmit && !quest.objectives[i] }"
-							(input)="setObjective($event, i)"
 						>
+						<div><span *ngIf="getObjectiveControls().length > 1" (click)="removeObjective(i)" class="gl-pointer-cursor uk-text-danger" uk-icon="minus-circle"></span></div>
+						<div><span *ngIf="getObjectiveControls().length === (i + 1)" (click)="addObjective()" class="gl-pointer-cursor" uk-icon="plus-circle"></span></div>
 					</div>
-				</div> -->
+				</div>
 			</form>
 		</div>
 		<div class="uk-modal-footer uk-text-right">
