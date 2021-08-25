@@ -39,7 +39,6 @@ export class CreateQuestComponent implements OnInit {
 		var reward = this.quest.get('reward')
 
 		if (!title?.valid || !reward?.valid) {
-			debugger
 			title?.markAsTouched()
 			reward?.markAsTouched()
 			return
