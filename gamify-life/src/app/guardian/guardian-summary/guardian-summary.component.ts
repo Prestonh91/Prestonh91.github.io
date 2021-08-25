@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { QuestService } from 'src/app/services/quest/quest.service';
+import { AppState } from 'src/store/app.state';
+import { selectGuardian } from 'src/store/guardian/guardian.store';
 
 @Component({
   selector: 'app-guardian-summary',
@@ -6,7 +11,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./guardian-summary.component.scss']
 })
 export class GuardianSummaryComponent implements OnInit {
-  	constructor() { }
+	quests$ = new Observable();
 
-	ngOnInit(): void {}
+  	constructor(private questService: QuestService, private store: Store<AppState>) { }
+
+	ngOnInit(): void {
+		this.store.pipe(select(selectGuardian)).subscribe(x => {
+			this.quests$ = this.questService.getQuests(x.uid || '')
+		})
+	}
+
+	getQuestsAsIterable(quests: any): any[] {
+		return Object.values(quests)
+	}
 }

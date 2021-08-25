@@ -3,19 +3,19 @@
 		<div class="uk-modal-header">
 			<h2 class="uk-modal-title uk-text-primary uk-heading-large">Create A Quest</h2>
 		</div>
-		<div class="uk-modal-body">
+		<div class="uk-modal-body uk-overflow-auto uk-height-max-large gl-scrollbar">
 			<form [formGroup]="quest">
 				<div class="uk-margin-bottom">
-					<span class="gl-text-medium uk-text-bold">Name:</span>
+					<span class="gl-text-medium uk-text-bold" [class]="{ 'uk-form-danger': quest.get('title')?.touched && quest.get('title')?.invalid }">Title:</span>
 					<input
-						formControlName="name"
+						formControlName="title"
 						class="uk-margin-left gl-text-input"
-						[class]="{ 'uk-form-danger': quest.get('name')?.touched && quest.get('name')?.invalid }"
+						[class]="{ 'uk-form-danger': quest.get('title')?.touched && quest.get('title')?.invalid }"
 						type="text"
 					>
 				</div>
 				<div class="uk-margin-bottom">
-					<span class="gl-text-medium uk-text-bold">Reward:</span>
+					<span class="gl-text-medium uk-text-bold" [class]="{ 'uk-form-danger': quest.get('reward')?.touched && quest.get('reward')?.invalid }">Reward:</span>
 					<input
 						formControlName="reward"
 						class="uk-margin-left gl-text-input"

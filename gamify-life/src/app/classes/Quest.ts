@@ -7,9 +7,10 @@ export class Quest {
 	dateUpdated: Date | null = null;
 	description: string | null = null;
 	dueDate: Date | null = null;
-	name: string | null = null;
+	title: string | null = null;
 	objectives: Array<string> | null = null;
 	reward: number | null = null;
+	uid: string | null = null;
 
 	constructor(d: Quest = {} as Quest) {
 		let {
@@ -21,9 +22,10 @@ export class Quest {
 			dateUpdated = null,
 			description = null,
 			dueDate = null,
-			name = null,
+			title = null,
 			objectives = null,
-			reward = null
+			reward = null,
+			uid = null
 		} = d
 
 		this.author = author
@@ -34,9 +36,10 @@ export class Quest {
 		this.dateUpdated = dateUpdated
 		this.description = description
 		this.dueDate = dueDate
-		this.name = name
+		this.title = title
 		this.objectives = objectives || new Array<string>()
 		this.reward = reward
+		this.uid = uid
 	}
 
 	prepareForSave(): any {
@@ -49,24 +52,3 @@ export class Quest {
 		}
 	}
 }
-
-// quests: {
-// 	uid: {
-// 		author: <<author_uid>>,
-// 		assignee: <<assignee_uid>>,
-// 		completor: <<completor_uid>>,
-// 		completedTime: <<IsoDateString>>,
-// 		description: 'A description of the quest goes here ',
-// 		dueDate: <<IseDateString>>,
-// 		name: 'Flight of the mops',
-// 		objectives: [
-// 			'Fill mop with 1 gallon of hot water',
-// 			'Put in 1/4 cup of pinesole',
-// 			'Mop the entire kitchen',
-// 			'drain the dirty mop water in  the bathtub',
-// 			'squeeze out the access water from the mop, hang it to dry,
-// 			'put away the mop bucket upside down',
-// 		],
-// 		reward: 4934,
-// 	},
-// },

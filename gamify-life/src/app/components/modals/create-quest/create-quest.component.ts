@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { Guardian } from 'src/app/classes/Guardian';
+import { Quest } from 'src/app/classes/Quest';
+import { QuestService } from 'src/app/services/quest/quest.service';
+import { AppState } from 'src/store/app.state';
+import { selectGuardian } from 'src/store/guardian/guardian.store';
+declare var UIkit: any;
 
 @Component({
   selector: 'create-quest',
@@ -7,21 +14,52 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from
   styleUrls: ['./create-quest.component.scss']
 })
 export class CreateQuestComponent implements OnInit {
-	quest = this.fb.group({
-		name: ['', Validators.required],
-		description: '',
-		reward: null,
-		objectives: this.fb.array([ new FormControl('first'), new FormControl('second')])
-	})
+	guardian: Guardian = new Guardian();
+	quest = this.newQuest()
 
-  	constructor(private fb: FormBuilder) { }
+  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>) { }
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this.store.pipe(select(selectGuardian)).subscribe(g => {
+			this.guardian = g
+		})
+	}
 
-	saveQuest() {}
+	newQuest() {
+		return this.fb.group({
+			title: ['', Validators.required],
+			description: '',
+			reward: [null, Validators.required],
+			objectives: this.fb.array([ new FormControl('')])
+		})
+	}
+
+	saveQuest() {
+		var title = this.quest.get('title')
+		var reward = this.quest.get('reward')
+
+		if (!title?.valid || !reward?.valid) {
+			debugger
+			title?.markAsTouched()
+			reward?.markAsTouched()
+			return
+		}
+
+		var newQuest = new Quest()
+		newQuest.title = title?.value
+		newQuest.reward = reward?.value
+		newQuest.description = this.quest.get('description')?.value
+		newQuest.objectives = this.quest.get('objectives')?.value?.filter((x: string) => x)
+		newQuest.author = this.guardian.uid
+
+		this.questService.createNewQuest(newQuest).then(x => {
+			UIkit.modal('#createQuest')?.hide()
+			this.resetForm()
+		})
+	}
 
 	resetForm() {
-		this.quest.reset()
+		this.quest = this.newQuest()
 	}
 
 	getObjectives(): FormArray {

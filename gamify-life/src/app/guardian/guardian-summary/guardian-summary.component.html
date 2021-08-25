@@ -20,14 +20,45 @@
 
 				<div>
 					<h3 class="uk-text-center uk-text-primary">Unclaimed</h3>
+					<div *ngIf="quests$ | async as quests">
+						<div
+							*ngFor="let quest of getQuestsAsIterable(quests)"
+							uk-grid
+							class="uk-flex-between uk-grid-small uk-padding-small"
+							style="border: 1px solid rebeccapurple; border-radius: 30px;"
+						>
+							<span>{{quest.title}}</span>
+							<span>${{quest.reward}}</span>
+						</div>
+					</div>
 				</div>
 
 				<div>
 					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
+					<div *ngIf="quests$ | async as quests">
+						<div
+							*ngFor="let quest of getQuestsAsIterable(quests)"
+							uk-grid
+							class="uk-flex-between uk-grid-small"
+						>
+							<span>{{quest.title}}</span>
+							<span>${{quest.reward}}</span>
+						</div>
+					</div>
 				</div>
 
 				<div>
 					<h3 class="uk-text-center uk-text-primary">Complete</h3>
+					<div *ngIf="quests$ | async as quests">
+						<div
+							*ngFor="let quest of getQuestsAsIterable(quests)"
+							uk-grid
+							class="uk-flex-between uk-grid-small"
+						>
+							<span>{{quest.title}}</span>
+							<span>${{quest.reward}}</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
