@@ -31,11 +31,11 @@ export class Quest {
 		this.author = author
 		this.assignee = assignee
 		this.completor = completor
-		this.dateCreated = dateCreated
-		this.dateCompleted = dateCompleted
-		this.dateUpdated = dateUpdated
+		this.dateCreated = typeof dateCreated === 'string' ? new Date(dateCreated) : dateCreated
+		this.dateCompleted = typeof dateCompleted === 'string' ? new Date(dateCompleted) : dateCompleted
+		this.dateUpdated = typeof dateUpdated === 'string' ? new Date(dateUpdated) : dateUpdated
 		this.description = description
-		this.dueDate = dueDate
+		this.dueDate = typeof dueDate === 'string' ? new Date(dueDate) : dueDate
 		this.title = title
 		this.objectives = objectives || new Array<string>()
 		this.reward = reward
@@ -46,9 +46,9 @@ export class Quest {
 		return {
 			...this,
 			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),
-			dateCompleted: this.dateCompleted ? this.dateCompleted.toISOString() : new Date().toISOString(),
+			dateCompleted: this.dateCompleted ? this.dateCompleted.toISOString() : null,
 			dateUpdated: this.dateUpdated ? this.dateUpdated.toISOString() : new Date().toISOString(),
-			dueDate: this.dueDate ? this.dueDate.toISOString() : new Date().toISOString()
+			dueDate: this.dueDate ? this.dueDate.toISOString() : null
 		}
 	}
 }

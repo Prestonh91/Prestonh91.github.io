@@ -1,0 +1,61 @@
+@import 'variables';
+
+.gl-padding-tiny {
+	padding: $global-tiny-margin;
+}
+
+.gl-padding-tiny-right {
+	padding-right: $global-tiny-margin;
+}
+
+.gl-padding-tiny-bottom {
+	padding-bottom: $global-tiny-margin;
+}
+
+.gl-padding-tiny-left {
+	padding-left: $global-tiny-margin;
+}
+
+.gl-padding-tiny-top {
+	padding-top: $global-tiny-margin;
+}
+
+.gl-padding-tiny-horizontal {
+	padding-right: $global-tiny-margin;
+	padding-left: $global-tiny-margin;
+}
+
+.gl-padding-tiny-vertical {
+	padding-top: $global-tiny-margin;
+	padding-bottom: $global-tiny-margin
+}
+
+.gl-padding-small {
+	padding: $global-small-margin;
+}
+
+.gl-padding-small-right {
+	padding-right: $global-small-margin;
+}
+
+.gl-padding-small-bottom {
+	padding-bottom: $global-small-margin;
+}
+
+.gl-padding-small-left {
+	padding-left: $global-small-margin;
+}
+
+.gl-padding-small-top {
+	padding-top: $global-small-margin;
+}
+
+.gl-padding-small-horizontal {
+	padding-right: $global-small-margin;
+	padding-left: $global-small-margin;
+}
+
+.gl-padding-small-vertical {
+	padding-top: $global-small-margin;
+	padding-bottom: $global-small-margin
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
+import { map, tap } from 'rxjs/operators';
 import { Quest } from 'src/app/classes/Quest';
 
 @Injectable({
@@ -22,5 +23,16 @@ export class QuestService {
 
 	getQuests(guardianUid: string) {
 		return this.fireDB.object(this.getQuestAuthorUrl(guardianUid)).valueChanges()
+		.pipe(
+			map((quests: any) => {
+				return Object.values(quests).map((q: any) => {
+					return new Quest(q)
+				})
+			}),
+			tap(x => {
+				debugger
+				console.log(x)
+			}),
+		)
 	}
 }
