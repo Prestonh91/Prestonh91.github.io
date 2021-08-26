@@ -28,11 +28,7 @@ export class QuestService {
 				return Object.values(quests).map((q: any) => {
 					return new Quest(q)
 				})
-			}),
-			tap(x => {
-				debugger
-				console.log(x)
-			}),
+			})
 		)
 	}
 }
