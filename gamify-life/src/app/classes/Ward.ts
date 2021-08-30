@@ -11,6 +11,7 @@ export class Ward {
 	public phoneNumber: string | null = null;
 	public photoURL: string | null = null;
 	public uid: string | null = null;
+	public credits: number = 0;
 
 	constructor(u: Ward = {} as Ward) {
 		let {
@@ -51,7 +52,7 @@ export class Ward {
 		return newWard
 	}
 
-	prepareUserForSave(): any {
+	public prepareUserForSave(): any {
 		return {
 			...this,
 			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),

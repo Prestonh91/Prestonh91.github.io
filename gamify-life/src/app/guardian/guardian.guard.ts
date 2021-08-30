@@ -25,7 +25,7 @@ export class GuardianGuard implements CanActivate, CanActivateChild {
 				if (x?.guardianPin) {
 					return true
 				} else {
-					return this.router.parseUrl('/auth-guardian')
+					return this.router.parseUrl('/guardian/login')
 				}
 			})
 		)

@@ -1,9 +1,14 @@
 import { User } from '@firebase/auth-types'
+import { Household } from './Household';
 
+interface GObject {
+	[key: string]: any,
+}
 export class Guardian {
 	public dateCreated: Date | null = null;
 	public lastUpdated: Date | null = null;
 	public guardianPin: string | null = null;
+	public households: GObject = new Array<Household>()
 	public displayName: string | null = null;
 	public email: string | null = null;
 	public emailVerified: boolean | null = null;
@@ -18,6 +23,7 @@ export class Guardian {
 			lastUpdated = new Date(),
 			guardianPin = null,
 			displayName = null,
+			households = new Array<Household>(),
 			email = null,
 			emailVerified = null,
 			phoneNumber = null,
@@ -31,6 +37,7 @@ export class Guardian {
 		this.guardianPin = guardianPin
 		this.displayName = displayName
 		this.email = email
+		this.households = households
 		this.emailVerified = emailVerified
 		this.phoneNumber = phoneNumber
 		this.photoURL = photoURL
@@ -60,10 +67,22 @@ export class Guardian {
 	}
 
 	prepareUserForSave(): any {
-		return {
+		const requestData = {
 			...this,
 			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),
-			lastUpdated: this.lastUpdated ? this.lastUpdated.toISOString() : new Date().toISOString(),
+			lastUpdated: new Date().toISOString(),
 		}
+
+		this.lastUpdated = requestData.lastUpdated
+
+		return requestData
+	}
+
+	addHousehold(household: Household) {
+		this.households[household.uid || ''] = true
+	}
+
+	removeHousehold(household: Household) {
+		delete this.households[household.uid || '']
 	}
 }

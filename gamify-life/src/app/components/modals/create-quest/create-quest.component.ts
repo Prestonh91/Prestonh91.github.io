@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from
 import { select, Store } from '@ngrx/store';
 import { Guardian } from 'src/app/classes/Guardian';
 import { Quest } from 'src/app/classes/Quest';
-import { QuestService } from 'src/app/services/quest/quest.service';
+import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
 declare var UIkit: any;

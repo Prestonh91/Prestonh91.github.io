@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Quest } from 'src/app/classes/Quest';
-import { QuestService } from 'src/app/services/quest/quest.service';
+import { Household } from 'src/app/classes';
+import { HouseholdService } from 'src/app/services/household.service';
+import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
 
@@ -13,12 +14,16 @@ import { selectGuardian } from 'src/store/guardian/guardian.store';
 })
 export class GuardianSummaryComponent implements OnInit {
 	quests$ = new Observable();
+	households: Array<Household> = new Array<Household>();
 
-  	constructor(private questService: QuestService, private store: Store<AppState>) { }
+  	constructor(private hhService: HouseholdService ,private questService: QuestService, private store: Store<AppState>) { }
 
 	ngOnInit(): void {
 		this.store.pipe(select(selectGuardian)).subscribe(x => {
-			this.quests$ = this.questService.getQuests(x.uid || '')
+			// this.quests$ = this.questService.getQuests(x.households)
+			this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
+				this.households.push(new Household(x))
+			})
 		})
 	}
 
