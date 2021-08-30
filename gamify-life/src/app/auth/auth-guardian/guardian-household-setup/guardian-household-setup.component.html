@@ -1,0 +1,28 @@
+<section class="uk-background-muted uk-height-1-1 uk-card uk-card-body">
+	<header>
+		<h3 class="uk-heading-medium uk-text-center uk-text-primary">Welcome to gamify life!</h3>
+		<p class="uk-text-center gl-text-medium">To begin you will need to either create your own household or join an existing one.</p>
+		<p class="uk-text-center gl-text-medium">All guardians belonging to a household will be able to make edits to the quests and rewards available to your wards. Additionally, you are able to act as a guardian in more then one household and can join/create other households later.</p>
+		<p class="uk-text-center gl-text-medium">Please create or new household or join an existing one to get started!</p>
+	</header>
+	<div>
+		<div *ngIf="!createNewHouseholdSelected && !joinExistingHouseholdSelected" class="uk-flex-center" uk-grid>
+			<div><button class="gl-button-primary" type="button" (click)="selectCreateNew()">Create New Household</button></div>
+			<div><button class="gl-button-primary" type="button" (click)="selectJoinExisting()">Join Existing Household</button></div>
+		</div>
+		<div class="uk-margin-bottom" *ngIf="createNewHouseholdSelected || joinExistingHouseholdSelected">
+			<div *ngIf="createNewHouseholdSelected">
+				<div class="uk-margin-auto uk-width-5-6 uk-width-1-2@m"><input [formControl]="newHouseholdName" type="text" class="gl-text-input uk-background-muted uk-width-1-1 uk-text-center" [class]="{ 'uk-form-danger': error }" (input)="clearError()" placeholder="Household name"></div>
+			</div>
+			<div *ngIf="joinExistingHouseholdSelected">
+				<div class="uk-margin-auto uk-width-5-6 uk-width-1-2@m"><input [formControl]="existingHouseholdUid" type="text" class="gl-text-input uk-background-muted uk-width-1-1 uk-text-center" [class]="{ 'uk-form-danger': error }" (input)="clearError()" placeholder="Existing Household ID"></div>
+			</div>
+		</div>
+		<div *ngIf="createNewHouseholdSelected || joinExistingHouseholdSelected" class="uk-flex-center" uk-grid>
+			<div><span class="uk-text-primary gl-pointer-cursor" (click)="clearChoice()">Go Back</span></div>
+			<div *ngIf="createNewHouseholdSelected"><button type="button" class="gl-button-primary" (click)="createNewHousehold()">Create new</button></div>
+			<div *ngIf="joinExistingHouseholdSelected"><button type="button" class="gl-button-primary" (click)="joinExistingHousehold()">Join Household</button></div>
+		</div>
+		<p *ngIf="error" class="uk-text-center uk-text-medium uk-text-danger">{{ error }}</p>
+	</div>
+</section>
