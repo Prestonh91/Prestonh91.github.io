@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Guardian } from 'src/app/classes/Guardian';
-import { Quest } from 'src/app/classes/Quest';
+import { Guardian, Household, Quest } from 'src/app/classes';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
+import { getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
@@ -16,12 +16,19 @@ declare var UIkit: any;
 export class CreateQuestComponent implements OnInit {
 	guardian: Guardian = new Guardian();
 	quest = this.newQuest()
+	questHousehold = new FormControl(null, Validators.required)
+	householdOptions: any[] = []
 
-  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>) { }
+  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>) {}
 
 	ngOnInit(): void {
 		this.store.pipe(select(selectGuardian)).subscribe(g => {
 			this.guardian = g
+		})
+		this.store.pipe(select(getHouseholds)).subscribe((x: ReadonlyArray<Household>) => {
+			this.householdOptions = x.map(y => {
+				return { value: y.uid, display: y.name }
+			})
 		})
 	}
 
@@ -38,9 +45,10 @@ export class CreateQuestComponent implements OnInit {
 		var title = this.quest.get('title')
 		var reward = this.quest.get('reward')
 
-		if (!title?.valid || !reward?.valid) {
+		if (!title?.valid || !reward?.valid || !this.questHousehold.valid) {
 			title?.markAsTouched()
 			reward?.markAsTouched()
+			this.questHousehold.markAsTouched()
 			return
 		}
 
@@ -48,6 +56,7 @@ export class CreateQuestComponent implements OnInit {
 		newQuest.title = title?.value
 		newQuest.reward = reward?.value
 		newQuest.description = this.quest.get('description')?.value
+		newQuest.household = this.questHousehold.value
 		newQuest.objectives = this.quest.get('objectives')?.value?.filter((x: string) => x)
 		newQuest.author = this.guardian.uid
 

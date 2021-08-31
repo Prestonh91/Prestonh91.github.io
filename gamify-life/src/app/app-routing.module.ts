@@ -4,7 +4,7 @@ import { wardRoutes } from './ward/ward-routing'
 import { guardianRoutes} from './guardian/guardian-routes'
 
 const routes: Routes = [
-	{ path : '', redirectTo: 'guardian/create', pathMatch: 'full'},
+	{ path : '', redirectTo: 'guardian/login', pathMatch: 'full'},
 	...wardRoutes,
 	...guardianRoutes,
 	{ path: '**', redirectTo: 'guardian/login' }

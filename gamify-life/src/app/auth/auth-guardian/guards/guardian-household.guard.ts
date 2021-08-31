@@ -27,8 +27,7 @@ export class GuardianHouseholdGuard implements CanActivate {
 				let g = new Guardian(user)
 				if (Object.keys(g.households).length === 0) return true
 				if (Object.keys(g.households).length > 0) {
-					return true
-					// return this.router.parseUrl('/guardian')
+					return this.router.parseUrl('/guardian')
 				}
 
 				return this.router.parseUrl('/guardian/login')

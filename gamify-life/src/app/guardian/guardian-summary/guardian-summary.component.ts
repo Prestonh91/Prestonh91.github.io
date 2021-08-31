@@ -6,6 +6,7 @@ import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
+import { setHouseholds } from 'src/store/household/household.store';
 
 @Component({
   selector: 'app-guardian-summary',
@@ -20,9 +21,10 @@ export class GuardianSummaryComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.store.pipe(select(selectGuardian)).subscribe(x => {
-			// this.quests$ = this.questService.getQuests(x.households)
+			this.quests$ = this.questService.getQuests(x.households)
 			this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
-				this.households.push(new Household(x))
+				this.households = x
+				this.store.dispatch(setHouseholds({households: x}))
 			})
 		})
 	}

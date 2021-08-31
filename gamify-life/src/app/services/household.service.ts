@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { forkJoin, from, of } from 'rxjs';
-import { combineAll, exhaust, exhaustMap, mergeAll, take, tap, toArray } from 'rxjs/operators';
+import { combineAll, exhaust, exhaustMap, map, mergeAll, take, tap, toArray } from 'rxjs/operators';
 import { Guardian, Household } from 'src/app/classes';
 import { GuardianService } from './guardian.service';
 
@@ -26,6 +26,9 @@ export class HouseholdService {
 
 		return from(hhFetchers).pipe(
 			mergeAll(),
+			map((x:any) => new Household(x)),
+			take(Object.keys(households).length),
+			toArray(),
 		)
 	}
 

@@ -14,6 +14,7 @@ import { GuardianLayoutComponent } from './guardian/guardian-layout/guardian-lay
 import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
 import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-summary.component';
 import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
+import { SelectComponent } from './components/core/select/select.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
@@ -24,6 +25,7 @@ import { wardReducer } from 'src/store/ward/ward.store';
 
 // Feature Modules
 import { AuthModule } from './auth/auth.module';
+import { householdReducer } from 'src/store/household/household.store';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { AuthModule } from './auth/auth.module';
 	GuardianLayoutComponent,
 	GuardianSummaryComponent,
 	CreateQuestComponent,
+	SelectComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,7 @@ import { AuthModule } from './auth/auth.module';
 	AngularFireModule.initializeApp(environment.firebase),
 	AngularFireAuthModule,
 	AngularFireDatabaseModule,
-	StoreModule.forRoot({ guardian: guardianReducer, ward: wardReducer, error: apiErrorReducer}),
+	StoreModule.forRoot({ guardian: guardianReducer, ward: wardReducer, error: apiErrorReducer, households: householdReducer}),
 	StoreDevtoolsModule.instrument(),
 	//Feature Modules
 	AuthModule,

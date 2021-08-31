@@ -26,6 +26,15 @@
 					>
 				</div>
 				<div class="uk-margin-bottom">
+					<span class="gl-text-medium uk-text-bold" [class]="{ 'uk-form-danger': questHousehold.touched && questHousehold.invalid }">Assign quest to:</span>
+					<gl-select
+						[options]="householdOptions"
+						[control]="questHousehold"
+						[selectPlaceholder]="'Select Household'"
+						[error]="questHousehold.touched && questHousehold.invalid"
+						class="uk-margin-left"></gl-select>
+				</div>
+				<div class="uk-margin-bottom">
 					<span class="gl-text-medium uk-text-bold uk-text-top">Description:</span>
 					<textarea
 						formControlName="description"

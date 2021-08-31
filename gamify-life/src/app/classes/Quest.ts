@@ -7,6 +7,7 @@ export class Quest {
 	dateUpdated: Date | null = null;
 	description: string | null = null;
 	dueDate: Date | null = null;
+	household: string | null = null;
 	title: string | null = null;
 	objectives: Array<string> | null = null;
 	reward: number | null = null;
@@ -22,6 +23,7 @@ export class Quest {
 			dateUpdated = null,
 			description = null,
 			dueDate = null,
+			household = null,
 			title = null,
 			objectives = null,
 			reward = null,
@@ -36,6 +38,7 @@ export class Quest {
 		this.dateUpdated = typeof dateUpdated === 'string' ? new Date(dateUpdated) : dateUpdated
 		this.description = description
 		this.dueDate = typeof dueDate === 'string' ? new Date(dueDate) : dueDate
+		this.household = household
 		this.title = title
 		this.objectives = objectives || new Array<string>()
 		this.reward = reward
@@ -47,7 +50,7 @@ export class Quest {
 			...this,
 			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),
 			dateCompleted: this.dateCompleted ? this.dateCompleted.toISOString() : null,
-			dateUpdated: this.dateUpdated ? this.dateUpdated.toISOString() : new Date().toISOString(),
+			dateUpdated: new Date().toISOString(),
 			dueDate: this.dueDate ? this.dueDate.toISOString() : null
 		}
 	}
