@@ -39,6 +39,24 @@ export class AuthService {
 		}
 	}
 
+	async loginGuardian(email: string, password: string) {
+		try {
+			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
+			var user = await this.fireDb.object(this.guardianUrl + response.user?.uid).query.once('value')
+
+			if (user.val()) {
+				this.store.dispatch(setGuardian({ guardian: new Guardian(user.val()) }))
+			}
+
+			return user.val()
+		} catch (e) {
+			var apiError = new APIErrorResponse()
+			apiError.setError(e)
+			this.store.dispatch(setError({error: apiError}))
+			return false
+		}
+	}
+
 	async registerWard(email: string, password: string, guardianId: string) {
 		try {
 			var guardianKeyRes = await this.fireDb.object('guardianPins').query.orderByKey().equalTo(guardianId.toUpperCase()).get()
@@ -59,31 +77,13 @@ export class AuthService {
 					var newUser: Ward = Ward.createNewWard(userRes.user, guardianId, guardianKey[guardianId]);
 					this.fireDb.object(`${this.wardUrl}${userRes.user.uid}`).set(newUser.prepareUserForSave());
 					this.store.dispatch(setWard({ ward: newUser }))
-					return from([newUser])
+					return newUser
 				}
 
 			}
-			return from([false])
+			return false
 		} catch (e: any) {
 			this.store.dispatch(setError({error: new APIErrorResponse().setError(e)}))
-			return from([false])
-		}
-	}
-
-	async loginGuardian(email: string, password: string) {
-		try {
-			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
-			var user = await this.fireDb.object(this.guardianUrl + response.user?.uid).query.once('value')
-
-			if (user.val()) {
-				this.store.dispatch(setGuardian({ guardian: new Guardian(user.val()) }))
-			}
-
-			return user.val()
-		} catch (e) {
-			var apiError = new APIErrorResponse()
-			apiError.setError(e)
-			this.store.dispatch(setError({error: apiError}))
 			return false
 		}
 	}
@@ -92,18 +92,15 @@ export class AuthService {
 		try {
 			var loginResponse = await this.fireAuth.signInWithEmailAndPassword(email, password);
 
-			return this.fireDb.object(this.wardUrl + loginResponse.user?.uid).valueChanges().pipe(
-				take(1),
-				tap((x: any) => {
-					if (x) {
-						this.store.dispatch(setWard({ ward: new Ward(x)}))
-					}
-				})
-			)
+			var userSnap = await this.fireDb.object(this.wardUrl + loginResponse.user?.uid).query.once('value')
+			if (userSnap.val()) {
+				this.store.dispatch(setWard({ ward: new Ward(userSnap.val())}))
+			}
 
+			return userSnap.val()
 		} catch (e) {
 			this.store.dispatch(setError({ error: new APIErrorResponse().setError(e)}))
-			return from([false])
+			return false
 		}
 	}
 }

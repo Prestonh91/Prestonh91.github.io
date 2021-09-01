@@ -42,7 +42,10 @@ export class AuthWardComponent implements OnInit {
 			this.email.markAsTouched()
 			this.password.markAsTouched()
 			if (this.email.valid && this.password.valid) {
-				(await this.authService.loginWard(this.email.value, this.password.value)).subscribe(x => this.router.navigate(['ward']))
+				var user = await this.authService.loginWard(this.email.value, this.password.value)
+				if (user) {
+					this.router.navigate(['ward'])
+				}
 			}
 		}
 	}
