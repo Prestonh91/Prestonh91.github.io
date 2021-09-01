@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { Household } from 'src/app/classes';
+import { Observable, Subscription } from 'rxjs';
+import { Household, Quest } from 'src/app/classes';
 import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
@@ -13,24 +13,37 @@ import { setHouseholds } from 'src/store/household/household.store';
   templateUrl: './guardian-summary.component.html',
   styleUrls: ['./guardian-summary.component.scss']
 })
-export class GuardianSummaryComponent implements OnInit {
-	quests$ = new Observable();
+export class GuardianSummaryComponent implements OnInit, OnDestroy {
+	quests = Array<Quest>();
 	households: Array<Household> = new Array<Household>();
+
+	storeSubscription = new Subscription();
+	questSubscription = new Subscription();
+	householdSubscription = new Subscription();
 
   	constructor(private hhService: HouseholdService ,private questService: QuestService, private store: Store<AppState>) { }
 
 	ngOnInit(): void {
-		this.store.pipe(select(selectGuardian)).subscribe(x => {
-			this.quests$ = this.questService.getQuests(x.households)
-			this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
+		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
+			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
+				var questUids = this.quests.map(q => q.uid)
+				for (let q of householdQuests) {
+					if (!questUids.includes(q.uid)) {
+						this.quests.push(q)
+					}
+				}
+			})
+			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
 				this.households = x
 				this.store.dispatch(setHouseholds({households: x}))
 			})
 		})
 	}
 
-	getQuestsAsIterable(quests: any): any[] {
-		return Object.values(quests)
+	ngOnDestroy() {
+		this.storeSubscription.unsubscribe()
+		this.questSubscription.unsubscribe()
+		this.householdSubscription.unsubscribe()
 	}
 
 	getUnclaimedQuests(list: any) {

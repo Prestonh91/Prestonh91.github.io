@@ -14,7 +14,6 @@ import { Guardian } from 'src/app/classes';
   styleUrls: ['./guardian-login.component.scss']
 })
 export class GuardianLoginComponent implements OnInit {
-	// Validators.pattern(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
 	email = new FormControl('', [Validators.required, ]);
 	password = new FormControl('', Validators.required);
 
@@ -30,12 +29,8 @@ export class GuardianLoginComponent implements OnInit {
 			this.store.dispatch(clearError());
 
 			let loginResponse = await this.userAuthService.loginGuardian(this.email.value, this.password.value)
-			loginResponse.subscribe(user => {
-				if (user) {
-					this.store.dispatch(setGuardian({ guardian: new Guardian(user)}))
-					this.router.navigate(['guardian', user.uid, 'household', 'setup'])
-				}
-			})
+			if (loginResponse)
+					this.router.navigate(['guardian', loginResponse.uid, 'household', 'setup'])
 		}
 	}
 }

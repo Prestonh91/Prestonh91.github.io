@@ -73,21 +73,18 @@ export class AuthService {
 	async loginGuardian(email: string, password: string) {
 		try {
 			var response = await this.fireAuth.signInWithEmailAndPassword(email, password)
+			var user = await this.fireDb.object(this.guardianUrl + response.user?.uid).query.once('value')
 
-			return this.fireDb.object(this.guardianUrl + response.user?.uid).valueChanges().pipe(
-				map((user: any) => {
-					if (user) {
-						this.store.dispatch(setGuardian({ guardian: new Guardian(user)}))
-					}
+			if (user.val()) {
+				this.store.dispatch(setGuardian({ guardian: new Guardian(user.val()) }))
+			}
 
-					return user
-				})
-			)
+			return user.val()
 		} catch (e) {
 			var apiError = new APIErrorResponse()
 			apiError.setError(e)
 			this.store.dispatch(setError({error: apiError}))
-			return from([false])
+			return false
 		}
 	}
 

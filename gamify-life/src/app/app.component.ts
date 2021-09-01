@@ -17,48 +17,17 @@ export class AppComponent implements OnInit {
 	constructor(public store: Store<AppState>, public fireAuth: AngularFireAuth, public fireDb: AngularFireDatabase) {}
 
 	ngOnInit() {
-		window.addEventListener('beforeunload', (e) => {
-			this.store.pipe(select(selectGuardian)).subscribe(fetchedUser => {
-				if (fetchedUser.uid) {
-					sessionStorage.setItem('guardian', JSON.stringify(fetchedUser))
-				}
-			});
-			this.store.pipe(select(selectWard)).subscribe(fetchedUser => {
-				if (fetchedUser.uid) {
-					sessionStorage.setItem('ward', JSON.stringify(fetchedUser))
-				}
-			})
-		});
-
-
 		this.fireAuth.user.subscribe(user => {
 			if (user) {
-				this.fireDb.object(`guardians/${user.uid}`).valueChanges().subscribe((x:any) => {
-					if (x)
-						this.store.dispatch(setGuardian({ guardian: new Guardian(x)}))
+				this.fireDb.object(`guardians/${user.uid}`).query.once('value').then(x => {
+					if (x.val())
+						this.store.dispatch(setGuardian({ guardian: new Guardian(x.val()) }))
 				})
-				this.fireDb.object(`wards/${user.uid}`).valueChanges().subscribe((x:any) => {
-					if (x)
-						this.store.dispatch(setWard({ ward: new Ward(x)}))
+				this.fireDb.object(`wards/${user.uid}`).query.once('value').then(x => {
+					if (x.val())
+						this.store.dispatch(setWard({ ward: new Ward(x.val()) }))
 				})
-			} else {
-				var sessionGuardian = sessionStorage.getItem('guardian')
-				if (sessionGuardian) {
-					let loggedInUser = new Guardian(JSON.parse(sessionGuardian))
-					this.store.dispatch(setGuardian({ guardian: loggedInUser }))
-				}
-
-				var sessionWard = sessionStorage.getItem('ward')
-				if (sessionWard) {
-					let loggedInUser = new Ward(JSON.parse(sessionWard))
-					this.store.dispatch(setWard({ ward: loggedInUser }))
-				}
 			}
-
-			sessionStorage.removeItem('guardian')
-			sessionStorage.removeItem('ward')
 		})
-
-		this
 	}
 }

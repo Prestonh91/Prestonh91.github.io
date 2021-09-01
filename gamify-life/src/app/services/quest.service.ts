@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { from } from 'rxjs';
-import { map, mergeMap, reduce, take, tap, toArray } from 'rxjs/operators';
+import { filter, map, mergeMap, reduce, take, tap, toArray } from 'rxjs/operators';
 import { Quest } from 'src/app/classes/Quest';
 
 @Injectable({
@@ -31,30 +31,35 @@ export class QuestService {
 
 		return from(questFetchers).pipe(
 			mergeMap(x => x),
-			take(Object.keys(households).length),
-			reduce((acc: any, val: any) => {
-				for (let x of Object.keys(val)) {
-					let q = val[x]
-					acc.push(new Quest(q))
+			filter((x: any) => x),
+			map(householdQuests => {
+				var quests: Quest[] = []
+
+				for (let q of Object.keys(householdQuests)) {
+					quests.push(new Quest(householdQuests[q]))
 				}
-				return acc
-			}, []),
-			// map((val: any) => {
-			// 	debugger
-			// 	return val.map((x: any) => {
-			// 		debugger
-			// 		return new Quest(x)
-			// 	})
-			// }),
+
+				return quests
+			})
 		)
 
-		// return this.fireDB.object(this.getQuestAuthorUrl(hhUid)).valueChanges()
-		// .pipe(
-		// 	map((quests: any) => {
-		// 		return Object.values(quests).map((q: any) => {
-		// 			return new Quest(q)
-		// 		})
-		// 	})
+		// return from(questFetchers).pipe(
+		// 	mergeMap(x => x),
+		// 	take(questFetchers.length),
+		// 	toArray(),
+		// 	map(x => {
+		// 		var quests = []
+
+		// 		var questList: any
+		// 		for (questList of x.filter(x => x)) {
+		// 			for (let q of Object.keys(questList)) {
+		// 				quests.push(new Quest(questList[q]))
+		// 			}
+		// 		}
+
+		// 		return quests
+		// 	}),
+		// 	tap(x => console.warn(x))
 		// )
 	}
 }
