@@ -13,8 +13,12 @@ export class HouseholdService {
 
 	constructor(private fireDb: AngularFireDatabase, private guardianService: GuardianService) { }
 
-	async getHousehold(uid: string) {
+	async getHouseholdValue(uid: string) {
 		return (await this.fireDb.database.ref(this.householdUrl + uid).once('value')).val()
+	}
+
+	getHousehouldPromise(uid: string) {
+		return this.fireDb.database.ref(this.householdUrl + uid).once('value')
 	}
 
 	getHouseHolds(households: Object) {
@@ -59,7 +63,7 @@ export class HouseholdService {
 		var guardian = new Guardian(await this.guardianService.getGuardian(guardianUid))
 
 		// Fetch the household
-		var hh = new Household(await this.getHousehold(hhUid))
+		var hh = new Household(await this.getHouseholdValue(hhUid))
 
 
 		// Add the guardian to the household and the household to the guardain

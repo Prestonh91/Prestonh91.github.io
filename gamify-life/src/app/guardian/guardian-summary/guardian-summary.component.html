@@ -17,7 +17,8 @@
 					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress:</span> 0</p>
 					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
 				</div>
-
+			</div>
+			<div>
 				<div>
 					<h3 class="uk-text-center uk-text-primary">Unclaimed</h3>
 					<div
@@ -32,17 +33,19 @@
 
 				<div>
 					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
-					<table class="uk-table uk-table-justify uk-table-small uk-table-striped">
-						<thead>
-							<tr>
-								<th></th>
-								<th></th>
-							</tr>
-						</thead>
+					<table class="uk-table uk-table-small uk-table-striped">
 						<tbody>
 							<tr *ngFor="let quest of quests" class="uk-text-center">
-								<td>{{quest.title}}</td>
-								<td>${{quest.reward}}</td>
+								<td class="uk-text-middle">{{quest.title}}</td>
+								<td class="uk-text-middle">${{quest.reward}}</td>
+								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
+								<td class="uk-width-1-5">
+									<div class="uk-flex uk-flex-right">
+										<button class="gl-button-primary uk-text-nowrap">View</button>
+										<button class="gl-button-primary uk-margin-left uk-text-nowrap">Edit</button>
+										<button class="gl-button-primary uk-margin-left uk-text-nowrap">Delete</button>
+									</div>
+								</td>
 							</tr>
 						</tbody>
 					</table>

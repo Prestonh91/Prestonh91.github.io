@@ -1,7 +1,7 @@
 import { Guardian, Ward, Quest } from "./index";
 
 interface GObject {
-	[key: string]: any,
+	[key: string]: boolean,
 }
 
 export class Household {
@@ -11,17 +11,17 @@ export class Household {
 	public dateCreated: Date = new Date();
 	public dateUpdated: Date = new Date();
 
-	public guardians: GObject = new Array<Guardian>();
+	public guardians: GObject = {};
 	public wards: Array<Ward> = new Array<Ward>();
-	public quests: Array<Quest> = new Array<Quest>();
+	public quests: GObject = {};
 
 	constructor(data: Household = {} as Household) {
 		let {
 			name = null,
 			uid = null,
-			guardians = new Array<Guardian>(),
+			guardians = {},
 			wards = new Array<Ward>(),
-			quests = new Array<Quest>()
+			quests = {}
 		} = data
 
 		this.name = name
@@ -46,6 +46,18 @@ export class Household {
 
 	public removeGuardian(g: Guardian) {
 		delete this.guardians[g.uid || '']
+	}
+
+	public addQuest(qUid: string) {
+		let tempQ = {
+			...this.quests
+		}
+		tempQ[qUid] = true
+		this.quests = tempQ
+	}
+
+	public removeQuest(qUid: string) {
+		delete this.quests[qUid]
 	}
 
 	public prepareHouseholdForSave() {

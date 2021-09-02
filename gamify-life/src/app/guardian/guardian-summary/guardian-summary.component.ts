@@ -27,11 +27,12 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
 			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
 				var questUids = this.quests.map(q => q.uid)
-				for (let q of householdQuests) {
-					if (!questUids.includes(q.uid)) {
-						this.quests.push(q)
-					}
-				}
+				this.quests = householdQuests
+				// for (let q of householdQuests) {
+				// 	if (!questUids.includes(q.uid)) {
+				// 		this.quests.push(q)
+				// 	}
+				// }
 			})
 			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
 				this.households = x

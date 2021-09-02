@@ -11,6 +11,11 @@
 	vertical-align: middle;
 	border: none;
 	min-width: 75px;
+	max-height: 45px;
+}
+
+.gl-button-primary:hover {
+	background-color: darken($global-color-primary, $amount: 5);
 }
 
 .gl-button-secondary {

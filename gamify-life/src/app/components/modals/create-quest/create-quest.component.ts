@@ -60,7 +60,8 @@ export class CreateQuestComponent implements OnInit {
 		newQuest.objectives = this.quest.get('objectives')?.value?.filter((x: string) => x)
 		newQuest.author = this.guardian.uid
 
-		this.questService.createNewQuest(newQuest).then(x => {
+		this.questService.createNewQuest(newQuest)
+		.then(x => {
 			UIkit.modal('#createQuest')?.hide()
 			this.resetForm()
 		})
