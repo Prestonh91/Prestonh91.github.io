@@ -19,9 +19,9 @@
 }
 
 .gl-button-secondary {
-	background-color: $global-emphasis-color;
+	background-color: $global-color-secondary;
 	border-radius: $global-radius-medium;
-	color: $global-color;
+	color: $global-inverse-color;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -29,4 +29,5 @@
 	vertical-align: middle;
 	border: none;
 	min-width: 75px;
+	max-height: 45px;
 }

@@ -51,4 +51,16 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 		const quests = Object.values(list)
 		return quests.filter((x: any) => x.assignee === null)
 	}
+
+	viewQuest(quest: Quest) {
+
+	}
+
+	editQuest(quest: Quest) {
+
+	}
+
+	deleteQuest(quest: Quest) {
+
+	}
 }

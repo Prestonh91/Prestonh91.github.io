@@ -1,7 +1,7 @@
-<section class="uk-margin-auto uk-width-5-6">
-	<div class="gl-border-bottom">
+<section class="uk-card uk-card-body uk-background-muted">
+	<div class="uk-width-5-6 uk-margin-auto">
 		<div class="uk-margin-bottom uk-margin-top">
-			<div uk-grid class="uk-child-width-1-2">
+			<div uk-grid class="uk-child-width-1-2 uk-margin-medium-bottom">
 				<div>
 					<h3 class="uk-text-center uk-text-primary uk-heading-small">Quests</h3>
 					<div class="uk-text-center uk-margin-bottom">
@@ -12,38 +12,26 @@
 					</div>
 				</div>
 
-				<div class="uk-flex uk-flex-column uk-flex-center uk-text-center">
+				<div class="uk-flex uk-flex-column uk-flex-center uk-text-center uk-margin-bottom">
 					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Unclaimed: </span>{{ getUnclaimedQuests(quests).length }}</p>
 					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress:</span> 0</p>
 					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
 				</div>
 			</div>
 			<div>
-				<div>
-					<h3 class="uk-text-center uk-text-primary">Unclaimed</h3>
-					<div
-						*ngFor="let quest of quests"
-						class="uk-flex uk-flex-between gl-padding-tiny-vertical gl-padding-small-horizontal uk-margin-small-bottom"
-						style="border: 1px solid rebeccapurple; border-radius: 30px;"
-					>
-						<span>{{quest.title}}</span>
-						<span>{{quest.reward | currency : 'USD': 'symbol' : '1.0-0'}}</span>
-					</div>
-				</div>
-
-				<div>
-					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
-					<table class="uk-table uk-table-small uk-table-striped">
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+					<h3 class="uk-text-center uk-text-secondary">Unclaimed</h3>
+					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary">
 						<tbody>
 							<tr *ngFor="let quest of quests" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
-								<td class="uk-width-1-5">
+								<td class="">
 									<div class="uk-flex uk-flex-right">
-										<button class="gl-button-primary uk-text-nowrap">View</button>
-										<button class="gl-button-primary uk-margin-left uk-text-nowrap">Edit</button>
-										<button class="gl-button-primary uk-margin-left uk-text-nowrap">Delete</button>
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
 									</div>
 								</td>
 							</tr>
@@ -51,16 +39,44 @@
 					</table>
 				</div>
 
-				<div>
-					<h3 class="uk-text-center uk-text-primary">Complete</h3>
-					<div
-						*ngFor="let quest of quests"
-						uk-grid
-						class="uk-flex-between uk-grid-small"
-					>
-						<span>{{quest.title}}</span>
-						<span>${{quest.reward}}</span>
-					</div>
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
+					<table class="uk-table uk-table-small uk-table-striped">
+						<tbody>
+							<tr *ngFor="let quest of quests" class="uk-text-center">
+								<td class="uk-text-middle">{{quest.title}}</td>
+								<td class="uk-text-middle">${{quest.reward}}</td>
+								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
+								<td class="">
+									<div class="uk-flex uk-flex-right">
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+					<h3 class="uk-text-center uk-text-secondary">Complete</h3>
+					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary">
+						<tbody>
+							<tr *ngFor="let quest of quests" class="uk-text-center">
+								<td class="uk-text-middle">{{quest.title}}</td>
+								<td class="uk-text-middle">${{quest.reward}}</td>
+								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
+								<td class="">
+									<div class="uk-flex uk-flex-right">
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

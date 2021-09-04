@@ -55,12 +55,12 @@ $global-small-font-size:                         0.875rem !default; // 14px
 
 $global-color-primary: #623bb3;
 $color2: #ffffff;
-$global-color-secondary: #050202;
-$global-color-tertiary: #4489c1;
+$global-color-tertiary: #050202;
+$global-color-secondary: #3C64B4;
 
 $global-color:                                   $global-color-primary !default;
 $global-emphasis-color:                          #fff !default;
-$global-muted-color:                             #050202 !default;
+$global-muted-color:                             $global-color-tertiary !default;
 
 $global-link-color:                              #1e87f0 !default;
 $global-link-hover-color:                        #0f6ecd !default;
@@ -74,8 +74,9 @@ $global-inverse-color:                           #fff !default;
 $global-background:                              #fff !default;
 
 $global-muted-background:                        #dfdfdf !default;
-$global-primary-background:                      #623bb3 !default;
-$global-secondary-background:                    #050202 !default;
+$global-primary-background:                      $global-color-primary !default;
+$global-secondary-background: 					 $global-color-secondary !default;
+$global-tertiary-background:                     $global-color-tertiary !default;
 
 $global-success-background:                      #32d296 !default;
 $global-warning-background:                      #faa05a !default;
@@ -103,7 +104,7 @@ $global-xlarge-box-shadow:                       0 28px 50px rgba(0,0,0,0.16) !d
 
 // Used in margin, section, list
 $global-margin:                                  20px !default;
-$global-tiny-margin:							 5px !default;
+$global-tiny-margin:							 7px !default;
 $global-small-margin:                            15px !default;
 $global-medium-margin:                           40px !default;
 $global-large-margin:                            70px !default;
