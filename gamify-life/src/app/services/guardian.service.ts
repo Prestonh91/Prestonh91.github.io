@@ -13,19 +13,26 @@ export class GuardianService {
 
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
-	async getGuardian(uid: string) {
+	async getGuardianValue(uid: string) {
 		return (await this.fireDb.database.ref(this.guardianURL + uid).once('value')).val()
 	}
 
-	voidSaveGuardian(g: Guardian) {
+	getGuardianPromise(uid: string) {
+		return this.fireDb.database.ref(this.guardianURL + uid).once('value')
+	}
+
+	getGuardianObservable(uid: string) {
+		return this.fireDb.object(this.guardianURL + uid).valueChanges()
+	}
+
+	voidSaveGuardian(g: Guardian, updateStore: boolean = false) {
 		this.fireDb.database.ref(this.guardianURL + g.uid).set(g.prepareUserForSave()).then(x => {
-			this.store.dispatch(setGuardian({ guardian: g }))
+			if (updateStore)
+				this.store.dispatch(setGuardian({ guardian: g }))
 		})
 	}
 
 	saveGuardian(g: Guardian) {
-		return this.fireDb.database.ref(this.guardianURL + g.uid).set(g.prepareUserForSave()).then(x => {
-			this.store.dispatch(setGuardian({ guardian: g }))
-		})
+		return this.fireDb.database.ref(this.guardianURL + g.uid).set(g.prepareUserForSave())
 	}
 }

@@ -12,7 +12,7 @@ export class Household {
 	public dateUpdated: Date = new Date();
 
 	public guardians: GObject = {};
-	public wards: Array<Ward> = new Array<Ward>();
+	public wards: GObject = {};
 	public quests: GObject = {};
 
 	constructor(data: Household = {} as Household) {
@@ -20,7 +20,7 @@ export class Household {
 			name = null,
 			uid = null,
 			guardians = {},
-			wards = new Array<Ward>(),
+			wards = {},
 			quests = {}
 		} = data
 
@@ -41,7 +41,11 @@ export class Household {
 	}
 
 	public addGuardian(g: Guardian) {
-		this.guardians[g.uid || ''] = true
+		let tempG = {
+			...this.guardians
+		}
+		tempG[g.uid!] = true
+		this.guardians = tempG
 	}
 
 	public removeGuardian(g: Guardian) {
@@ -58,6 +62,18 @@ export class Household {
 
 	public removeQuest(qUid: string) {
 		delete this.quests[qUid]
+	}
+
+	public addWard(wardUid: string) {
+		let tempW = {
+			...this.wards
+		}
+		tempW[wardUid] = true
+		this.wards = tempW
+	}
+
+	public removeWard(wardUid: string) {
+		delete this.wards[wardUid]
 	}
 
 	public prepareHouseholdForSave() {

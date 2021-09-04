@@ -42,7 +42,7 @@ export class HouseholdService {
 
 	async createNewHousehold(name: string, guardianUid: string) {
 		// Get the guardian
-		var guardian = new Guardian(await this.guardianService.getGuardian(guardianUid))
+		var guardian = new Guardian(await this.guardianService.getGuardianValue(guardianUid))
 
 		// Create the new household, includes adding
 		var newHousehold = Household.createNewHousehold(name, this.fireDb.createPushId(), guardian)
@@ -51,7 +51,7 @@ export class HouseholdService {
 		guardian.addHousehold(newHousehold)
 
 		// Update the guardian
-		this.guardianService.voidSaveGuardian(guardian);
+		this.guardianService.voidSaveGuardian(guardian, true);
 
 		// Save the household
 		var res = await this.fireDb.object(this.householdUrl + newHousehold.uid).set(newHousehold.prepareHouseholdForSave())
@@ -60,17 +60,16 @@ export class HouseholdService {
 
 	async joinHousehold(hhUid: string, guardianUid: string) {
 		// Fetch the guardian
-		var guardian = new Guardian(await this.guardianService.getGuardian(guardianUid))
+		var guardian = new Guardian(await this.guardianService.getGuardianValue(guardianUid))
 
 		// Fetch the household
 		var hh = new Household(await this.getHouseholdValue(hhUid))
-
 
 		// Add the guardian to the household and the household to the guardain
 		hh.addGuardian(guardian)
 		guardian.addHousehold(hh)
 
-		await this.guardianService.voidSaveGuardian(guardian)
+		await this.guardianService.voidSaveGuardian(guardian, true)
 		await this.voidSaveHousehold(hh);
 		return true
 	}

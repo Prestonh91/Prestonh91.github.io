@@ -43,14 +43,19 @@ export class QuestService {
 
 	getQuests(households: Object) {
 		var questFetchers = []
+
+		// Get a list of household Observers
 		for (var h of Object.keys(households)) {
 			let url = this.getQuestHousholdUrl(h)
 			questFetchers.push(this.fireDB.object(url).valueChanges())
 		}
 
 		return from(questFetchers).pipe(
+			// Get the inner observable
 			mergeMap(x => x),
+			// Filter out the empty observables
 			filter((x: any) => x),
+			// Map over the objects return them as a list
 			map(householdQuests => {
 				var quests: Quest[] = []
 
@@ -61,24 +66,5 @@ export class QuestService {
 				return quests
 			})
 		)
-
-		// return from(questFetchers).pipe(
-		// 	mergeMap(x => x),
-		// 	take(questFetchers.length),
-		// 	toArray(),
-		// 	map(x => {
-		// 		var quests = []
-
-		// 		var questList: any
-		// 		for (questList of x.filter(x => x)) {
-		// 			for (let q of Object.keys(questList)) {
-		// 				quests.push(new Quest(questList[q]))
-		// 			}
-		// 		}
-
-		// 		return quests
-		// 	}),
-		// 	tap(x => console.warn(x))
-		// )
 	}
 }
