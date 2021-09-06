@@ -13,17 +13,17 @@
 				</div>
 
 				<div class="uk-flex uk-flex-column uk-flex-center uk-text-center uk-margin-bottom">
-					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Unclaimed: </span>{{ getUnclaimedQuests(quests).length }}</p>
-					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress:</span> 0</p>
-					<p class="uk-text-primary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
+					<p class="gl-text-tertiary gl-text-medium"><span class="uk-text-bold">Unclaimed: </span>{{ getUnclaimedQuests(quests).length }}</p>
+					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress: </span>{{ getClaimedQuests(quests).length}}</p>
+					<p class="uk-text-secondary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
 				</div>
 			</div>
 			<div>
 				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
-					<h3 class="uk-text-center uk-text-secondary">Unclaimed</h3>
-					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary">
+					<h3 class="uk-text-center gl-text-tertiary">Unclaimed</h3>
+					<table class="uk-table uk-table-small gl-table-striped-tertiary gl-text-tertiary">
 						<tbody>
-							<tr *ngFor="let quest of quests" class="uk-text-center">
+							<tr *ngFor="let quest of getUnclaimedQuests(quests)" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
@@ -43,7 +43,7 @@
 					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
 					<table class="uk-table uk-table-small uk-table-striped">
 						<tbody>
-							<tr *ngFor="let quest of quests" class="uk-text-center">
+							<tr *ngFor="let quest of getClaimedQuests(quests)" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
@@ -83,4 +83,5 @@
 	</div>
 
 	<create-quest id="createQuest" uk-modal></create-quest>
+	<view-quest [quest]="questToView" [isUnassigned]="questToView.assignee === null" [isInProgress]="questToView.assignee !== null && questToView.dateCompleted === null" [isComplete]="questToView.dateCompleted !== null" id="viewQuest" uk-modal></view-quest>
 </section>

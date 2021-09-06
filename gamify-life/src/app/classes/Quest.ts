@@ -9,9 +9,11 @@ export class Quest {
 	dueDate: Date | null = null;
 	household: string | null = null;
 	title: string | null = null;
-	objectives: Array<string> | null = null;
+	objectives: Array<string> = new Array<string>();
 	reward: number | null = null;
 	uid: string | null = null;
+
+
 
 	constructor(d: Quest = {} as Quest) {
 		let {
@@ -25,7 +27,7 @@ export class Quest {
 			dueDate = null,
 			household = null,
 			title = null,
-			objectives = null,
+			objectives = new Array<string>(),
 			reward = null,
 			uid = null
 		} = d

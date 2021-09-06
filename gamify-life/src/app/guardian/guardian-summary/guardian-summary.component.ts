@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
 import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
 import { setHouseholds } from 'src/store/household/household.store';
+declare var UIkit: any;
 
 @Component({
   selector: 'app-guardian-summary',
@@ -17,6 +18,10 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	quests = Array<Quest>();
 	households: Array<Household> = new Array<Household>();
 
+	questToView: Quest = new Quest();
+	questToEdit: Quest = new Quest();
+	questToDelete: Quest = new Quest();
+
 	storeSubscription = new Subscription();
 	questSubscription = new Subscription();
 	householdSubscription = new Subscription();
@@ -26,13 +31,24 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
 			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
-				var questUids = this.quests.map(q => q.uid)
-				this.quests = householdQuests
-				// for (let q of householdQuests) {
-				// 	if (!questUids.includes(q.uid)) {
-				// 		this.quests.push(q)
-				// 	}
-				// }
+				let currentHousehold = householdQuests[0].household
+				let currentQuestUids = this.quests.filter(x => x.household === currentHousehold).map(x => x.uid)
+				let newQuestUids = householdQuests.map(x => x.uid)
+
+				for (let q of householdQuests) {
+					if (!currentQuestUids.includes(q.uid)) {
+						this.quests.push(q)
+					}
+				}
+
+				this.quests = this.quests.filter(x => {
+					// Skip the quest if it isn't from this households batch
+					// If it is in this households batch check it came down from the db
+					return x.household === currentHousehold ?
+						newQuestUids.includes(x.uid) :
+						true
+
+				})
 			})
 			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
 				this.households = x
@@ -47,20 +63,26 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 		this.householdSubscription.unsubscribe()
 	}
 
-	getUnclaimedQuests(list: any) {
-		const quests = Object.values(list)
-		return quests.filter((x: any) => x.assignee === null)
+	getUnclaimedQuests(list: Array<Quest>) {
+		return list.filter((x: any) => x.assignee === null)
+	}
+
+	getClaimedQuests(list: Array<Quest>) {
+		return list.filter(x => x.assignee !== null && x.dateCompleted === null)
 	}
 
 	viewQuest(quest: Quest) {
-
+		this.questToView = quest
+		UIkit.modal('#viewQuest').show()
 	}
 
 	editQuest(quest: Quest) {
+		console.warn('editting quest', quest)
 
 	}
 
 	deleteQuest(quest: Quest) {
+		console.warn('deleting quest', quest)
 
 	}
 }

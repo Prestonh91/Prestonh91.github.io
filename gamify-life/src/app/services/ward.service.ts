@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { mergeMap, take, toArray } from 'rxjs/operators';
 import { AppState } from 'src/store/app.state';
 import { setWard } from 'src/store/ward/ward.store';
 import { Ward } from '../classes';
@@ -33,5 +34,15 @@ export class WardService {
 				this.store.dispatch(setWard({ ward: ward }))
 			}
 		})
+	}
+
+	getListOfWards(wards: Array<string>) {
+		return from(wards).pipe(
+			mergeMap(x => {
+				return this.getWardObservable(x)
+			}),
+			take(wards.length),
+			toArray()
+		)
 	}
 }

@@ -40,9 +40,9 @@ export const getHouseholds = createSelector(
 	(households: ReadonlyArray<Household>) => households,
 )
 
-export const getHousehold = (qUid: string) => {
+export const getHousehold = (hUid: string) => {
 	return createSelector(
 		getHouseholds,
-		(households: ReadonlyArray<Household>) => households.find(x => x.uid === qUid)
+		(households: ReadonlyArray<Household>) => households.find(x => x.uid === hUid)
 	)
 }

@@ -1,11 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
+import { from, Subscription } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { Guardian, Household, Quest } from 'src/app/classes';
 import { QuestService } from 'src/app/services/quest.service';
+import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
-import { getHouseholds } from 'src/store/household/household.store';
+import { getHousehold, getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
@@ -13,23 +16,57 @@ declare var UIkit: any;
   templateUrl: './create-quest.component.html',
   styleUrls: ['./create-quest.component.scss']
 })
-export class CreateQuestComponent implements OnInit {
+export class CreateQuestComponent implements OnInit, OnDestroy {
 	guardian: Guardian = new Guardian();
 	quest = this.newQuest()
 	questHousehold = new FormControl(null, Validators.required)
+	assignee = new FormControl(null)
 	householdOptions: any[] = []
+	assigneeOptions: any[] = []
 
-  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>) {}
+	householdSubscription = new Subscription()
+	questHouseholdSubscription = new Subscription()
+	assigneeSubscription = new Subscription()
+
+  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>, private wardService: WardService) {}
 
 	ngOnInit(): void {
 		this.store.pipe(select(selectGuardian)).subscribe(g => {
 			this.guardian = g
 		})
-		this.store.pipe(select(getHouseholds)).subscribe((x: ReadonlyArray<Household>) => {
+		this.householdSubscription = this.store.pipe(select(getHouseholds)).subscribe((x: ReadonlyArray<Household>) => {
 			this.householdOptions = x.map(y => {
 				return { value: y.uid, display: y.name }
 			})
 		})
+		this.questHouseholdSubscription = this.questHousehold.valueChanges.subscribe((value: any) => {
+			this.assignee.reset()
+			this.assigneeSubscription = this.store.pipe(
+				select(getHousehold(value)),
+				mergeMap((x: Household | undefined) => {
+					if (x) {
+						return this.wardService.getListOfWards(Object.keys(x.wards))
+					}
+
+					return from([])
+				})
+			).subscribe(x => {
+				this.assigneeOptions = x.map((y: any) => {
+					return { value: y.uid, display: y.email}
+				})
+			})
+		})
+		// this.wardService.getHouseholdWardsObservableArray()
+	}
+
+	ngOnDestroy(): void {
+		this.householdSubscription.unsubscribe()
+		this.questHouseholdSubscription.unsubscribe()
+		this.assigneeSubscription.unsubscribe()
+	}
+
+	householdSelected(control: any) {
+		console.warn(control)
 	}
 
 	newQuest() {
@@ -37,7 +74,7 @@ export class CreateQuestComponent implements OnInit {
 			title: ['', Validators.required],
 			description: '',
 			reward: [null, Validators.required],
-			objectives: this.fb.array([ new FormControl('')])
+			objectives: this.fb.array([ new FormControl('')]),
 		})
 	}
 
@@ -59,6 +96,7 @@ export class CreateQuestComponent implements OnInit {
 		newQuest.household = this.questHousehold.value
 		newQuest.objectives = this.quest.get('objectives')?.value?.filter((x: string) => x)
 		newQuest.author = this.guardian.uid
+		newQuest.assignee = this.assignee.value
 
 		this.questService.createNewQuest(newQuest)
 		.then(x => {
@@ -69,6 +107,7 @@ export class CreateQuestComponent implements OnInit {
 
 	resetForm() {
 		this.quest = this.newQuest()
+		this.questHousehold.reset()
 	}
 
 	getObjectives(): FormArray {

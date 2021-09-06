@@ -55,7 +55,7 @@ export class AuthService {
 				this.store.dispatch(setGuardian({ guardian: new Guardian(user) }))
 			}
 
-			return user.val()
+			return user
 		} catch (e) {
 			var apiError = new APIErrorResponse()
 			apiError.setError(e)

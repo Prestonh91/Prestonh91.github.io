@@ -1,0 +1,31 @@
+<section [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">
+	<div class="uk-background-default uk-width-1-1">
+		<div class="uk-modal-header">
+			<div class="uk-flex-between" uk-grid>
+				<h2 class="uk-modal-title uk-heading-large" [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">{{quest.title}}</h2>
+				<h2 class="uk-modal-title uk-heading-large" [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}" *ngIf="household">{{ household.name }}</h2>
+				<h2 class="uk-modal-title uk-heading-large" [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">Reward: {{quest.reward}}</h2>
+			</div>
+		</div>
+		<div class="uk-modal-body uk-height-max-large uk-overflow-auto gl-scrollbar">
+			<div *ngIf="noBodyToDisplay">
+				<p class="gl-text-medium">There is nothing here to display, try adding a description or objectives to your quest!</p>
+			</div>
+			<div *ngIf="quest.description" class="uk-margin-bottom">
+				<p class="gl-text-medium uk-margin-remove">Description</p>
+				<p class="uk-padding uk-padding-remove-vertical uk-margin-remove gl-text-medium">{{ quest.description }}</p>
+			</div>
+			<div *ngIf="quest.objectives.length">
+				<p class="gl-text-medium uk-margin-remove">Objectives</p>
+				<div class="uk-padding uk-padding-remove-vertical">
+					<p class="gl-text-medium uk-margin-remove" *ngFor="let obj of quest.objectives; index as i">{{ i + 1 }}: {{ obj }}</p>
+				</div>
+			</div>
+		</div>
+		<div class="uk-modal-footer">
+			<div class="uk-width-1-1 uk-flex uk-flex-right" uk-grid>
+				<p class="uk-margin-remove uk-modal-close gl-pointer-cursor" type="button">Close</p>
+			</div>
+		</div>
+	</div>
+</section>

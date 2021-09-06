@@ -1,0 +1,12 @@
+@import 'variables';
+
+.gl-table-striped-secondary tbody tr:nth-of-type(odd) {
+    background: $global-color-secondary;
+	color: white !important;
+    // @if(mixin-exists(hook-table-striped)) {@include hook-table-striped();}
+}
+
+.gl-table-striped-tertiary tbody tr:nth-of-type(odd) {
+	background: $global-color-tertiary;
+	color: white !important
+}

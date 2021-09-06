@@ -13,6 +13,10 @@ export class HouseholdService {
 
 	constructor(private fireDb: AngularFireDatabase, private guardianService: GuardianService) { }
 
+	getHouseholdObserver(uid: string) {
+		return this.fireDb.object(this.householdUrl + uid).valueChanges()
+	}
+
 	async getHouseholdValue(uid: string) {
 		return (await this.fireDb.database.ref(this.householdUrl + uid).once('value')).val()
 	}

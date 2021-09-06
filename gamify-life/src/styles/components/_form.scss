@@ -43,3 +43,32 @@ input::-webkit-inner-spin-button {
 input[type=number] {
 	-moz-appearance: textfield;
 }
+
+.gl-label-spacing {
+	// .uk-flex
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+
+	// .uk-flex-wrap
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+
+	// .uk-flex-bottom
+	-webkit-box-align: end;
+	-ms-flex-align: end;
+	align-items: flex-end;
+
+	// .uk-flex-center
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+
+	.gl-form-label {
+		// .uk-width-1-1
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+		max-width: 100%;
+	}
+}
