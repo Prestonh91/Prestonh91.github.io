@@ -17,6 +17,28 @@ $form-label-font-size: 1.0rem !default;
 	font-size: $global-medium-font-size;
 }
 
+.gl-text-input-secondary {
+	border-bottom: 1px $global-color-secondary solid;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	vertical-align: middle;
+	color: $global-color-secondary;
+	padding: 5px 10px;
+	font-size: $global-medium-font-size;
+}
+
+.gl-text-input-tertiary {
+	border-bottom: 1px $global-color-tertiary solid;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	vertical-align: middle;
+	color: $global-color-tertiary;
+	padding: 5px 10px;
+	font-size: $global-medium-font-size;
+}
+
 .gl-text-input:focus {
 	outline: none;
 }

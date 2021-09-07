@@ -27,6 +27,7 @@ import { wardReducer } from 'src/store/ward/ward.store';
 import { AuthModule } from './auth/auth.module';
 import { householdReducer } from 'src/store/household/household.store';
 import { ViewQuestComponent } from './components/modals/view-quest/view-quest.component';
+import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { ViewQuestComponent } from './components/modals/view-quest/view-quest.co
 	CreateQuestComponent,
 	SelectComponent,
 	ViewQuestComponent,
+	EditQuestComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
@@ -61,6 +61,9 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 				this.store.dispatch(setHouseholds({households: x}))
 			})
 		})
+
+		UIkit.util.on('#viewQuest', 'hide', () => { this.questToView = new Quest() })
+		UIkit.util.on('#editQuest', 'hide', () => { this.questToEdit = new Quest() })
 	}
 
 	ngOnDestroy() {
@@ -87,8 +90,8 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	}
 
 	editQuest(quest: Quest) {
-		console.warn('editting quest', quest)
-
+		this.questToEdit = quest
+		UIkit.modal('#editQuest').show()
 	}
 
 	deleteQuest(quest: Quest) {

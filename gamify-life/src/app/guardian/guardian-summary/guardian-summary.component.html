@@ -87,4 +87,5 @@
 
 	<create-quest id="createQuest" uk-modal></create-quest>
 	<view-quest [quest]="questToView" [isUnassigned]="questToView.assignee === null" [isInProgress]="questToView.assignee !== null && questToView.dateCompleted === null" [isComplete]="questToView.dateCompleted !== null" id="viewQuest" uk-modal></view-quest>
+	<edit-quest id="editQuest" uk-modal [quest]="questToEdit" [isUnassigned]="questToEdit.assignee === null" [isInProgress]="questToEdit.assignee !== null && questToEdit.dateCompleted === null" [isComplete]="questToEdit.dateCompleted !== null"></edit-quest>
 </section>

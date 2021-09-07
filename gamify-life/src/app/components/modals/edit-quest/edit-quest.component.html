@@ -1,0 +1,26 @@
+<section [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">
+	<div class="uk-background-default uk-width-1-1" >
+		<div class="uk-modal-header">
+			<h2 class="uk-modal-title" [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">Edit Quest</h2>
+		</div>
+		<div class="uk-modal-body uk-overflow-auto uk-height-max-large gl-scrollbar">
+			<form [formGroup]="mutableQuest">
+				<div class="uk-margin-bottom uk-flex uk-flex-left">
+					<label class="gl-text-medium uk-text-bold" [class]="{ 'uk-form-danger': mutableQuest.get('title')?.touched && mutableQuest.get('title')?.invalid }">Title:</label>
+					<input
+						formControlName="title"
+						class="uk-margin-left uk-width-2-3"
+						[class]="{ 'uk-form-danger': mutableQuest.get('title')?.touched && mutableQuest.get('title')?.invalid, 'gl-text-input': isInProgress, 'gl-text-input-secondary': isComplete, 'gl-text-input-tertiary': isUnassigned}"
+						type="text"
+					>
+				</div>
+			</form>
+		</div>
+		<div class="uk-modal-footer">
+			<div class="uk-flex uk-flex-right uk-flex-middle">
+				<p (click)="closeEdit()" class="uk-margin-remove gl-pointer-cursor">Cancel</p>
+				<button class="uk-margin-left" [class]="{ 'gl-button-tertiary': isUnassigned, 'gl-button-primary': isInProgress }" >Save</button>
+			</div>
+		</div>
+	</div>
+</section>
