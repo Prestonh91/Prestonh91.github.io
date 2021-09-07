@@ -12,10 +12,11 @@ import { AppState } from 'src/store/app.state';
   styleUrls: ['./auth-ward.component.scss']
 })
 export class AuthWardComponent implements OnInit {
-	email = new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)])
+	email = new FormControl('', [Validators.required, Validators.email])
 	password = new FormControl('', Validators.required)
 	verificationPass = new FormControl('', Validators.required)
-	guardianId = new FormControl('', Validators.required)
+	usersName = new FormControl('', Validators.required)
+	householdId = new FormControl('', Validators.required)
 
 	error$ = this.store.pipe(select(getError))
 
@@ -33,9 +34,10 @@ export class AuthWardComponent implements OnInit {
 			this.email.markAsTouched()
 			this.password.markAsTouched()
 			this.verificationPass.markAsTouched()
-			this.guardianId.markAsTouched()
-			if (this.email.valid && this.password.valid && this.verificationPass.valid && this.guardianId.valid) {
-				await this.authService.registerWard(this.email.value, this.password.value, this.guardianId.value)
+			this.householdId.markAsTouched()
+			this.usersName.markAllAsTouched()
+			if (this.email.valid && this.password.valid && this.verificationPass.valid && this.householdId.valid && this.usersName.valid) {
+				await this.authService.registerWard(this.email.value, this.password.value, this.householdId.value, this.usersName.value)
 				this.router.navigate(['ward'])
 			}
 		} else {
@@ -54,13 +56,13 @@ export class AuthWardComponent implements OnInit {
 		this.showCreateAccount = !this.showCreateAccount
 		this.password.setValue('')
 		this.verificationPass.setValue('')
-		this.guardianId.setValue('')
+		this.householdId.setValue('')
 		this.resetEntireForm()
 	}
 
 	resetEntireForm() {
 		this.password.reset()
 		this.verificationPass.reset()
-		this.guardianId.reset()
+		this.householdId.reset()
 	}
 }

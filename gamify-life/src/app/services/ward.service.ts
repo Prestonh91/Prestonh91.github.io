@@ -3,7 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { Store } from '@ngrx/store';
 import { from, Observable } from 'rxjs';
-import { mergeMap, take, toArray } from 'rxjs/operators';
+import { map, mergeMap, take, toArray } from 'rxjs/operators';
 import { AppState } from 'src/store/app.state';
 import { setWard } from 'src/store/ward/ward.store';
 import { Ward } from '../classes';
@@ -24,8 +24,10 @@ export class WardService {
 		return this.fireDb.database.ref(this.wardURL + wUid).once('value')
 	}
 
-	getWardObservable(wUid: string): Observable<unknown> {
-		return this.fireDb.object(this.wardURL + wUid).valueChanges()
+	getWardObservable(wUid: string): Observable<Ward> {
+		return this.fireDb.object(this.wardURL + wUid).valueChanges().pipe(
+			map((x: any) => new Ward(x))
+		)
 	}
 
 	voidSaveWard(ward: Ward, updateStore = false): void {

@@ -40,10 +40,10 @@ export class Ward {
 		this.uid = uid
 	}
 
-	static createNewWard(user: User, hhUid: string): Ward {
+	static createNewWard(user: User, hhUid: string, userName: string): Ward {
 		var newWard: Ward = new Ward()
 		newWard.dateCreated = new Date()
-		newWard.displayName = user.displayName
+		newWard.displayName = user.displayName || userName
 		newWard.email = user.email
 		newWard.emailVerified = user.emailVerified
 		newWard.phoneNumber = user.phoneNumber

@@ -6,8 +6,12 @@
 				<input type="text" [formControl]="email" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger': email.touched && email.invalid }">
 			</div>
 			<div *ngIf="showCreateAccount" class="uk-margin-bottom">
-				<label class="uk-form-label uk-label-stacked uk-text-primary">Guardian's ID</label>
-				<input type="text" [formControl]="guardianId" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger': guardianId.touched && guardianId.invalid }">
+				<label class="uk-form-label uk-label-stacked uk-text-primary">Name</label>
+				<input type="text" [formControl]="usersName" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger': usersName.touched && usersName.invalid }">
+			</div>
+			<div *ngIf="showCreateAccount" class="uk-margin-bottom">
+				<label class="uk-form-label uk-label-stacked uk-text-primary">Household's ID</label>
+				<input type="text" [formControl]="householdId" class="uk-input uk-form-controls" [class]="{ 'uk-form-danger': householdId.touched && householdId.invalid }">
 			</div>
 			<div [ngClass]="showCreateAccount ? 'uk-margin-bottom' : ''">
 				<label class="uk-form-label uk-label-stacked uk-text-primary">Password</label>

@@ -11,6 +11,10 @@
 			<div *ngIf="noBodyToDisplay">
 				<p class="gl-text-medium">There is nothing here to display, try adding a description or objectives to your quest!</p>
 			</div>
+			<div *ngIf="assignee$ | async as assignee" class="uk-margin-bottom">
+				<p class="gl-text-medium uk-margin-remove">Assignee</p>
+				<p class="uk-padding uk-padding-remove-vertical uk-margin-remove gl-text-medium">{{ assignee.displayName }}</p>
+			</div>
 			<div *ngIf="quest.description" class="uk-margin-bottom">
 				<p class="gl-text-medium uk-margin-remove">Description</p>
 				<p class="uk-padding uk-padding-remove-vertical uk-margin-remove gl-text-medium">{{ quest.description }}</p>

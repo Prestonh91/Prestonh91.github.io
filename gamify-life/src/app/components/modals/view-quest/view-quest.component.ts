@@ -1,8 +1,9 @@
 import { HouseholdService } from 'src/app/services/household.service';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Household, Quest } from 'src/app/classes';
+import { Household, Quest, Ward } from 'src/app/classes';
 import { Observable } from 'rxjs';
 import { DataSnapshot } from '@angular/fire/database/interfaces';
+import { WardService } from 'src/app/services/ward.service';
 
 @Component({
   selector: 'view-quest',
@@ -15,8 +16,9 @@ export class ViewQuestComponent implements OnInit, OnChanges {
 	@Input() isInProgress = false
 	@Input() isComplete = false
 	household: Household = new Household()
+	assignee$ = new Observable<Ward>();
 
-	constructor(private hhService: HouseholdService) { }
+	constructor(private hhService: HouseholdService, private wardService: WardService) { }
 
 	ngOnInit(): void {}
 
@@ -30,5 +32,9 @@ export class ViewQuestComponent implements OnInit, OnChanges {
 				if (res.val())
 					this.household = res.val()
 			})
+
+		if (this.quest.assignee) {
+			this.assignee$ = this.wardService.getWardObservable(this.quest.assignee!)
+		}
 	}
 }

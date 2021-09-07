@@ -15,14 +15,15 @@
 				<div class="uk-flex uk-flex-column uk-flex-center uk-text-center uk-margin-bottom">
 					<p class="gl-text-tertiary gl-text-medium"><span class="uk-text-bold">Unclaimed: </span>{{ getUnclaimedQuests(quests).length }}</p>
 					<p class="uk-text-primary gl-text-medium uk-margin-remove"><span class="uk-text-bold">In Progress: </span>{{ getClaimedQuests(quests).length}}</p>
-					<p class="uk-text-secondary gl-text-medium"><span class="uk-text-bold">Complete:</span> 0</p>
+					<p class="uk-text-secondary gl-text-medium"><span class="uk-text-bold">Complete:</span> {{ getCompletedQuests(quests).length }}</p>
 				</div>
 			</div>
 			<div>
-				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default uk-overflow-auto">
 					<h3 class="uk-text-center gl-text-tertiary">Unclaimed</h3>
-					<table class="uk-table uk-table-small gl-table-striped-tertiary gl-text-tertiary">
+					<table class="uk-table uk-table-small gl-table-striped-tertiary gl-text-tertiary table-min-width-550">
 						<tbody>
+							<tr *ngIf="getUnclaimedQuests(quests).length === 0"><td class="uk-text-center">There is nothing here to display until some quests are created!</td></tr>
 							<tr *ngFor="let quest of getUnclaimedQuests(quests)" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
@@ -39,10 +40,11 @@
 					</table>
 				</div>
 
-				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default uk-overflow-auto" style="scroll-padding-right: 20px;">
 					<h3 class="uk-text-center uk-text-primary">In Progress</h3>
-					<table class="uk-table uk-table-small uk-table-striped">
+					<table class="uk-table uk-table-small uk-table-striped table-min-width-550">
 						<tbody>
+							<tr *ngIf="getClaimedQuests(quests).length === 0"><td class="uk-text-center">There is nothing here to display until some quests are taken!</td></tr>
 							<tr *ngFor="let quest of getClaimedQuests(quests)" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
@@ -59,11 +61,12 @@
 					</table>
 				</div>
 
-				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default">
+				<div class="uk-margin-medium-bottom uk-card uk-card-body uk-card-default uk-overflow-auto">
 					<h3 class="uk-text-center uk-text-secondary">Complete</h3>
-					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary">
+					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary table-min-width-550">
 						<tbody>
-							<tr *ngFor="let quest of quests" class="uk-text-center">
+							<tr *ngIf="getCompletedQuests(quests).length === 0"><td class="uk-text-center">There is nothing here to display until some quests are complete!</td></tr>
+							<tr *ngFor="let quest of getCompletedQuests(quests)" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>

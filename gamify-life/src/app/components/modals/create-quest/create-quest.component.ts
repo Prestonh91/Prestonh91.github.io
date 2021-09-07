@@ -52,7 +52,7 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 				})
 			).subscribe(x => {
 				this.assigneeOptions = x.map((y: any) => {
-					return { value: y.uid, display: y.email}
+					return { value: y.uid, display: y.displayName}
 				})
 			})
 		})

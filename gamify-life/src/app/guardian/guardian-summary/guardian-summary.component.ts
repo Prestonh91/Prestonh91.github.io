@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
@@ -26,29 +26,35 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	questSubscription = new Subscription();
 	householdSubscription = new Subscription();
 
-  	constructor(private hhService: HouseholdService ,private questService: QuestService, private store: Store<AppState>) { }
+  	constructor(
+		private hhService: HouseholdService,
+		private questService: QuestService,
+		private store: Store<AppState>) { }
 
 	ngOnInit(): void {
 		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
 			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
 				let currentHousehold = householdQuests[0].household
-				let currentQuestUids = this.quests.filter(x => x.household === currentHousehold).map(x => x.uid)
 				let newQuestUids = householdQuests.map(x => x.uid)
 
 				for (let q of householdQuests) {
-					if (!currentQuestUids.includes(q.uid)) {
+					let qIndex = this.quests.findIndex(x => x.uid === q.uid)
+					if (qIndex > -1) {
+						this.quests.splice(qIndex, 1, q)
+					} else {
 						this.quests.push(q)
 					}
 				}
 
-				this.quests = this.quests.filter(x => {
+				// This is to remove quests that may have been deleted
+				this.quests = new Array(...this.quests.filter(x => {
 					// Skip the quest if it isn't from this households batch
 					// If it is in this households batch check it came down from the db
 					return x.household === currentHousehold ?
 						newQuestUids.includes(x.uid) :
 						true
 
-				})
+				}))
 			})
 			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
 				this.households = x
@@ -69,6 +75,10 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 	getClaimedQuests(list: Array<Quest>) {
 		return list.filter(x => x.assignee !== null && x.dateCompleted === null)
+	}
+
+	getCompletedQuests(list: Array<Quest>) {
+		return list.filter(x => x.assignee !== null && x.dateCompleted !== null)
 	}
 
 	viewQuest(quest: Quest) {

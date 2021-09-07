@@ -64,12 +64,17 @@ export class AuthService {
 		}
 	}
 
-	async registerWard(email: string, password: string, householdId: string) {
+	async registerWard(email: string, password: string, householdId: string, userName: string) {
 		try {
 			// Create the user in the firebase auth
 			var userRes = await this.fireAuth.createUserWithEmailAndPassword(email, password)
 
 			if (userRes.user !== null) {
+				var user = userRes.user
+				user.updateProfile({
+					displayName: userName,
+				})
+
 				// Grab the househod to add the ward to it
 				var household = await this.hhService.getHouseholdValue(householdId)
 
@@ -81,7 +86,7 @@ export class AuthService {
 				}
 
 				// Create the new ward
-				var newUser: Ward = Ward.createNewWard(userRes.user, householdId);
+				var newUser: Ward = Ward.createNewWard(userRes.user, householdId, userName);
 
 				// Save the ward, update the store with the new ward
 				this.wardService.voidSaveWard(newUser, true)
