@@ -15,6 +15,7 @@ import { WardLandingComponent } from './ward/ward-landing/ward-landing.component
 import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-summary.component';
 import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
 import { SelectComponent } from './components/core/select/select.component';
+import { SelectComponentForm } from './components/core/select/gl-select.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
@@ -37,6 +38,7 @@ import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.co
 	GuardianSummaryComponent,
 	CreateQuestComponent,
 	SelectComponent,
+	SelectComponentForm,
 	ViewQuestComponent,
 	EditQuestComponent,
   ],

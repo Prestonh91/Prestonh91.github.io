@@ -37,7 +37,6 @@
 							[control]="questHousehold"
 							[selectPlaceholder]="'Household'"
 							[error]="questHousehold.touched && questHousehold.invalid"
-							(valueSelected)="householdSelected($event)"
 						></gl-select>
 					</div>
 					<div class="uk-width-1-2 uk-width-1-3@m uk-margin-left gl-label-spacing" *ngIf="!!questHousehold.value">

@@ -1,6 +1,11 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Quest } from 'src/app/classes';
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { Household, Quest } from 'src/app/classes';
+import { WardService } from 'src/app/services/ward.service';
+import { AppState } from 'src/store/app.state';
+import { getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
@@ -8,18 +13,55 @@ declare var UIkit: any;
   templateUrl: './edit-quest.component.html',
   styleUrls: ['./edit-quest.component.scss']
 })
-export class EditQuestComponent implements OnInit, OnChanges {
+export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() quest = new Quest()
 	@Input() isUnassigned = false
 	@Input() isInProgress = false
 	@Input() isComplete = false
 	public mutableQuest = this.newQuest()
 
+	public households: ReadonlyArray<Household> = new Array()
+	public hhOptions: any[] = []
+	public assigneeOptions: any[] = []
 
+	private householdSub = new Subscription()
+	private householdChangesSub = new Subscription()
+	private assigneeSub = new Subscription()
 
-	constructor(private fb: FormBuilder) { }
+	constructor(private fb: FormBuilder,
+		private store: Store<AppState>,
+		private wardService: WardService
+	) { }
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this.householdSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
+			this.households = hhs
+			this.hhOptions = hhs.map(hh => {
+				return { value: hh.uid, display: hh.name }
+			})
+		})
+
+		var hhControl = this.mutableQuest.get('household')
+		if (hhControl) {
+			this.householdChangesSub = hhControl.valueChanges.subscribe((x: any) => {
+				this.mutableQuest.get('assignee')?.reset()
+				let household = this.households.find(y => y.uid === x)
+				if (household) {
+					this.assigneeSub = this.wardService.getListOfWards(Object.keys(household.wards)).subscribe(y => {
+						this.assigneeOptions = y.map(x => {
+							return { value: x.uid, display: x.displayName}
+						})
+					})
+				}
+			})
+		}
+	}
+
+	ngOnDestroy(): void {
+		this.householdSub.unsubscribe()
+		this.householdChangesSub.unsubscribe()
+		this.assigneeSub.unsubscribe()
+	}
 
 	ngOnChanges(): void {
 		if (this.quest.uid)
@@ -27,22 +69,29 @@ export class EditQuestComponent implements OnInit, OnChanges {
 	}
 
 	setQuest() {
-		this.resetQuest()
-		this.mutableQuest.get('title')?.setValue(this.quest.title)
-		this.mutableQuest.get('reward')?.setValue(this.quest.reward)
-		this.mutableQuest.get('description')?.setValue(this.quest.description)
-		this.mutableQuest.get('assignee')?.setValue(this.quest.assignee)
-		this.mutableQuest.get('household')?.setValue(this.quest.household)
+		var objControls = []
+		for (let obj of this.quest.objectives) {
+			objControls.push(new FormControl(obj))
+		}
+
+		this.mutableQuest = this.fb.group({
+			title: [this.quest.title, Validators.required],
+			reward: [this.quest.reward, Validators.required ],
+			description: this.quest.description,
+			assignee: this.quest.assignee,
+			household: [this.quest.household, Validators.required],
+			objectives: this.fb.array(objControls)
+		})
 	}
 
 	newQuest() {
 		return this.fb.group({
 			title: ['', Validators.required],
-			description: null,
 			reward: ['', Validators.required],
-			objectives: this.fb.array([ new FormControl('')]),
+			description: null,
 			assignee: null,
-			household: null,
+			household: [null, Validators.required],
+			objectives: this.fb.array([ new FormControl('')]),
 		})
 	}
 

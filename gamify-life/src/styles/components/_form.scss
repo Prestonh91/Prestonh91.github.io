@@ -43,6 +43,14 @@ $form-label-font-size: 1.0rem !default;
 	outline: none;
 }
 
+.gl-text-input-secondary:focus {
+	outline: none;
+}
+
+.gl-text-input-tertiary:focus {
+	outline: none;
+}
+
 .gl-textarea {
 	resize: none;
 	border-radius: $global-radius-large;
@@ -94,3 +102,4 @@ input[type=number] {
 		max-width: 100%;
 	}
 }
+

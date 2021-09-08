@@ -14,6 +14,40 @@
 						type="text"
 					>
 				</div>
+				<div class="uk-margin-bottom uk-flex uk-flex-left">
+					<label class="gl-text-medium uk-text-bold" [class]="{ 'uk-form-danger': mutableQuest.get('reward')?.touched && mutableQuest.get('reward')?.invalid }">Reward</label>
+					<input
+						formControlName="reward"
+						class="uk-margin-left uk-width-1-2"
+						[class]="{ 'uk-form-danger': mutableQuest.get('reward')?.touched && mutableQuest.get('reward')?.invalid, 'gl-text-input': isInProgress, 'gl-text-input-secondary': isComplete, 'gl-text-input-tertiary': isUnassigned }"
+						type="text"
+					>
+				</div>
+				<div class="uk-margin-bottom uk-flex uk-flex-left">
+					<div class="uk-width-1-2 uk-width-1-3@m gl-label-spacing">
+						<label
+							class="gl-text-medium uk-text-bold gl-form-label"
+							[class]="{ 'uk-form-danger': mutableQuest.get('household')?.touched && mutableQuest.get('household')?.invalid }"
+						>Household</label>
+						<gl-select-form
+							class="uk-margin-top uk-width-1-1"
+							[options]="hhOptions"
+							[selectPlaceholder]="'Household'"
+							formControlName="household"
+							[error]="(mutableQuest.get('household')?.touched === true) && (mutableQuest.get('household')?.invalid === true)"
+							[primary]="isInProgress"
+							[secondary]="isComplete"
+							[tertiary]="isUnassigned"
+						></gl-select-form>
+						<!-- <gl-select
+							class="uk-margin-small-top uk-width-1-1"
+							[options]="hhOptions"
+							[control]="household"
+							[selectPlaceholder]="'Household'"
+							[error]="mutableQuest.get('household')?.touched && mutableQuest.get('household')?.invalid"
+						></gl-select> -->
+					</div>
+				</div>
 			</form>
 		</div>
 		<div class="uk-modal-footer">

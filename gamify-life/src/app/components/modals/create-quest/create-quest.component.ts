@@ -27,11 +27,12 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 	householdSubscription = new Subscription()
 	questHouseholdSubscription = new Subscription()
 	assigneeSubscription = new Subscription()
+	guardianSubscription = new Subscription()
 
   	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>, private wardService: WardService) {}
 
 	ngOnInit(): void {
-		this.store.pipe(select(selectGuardian)).subscribe(g => {
+		this.guardianSubscription = this.store.pipe(select(selectGuardian)).subscribe(g => {
 			this.guardian = g
 		})
 		this.householdSubscription = this.store.pipe(select(getHouseholds)).subscribe((x: ReadonlyArray<Household>) => {
@@ -56,17 +57,13 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 				})
 			})
 		})
-		// this.wardService.getHouseholdWardsObservableArray()
 	}
 
 	ngOnDestroy(): void {
 		this.householdSubscription.unsubscribe()
 		this.questHouseholdSubscription.unsubscribe()
 		this.assigneeSubscription.unsubscribe()
-	}
-
-	householdSelected(control: any) {
-		console.warn(control)
+		this.guardianSubscription.unsubscribe()
 	}
 
 	newQuest() {
