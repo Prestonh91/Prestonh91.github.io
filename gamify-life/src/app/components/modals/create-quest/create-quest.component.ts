@@ -46,7 +46,7 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 				select(getHousehold(value)),
 				mergeMap((x: Household | undefined) => {
 					if (x) {
-						return this.wardService.getListOfWards(Object.keys(x.wards))
+						return this.wardService.getListOfWardsObservable(Object.keys(x.wards))
 					}
 
 					return from([])

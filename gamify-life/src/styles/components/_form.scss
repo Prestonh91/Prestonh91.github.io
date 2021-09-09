@@ -60,8 +60,26 @@ $form-label-font-size: 1.0rem !default;
 	color: $global-color;
 }
 
-.gl-textarea:focus {
+.gl-textarea:focus, .gl-textarea-secondary:focus, .gl-textarea-tertiary:focus {
 	outline: none;
+}
+
+.gl-textarea-secondary {
+	resize: none;
+	border-radius: $global-radius-large;
+	border: 1px $global-color-secondary solid;
+	padding: $global-tiny-margin $global-margin;
+	font-size: $global-medium-font-size;
+	color: $global-color-secondary;
+}
+
+.gl-textarea-tertiary {
+	resize: none;
+	border-radius: $global-radius-large;
+	border: 1px $global-color-tertiary solid;
+	padding: $global-tiny-margin $global-margin;
+	font-size: $global-medium-font-size;
+	color: $global-color-tertiary;
 }
 
 input::-webkit-outer-spin-button,

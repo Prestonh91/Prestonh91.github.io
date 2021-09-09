@@ -39,13 +39,53 @@
 							[secondary]="isComplete"
 							[tertiary]="isUnassigned"
 						></gl-select-form>
-						<!-- <gl-select
-							class="uk-margin-small-top uk-width-1-1"
-							[options]="hhOptions"
-							[control]="household"
-							[selectPlaceholder]="'Household'"
-							[error]="mutableQuest.get('household')?.touched && mutableQuest.get('household')?.invalid"
-						></gl-select> -->
+					</div>
+					<div *ngIf="mutableQuest.get('household')?.value" class="uk-margin-left">
+						<label
+							class="gl-text-medium uk-text-bold gl-form-label"
+							[class]="{ 'uk-form-danger': mutableQuest.get('assignee')?.touched && mutableQuest.get('assignee')?.invalid }"
+						>Assign to ward (optional):</label>
+						<gl-select-form
+							class="uk-margin-top uk-width-1-1"
+							[options]="assigneeOptions"
+							[selectPlaceholder]="'Ward'"
+							formControlName="assignee"
+							[error]="(mutableQuest.get('assignee')?.touched === true) && (mutableQuest.get('assignee')?.invalid === true)"
+							[primary]="isInProgress"
+							[secondary]="isComplete"
+							[tertiary]="isUnassigned"
+						></gl-select-form>
+					</div>
+				</div>
+				<div class="uk-width-1-1 uk-flex uk-flex-no-wrap uk-flex-left">
+					<label
+						class="gl-text-medium uk-text-bold gl-form-label"
+						[class]="{ 'uk-form-danger': mutableQuest.get('description')?.touched && mutableQuest.get('description')?.invalid }"
+					>Description</label>
+					<textarea
+						formControlName="description"
+						class="uk-margin-left uk-width-expand"
+						[class]="{ 'uk-form-danger': mutableQuest.get('description')?.touched && mutableQuest.get('description')?.invalid, 'gl-textarea-tertiary': isUnassigned, 'gl-textarea': isInProgress, 'gl-textarea-secondary': isComplete }"
+						rows="6"
+					></textarea>
+				</div>
+				<div formArrayName="objectives">
+					<label class="gl-text-medium uk-text-bold gl-form-label">Objectives</label>
+					<div
+						*ngFor="let obj of objectives.controls; index as i"
+						class="uk-grid-small uk-flex-bottom uk-margin-top"
+						uk-grid
+					>
+						<div class="uk-width-2-3">
+							<input
+								[formControlName]="i"
+								type="text"
+								[class]="{ 'gl-text-input': isInProgress, 'gl-text-input-secondary': isComplete, 'gl-text-input-tertiary': isUnassigned}"
+								class="uk-width-1-1"
+							>
+						</div>
+						<div><span *ngIf="objectives.controls.length > 1" (click)="removeObjective(i)" class="gl-pointer-cursor uk-text-danger" uk-icon="minus-circle"></span></div>
+						<div><span *ngIf="objectives.controls.length === (i + 1)" (click)="addObjective()" class="gl-pointer-cursor" uk-icon="plus-circle"></span></div>
 					</div>
 				</div>
 			</form>

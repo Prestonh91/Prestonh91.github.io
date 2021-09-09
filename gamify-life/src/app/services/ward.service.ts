@@ -38,7 +38,7 @@ export class WardService {
 		})
 	}
 
-	getListOfWards(wards: Array<string>) {
+	getListOfWardsObservable(wards: Array<string>) {
 		return from(wards).pipe(
 			mergeMap(x => {
 				return this.getWardObservable(x)
@@ -46,5 +46,17 @@ export class WardService {
 			take(wards.length),
 			toArray()
 		)
+	}
+
+	async getListOfWardsValue(wards: Array<string>) {
+		let wardsValue: Array<Ward> = []
+
+		for (let w of wards) {
+			let ward = await this.getWardValue(w)
+			if (ward)
+				wardsValue.push(ward)
+		}
+
+		return wardsValue
 	}
 }

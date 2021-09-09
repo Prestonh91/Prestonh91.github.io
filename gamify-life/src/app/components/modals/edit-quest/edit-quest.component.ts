@@ -28,6 +28,10 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	private householdChangesSub = new Subscription()
 	private assigneeSub = new Subscription()
 
+	public get objectives(): FormArray {
+		return this.mutableQuest.get('objectives') as FormArray
+	}
+
 	constructor(private fb: FormBuilder,
 		private store: Store<AppState>,
 		private wardService: WardService
@@ -47,7 +51,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 				this.mutableQuest.get('assignee')?.reset()
 				let household = this.households.find(y => y.uid === x)
 				if (household) {
-					this.assigneeSub = this.wardService.getListOfWards(Object.keys(household.wards)).subscribe(y => {
+					this.assigneeSub = this.wardService.getListOfWardsObservable(Object.keys(household.wards)).subscribe(y => {
 						this.assigneeOptions = y.map(x => {
 							return { value: x.uid, display: x.displayName}
 						})
@@ -64,14 +68,30 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	}
 
 	ngOnChanges(): void {
-		if (this.quest.uid)
+		if (this.quest.uid) {
 			this.setQuest()
+			this.initAssigneeOptions(this.households)
+		}
+	}
+
+	async initAssigneeOptions(households: ReadonlyArray<Household>) {
+		if (this.quest.household) {
+			let currentHousehold = households.find(x => x.uid === this.quest.household)
+			let wards = await this.wardService.getListOfWardsValue(Object.keys(currentHousehold?.wards!))
+			this.assigneeOptions = wards.map(x => {
+				return { value: x.uid, display: x.displayName }
+			})
+		}
 	}
 
 	setQuest() {
 		var objControls = []
 		for (let obj of this.quest.objectives) {
 			objControls.push(new FormControl(obj))
+		}
+
+		if (objControls.length === 0) {
+			objControls.push(new FormControl(''))
 		}
 
 		this.mutableQuest = this.fb.group({
@@ -103,4 +123,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 		this.resetQuest()
 		var modal = UIkit.modal('#editQuest').hide()
 	}
+
+	addObjective() {}
+	removeObjective(index: any) { console.warn(index)}
 }
