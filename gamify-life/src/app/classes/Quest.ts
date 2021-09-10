@@ -50,10 +50,15 @@ export class Quest {
 	prepareForSave(): any {
 		return {
 			...this,
+			objectives: this.cleanUpObjectives(),
 			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),
 			dateCompleted: this.dateCompleted ? this.dateCompleted.toISOString() : null,
 			dateUpdated: new Date().toISOString(),
 			dueDate: this.dueDate ? this.dueDate.toISOString() : null
 		}
+	}
+
+	cleanUpObjectives(): Array<string> | null {
+		return this.objectives.some(x => x) ? this.objectives : null
 	}
 }

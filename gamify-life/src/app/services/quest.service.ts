@@ -7,6 +7,7 @@ import { Quest, Household } from 'src/app/classes';
 import { AppState } from 'src/store/app.state';
 import { getHousehold, getHouseholds, setHousehold } from 'src/store/household/household.store';
 import { HouseholdService } from './household.service';
+import { WardService } from './ward.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +15,31 @@ import { HouseholdService } from './household.service';
 export class QuestService {
 	private questUrl: string = 'quests/'
 
-	constructor(private fireDB: AngularFireDatabase, private store: Store<AppState>, private hhService: HouseholdService) { }
+	constructor(private fireDB: AngularFireDatabase,
+		private store: Store<AppState>,
+		private hhService: HouseholdService,
+		private wardervice: WardService) { }
 
-	private getQuestHousholdUrl(hhUid: string) {
-		return `${this.questUrl}/${hhUid}`
+	private getHouseholdQuestContainer(hhUid: string) {
+		return `${this.questUrl}${hhUid}`
+	}
+
+	private getExistingQuestUrl(quest: Quest) {
+		return `${this.questUrl}${quest.household}/${quest.uid}`
+	}
+
+	voidSaveQuest(quest: Quest) {
+		this.fireDB.object(this.getExistingQuestUrl(quest)).set(quest.prepareForSave())
+	}
+
+	voidUpdateQuest(quest: Quest, updates: any) {
+		updates["dateUpdated"] = new Date().toISOString()
+		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
 	}
 
 	createNewQuest(quest: Quest) {
 		// Get a new key for the quests
-		var questDbRef = this.fireDB.database.ref(this.getQuestHousholdUrl(quest.household!)).push()
+		var questDbRef = this.fireDB.database.ref(this.getHouseholdQuestContainer(quest.household!)).push()
 
 		// Put the new key on the new quest
 		quest.uid = questDbRef.key
@@ -46,7 +63,7 @@ export class QuestService {
 
 		// Get a list of household Observers
 		for (var h of Object.keys(households)) {
-			let url = this.getQuestHousholdUrl(h)
+			let url = this.getHouseholdQuestContainer(h)
 			questFetchers.push(this.fireDB.object(url).valueChanges())
 		}
 
@@ -66,5 +83,17 @@ export class QuestService {
 				return quests
 			})
 		)
+	}
+
+	updateQuest(quest: Quest) {
+		this.fireDB.object(this.getExistingQuestUrl(quest) ).set(quest.prepareForSave())
+	}
+
+	markQuestAsComplete(quest: Quest) {
+		this.wardervice.awardWardReward(quest)
+
+		var updates: any = {}
+		updates["dateCompleted"] = new Date().toISOString()
+		this.voidUpdateQuest(quest, updates)
 	}
 }

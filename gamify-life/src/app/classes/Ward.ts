@@ -66,6 +66,10 @@ export class Ward {
 		delete this.households[hhUid]
 	}
 
+	public addCredits(reward: number) {
+		this.credits = Number(this.credits) + Number(reward)
+	}
+
 	public prepareUserForSave(): any {
 		return {
 			...this,

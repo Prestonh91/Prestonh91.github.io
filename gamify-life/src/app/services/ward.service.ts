@@ -6,7 +6,7 @@ import { from, Observable } from 'rxjs';
 import { map, mergeMap, take, toArray } from 'rxjs/operators';
 import { AppState } from 'src/store/app.state';
 import { setWard } from 'src/store/ward/ward.store';
-import { Ward } from '../classes';
+import { Quest, Ward } from '../classes';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,12 @@ export class WardService {
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
 	async getWardValue(wUid: string): Promise<Ward | null> {
-		return (await this.fireDb.database.ref(this.wardURL + wUid).once('value')).val()
+		var response = (await this.fireDb.database.ref(this.wardURL + wUid).once('value')).val()
+
+		if (response)
+			return new Ward(response)
+
+		return null
 	}
 
 	getWardPromise(wUid: string): Promise<DataSnapshot> {
@@ -58,5 +63,15 @@ export class WardService {
 		}
 
 		return wardsValue
+	}
+
+	async awardWardReward(quest: Quest) {
+		let ward = await this.getWardValue(quest.assignee!)
+
+		if (ward) {
+			let reward: number = quest.reward ? quest.reward : 0
+			ward.addCredits(reward)
+			this.voidSaveWard(ward)
+		}
 	}
 }

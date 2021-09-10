@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
+import { QuestService } from 'src/app/services/quest.service';
 import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
 import { getHouseholds } from 'src/store/household/household.store';
@@ -34,7 +35,8 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	constructor(private fb: FormBuilder,
 		private store: Store<AppState>,
-		private wardService: WardService
+		private wardService: WardService,
+		private questService: QuestService
 	) { }
 
 	ngOnInit(): void {
@@ -121,9 +123,38 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	closeEdit() {
 		this.resetQuest()
-		var modal = UIkit.modal('#editQuest').hide()
+		UIkit.modal('#editQuest').hide()
 	}
 
-	addObjective() {}
-	removeObjective(index: any) { console.warn(index)}
+	saveChanges() {
+		let title = this.mutableQuest.get('title')
+		let reward = this.mutableQuest.get('reward')
+		let household = this.mutableQuest.get('household')
+
+		title?.markAsTouched()
+		reward?.markAsTouched()
+		household?.markAsTouched()
+
+		if (!title?.invalid && !reward?.invalid && !household?.invalid) {
+			var edittedQuest = new Quest(this.quest)
+			edittedQuest.title = title?.value
+			edittedQuest.reward = reward?.value
+			edittedQuest.household = this.mutableQuest.get('household')?.value,
+			edittedQuest.assignee = this.mutableQuest.get('assignee')?.value,
+			edittedQuest.description = this.mutableQuest.get('description')?.value,
+			edittedQuest.objectives = this.mutableQuest.get('objectives')?.value
+
+			this.questService.updateQuest(edittedQuest)
+
+			this.closeEdit()
+		}
+	}
+
+	markQuestAsCompleted() {
+		this.questService.markQuestAsComplete(this.quest)
+		this.closeEdit()
+	}
+
+	addObjective() { this.objectives.push(new FormControl()) }
+	removeObjective(index: any) { this.objectives.removeAt(index) }
 }
