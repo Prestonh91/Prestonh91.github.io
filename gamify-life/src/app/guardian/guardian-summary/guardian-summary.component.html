@@ -86,6 +86,6 @@
 	</div>
 
 	<create-quest id="createQuest" uk-modal></create-quest>
-	<view-quest [quest]="questToView" id="viewQuest" uk-modal></view-quest>
+	<view-quest id="viewQuest" uk-modal [quest]="questToView"></view-quest>
 	<edit-quest id="editQuest" uk-modal [quest]="questToEdit"></edit-quest>
 </section>

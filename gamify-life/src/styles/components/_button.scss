@@ -3,7 +3,7 @@
 .gl-button-primary {
 	background-color: $global-color-primary;
 	border-radius: $global-radius-medium;
-	color: $global-emphasis-color;
+	color: white;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -21,7 +21,7 @@
 .gl-button-secondary {
 	background-color: $global-color-secondary;
 	border-radius: $global-radius-medium;
-	color: $global-inverse-color !important;
+	color: white !important;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -39,7 +39,7 @@
 .gl-button-tertiary {
 	background-color: $global-color-tertiary;
 	border-radius: $global-radius-medium;
-	color: $global-inverse-color !important;
+	color: white !important;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;

@@ -16,6 +16,8 @@ import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-s
 import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
 import { SelectComponent } from './components/core/select/select.component';
 import { SelectComponentForm } from './components/core/select/gl-select.component';
+import { ViewQuestComponent } from './components/modals/view-quest/view-quest.component';
+import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
 
 // Store
 import { StoreModule } from '@ngrx/store';
@@ -27,8 +29,6 @@ import { wardReducer } from 'src/store/ward/ward.store';
 // Feature Modules
 import { AuthModule } from './auth/auth.module';
 import { householdReducer } from 'src/store/household/household.store';
-import { ViewQuestComponent } from './components/modals/view-quest/view-quest.component';
-import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
 
 @NgModule({
   declarations: [

@@ -95,9 +95,11 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	}
 
 	deleteQuest(quest: Quest) {
-		let questHH = this.households.find(x => x.uid === quest.household)
-		if (questHH) {
-			this.questService.deleteQuest(quest, questHH)
-		}
+		UIkit.modal.confirm("Are you sure? Deleting this quest is irreversible.").then(() => {
+			let questHH = this.households.find(x => x.uid === quest.household)
+			if (questHH) {
+				this.questService.deleteQuest(quest, questHH)
+			}
+		}, () => {})
 	}
 }
