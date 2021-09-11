@@ -95,7 +95,9 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	}
 
 	deleteQuest(quest: Quest) {
-		console.warn('deleting quest', quest)
-
+		let questHH = this.households.find(x => x.uid === quest.household)
+		if (questHH) {
+			this.questService.deleteQuest(quest, questHH)
+		}
 	}
 }

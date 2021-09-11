@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { forkJoin, from, of } from 'rxjs';
 import { combineAll, exhaust, exhaustMap, map, mergeAll, take, tap, toArray } from 'rxjs/operators';
-import { Guardian, Household } from 'src/app/classes';
+import { Guardian, Household, Quest } from 'src/app/classes';
 import { GuardianService } from './guardian.service';
 
 @Injectable({
@@ -10,6 +10,15 @@ import { GuardianService } from './guardian.service';
 })
 export class HouseholdService {
 	private readonly householdUrl = 'households/'
+
+	private getHHUrl(hh: Household): string {
+		return this.householdUrl + hh.uid!
+	}
+
+	private updateHousehold(hh: Household, updates: any) {
+		updates["/dateUpdated"] = new Date().toISOString()
+		this.fireDb.object(this.getHHUrl(hh)).update(updates)
+	}
 
 	constructor(private fireDb: AngularFireDatabase, private guardianService: GuardianService) { }
 
@@ -76,5 +85,15 @@ export class HouseholdService {
 		await this.guardianService.voidSaveGuardian(guardian, true)
 		await this.voidSaveHousehold(hh);
 		return true
+	}
+
+	removeQuestFromHousehold(quest: Quest, household: Household) {
+		delete household.quests[quest.uid!]
+
+		if (!Object.keys(household.quests).includes(quest.uid!)) {
+			var updates: any = {}
+			updates["/quests"] = household.quests
+			this.updateHousehold(household, updates)
+		}
 	}
 }

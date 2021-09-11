@@ -28,6 +28,10 @@ export class QuestService {
 		return `${this.questUrl}${quest.household}/${quest.uid}`
 	}
 
+	private removeQuest(quest: Quest) {
+		this.fireDB.object(this.getExistingQuestUrl(quest)).remove()
+	}
+
 	voidSaveQuest(quest: Quest) {
 		this.fireDB.object(this.getExistingQuestUrl(quest)).set(quest.prepareForSave())
 	}
@@ -95,5 +99,10 @@ export class QuestService {
 		var updates: any = {}
 		updates["dateCompleted"] = new Date().toISOString()
 		this.voidUpdateQuest(quest, updates)
+	}
+
+	deleteQuest(quest: Quest, household: Household) {
+		this.removeQuest(quest)
+		this.hhService.removeQuestFromHousehold(quest, household)
 	}
 }
