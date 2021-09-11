@@ -14,7 +14,8 @@ $form-label-font-size: 1.0rem !default;
 	vertical-align: middle;
 	color: $global-color;
 	padding: 5px 10px;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 }
 
 .gl-text-input-secondary {
@@ -25,7 +26,8 @@ $form-label-font-size: 1.0rem !default;
 	vertical-align: middle;
 	color: $global-color-secondary;
 	padding: 5px 10px;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 }
 
 .gl-text-input-tertiary {
@@ -36,7 +38,8 @@ $form-label-font-size: 1.0rem !default;
 	vertical-align: middle;
 	color: $global-color-tertiary;
 	padding: 5px 10px;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 }
 
 .gl-text-input:focus {
@@ -56,7 +59,8 @@ $form-label-font-size: 1.0rem !default;
 	border-radius: $global-radius-large;
 	border: 1px $global-color solid;
 	padding: $global-tiny-margin $global-margin;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 	color: $global-color;
 }
 
@@ -69,7 +73,8 @@ $form-label-font-size: 1.0rem !default;
 	border-radius: $global-radius-large;
 	border: 1px $global-color-secondary solid;
 	padding: $global-tiny-margin $global-margin;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 	color: $global-color-secondary;
 }
 
@@ -78,8 +83,30 @@ $form-label-font-size: 1.0rem !default;
 	border-radius: $global-radius-large;
 	border: 1px $global-color-tertiary solid;
 	padding: $global-tiny-margin $global-margin;
-	font-size: $global-medium-font-size;
+	// font-size: $global-medium-font-size;
+	font-size: $global-base-font-size;
 	color: $global-color-tertiary;
+}
+
+.gl-select-primary {
+	select, select:focus {
+		border: 1px solid $global-color-primary;
+		color: $global-color-primary;
+	}
+}
+
+.gl-select-secondary {
+	select, select:focus {
+		border: 1px solid $global-color-secondary;
+		color: $global-color-secondary;
+	}
+}
+
+.gl-select-tertiary {
+	select, select:focus {
+		border: 1px solid $global-color-tertiary;
+		color: $global-color-tertiary;
+	}
 }
 
 input::-webkit-outer-spin-button,

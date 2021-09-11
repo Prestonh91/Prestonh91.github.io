@@ -73,7 +73,7 @@
 								<td class="">
 									<div class="uk-flex uk-flex-right">
 										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)" title="Reuse Quest"></span>
 										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
 									</div>
 								</td>
@@ -86,6 +86,6 @@
 	</div>
 
 	<create-quest id="createQuest" uk-modal></create-quest>
-	<view-quest [quest]="questToView" [isUnassigned]="questToView.assignee === null" [isInProgress]="questToView.assignee !== null && questToView.dateCompleted === null" [isComplete]="questToView.dateCompleted !== null" id="viewQuest" uk-modal></view-quest>
-	<edit-quest id="editQuest" uk-modal [quest]="questToEdit" [isUnassigned]="questToEdit.assignee === null" [isInProgress]="questToEdit.assignee !== null && questToEdit.dateCompleted === null" [isComplete]="questToEdit.dateCompleted !== null"></edit-quest>
+	<view-quest [quest]="questToView" id="viewQuest" uk-modal></view-quest>
+	<edit-quest id="editQuest" uk-modal [quest]="questToEdit"></edit-quest>
 </section>

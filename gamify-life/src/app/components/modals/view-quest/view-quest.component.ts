@@ -12,11 +12,16 @@ import { WardService } from 'src/app/services/ward.service';
 })
 export class ViewQuestComponent implements OnInit, OnChanges {
 	@Input() quest = new Quest()
-	@Input() isUnassigned = false
-	@Input() isInProgress = false
-	@Input() isComplete = false
 	household: Household = new Household()
 	assignee$ = new Observable<Ward>();
+
+	public get isUnassigned() { return this.quest.assignee === null }
+	public get isInProgress() { return this.quest.assignee && this.quest.dateCompleted === null }
+	public get isComplete() { return this.quest.assignee && this.quest.dateCompleted }
+
+	public get completionDate(): string {
+		return this.isComplete && this.quest.dateCompleted ? this.quest.dateCompleted.toLocaleDateString('en-US', { weekday: "short", month: "short", day: "2-digit" }) : ""
+	}
 
 	constructor(private hhService: HouseholdService, private wardService: WardService) { }
 

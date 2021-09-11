@@ -47,6 +47,7 @@ $global-2xlarge-font-size:                       2.625rem !default; // 42px
 $global-xlarge-font-size:                        2rem !default;     // 32px
 $global-large-font-size:                         1.5rem !default;   // 24px
 $global-medium-font-size:                        1.25rem !default;  // 20px
+$global-base-font-size:							 1.05rem !default;
 $global-small-font-size:                         0.875rem !default; // 14px
 
 //
@@ -55,9 +56,9 @@ $global-small-font-size:                         0.875rem !default; // 14px
 
 $global-color-primary: #623bb3;
 $color2: #ffffff;
-$global-color-secondary: #8CB43C;
-$global-color-tertiary: #B43C50;
-$global-color-quaternary: #3CB4A0;
+$global-color-secondary: #3CB4A0;
+$global-color-tertiary: #e9890c;
+$global-color-quaternary: #8CB43C;
 
 $global-color:                                   $global-color-primary !default;
 $global-emphasis-color:                          #fff !default;
