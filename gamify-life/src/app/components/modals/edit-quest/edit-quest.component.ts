@@ -163,7 +163,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 			edittedQuest.description = this.mutableQuest.get('description')?.value,
 			edittedQuest.objectives = this.mutableQuest.get('objectives')?.value
 
-			this.questService.updateQuest(edittedQuest)
+			this.questService.voidSaveQuest(edittedQuest)
 
 			this.closeEdit()
 		}

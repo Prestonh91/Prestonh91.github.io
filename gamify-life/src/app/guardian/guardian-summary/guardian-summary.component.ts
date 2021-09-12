@@ -102,4 +102,12 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 			}
 		}, () => {})
 	}
+
+	reuseQuest(quest: Quest) {
+		this.questService.reuseQuest(quest)
+	}
+
+	reassignQuest(quest: Quest) {
+		this.questService.removeQuestCompletionDate(quest)
+	}
 }

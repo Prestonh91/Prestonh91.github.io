@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { from } from 'rxjs';
-import { filter, map, mergeMap, reduce, take, tap, toArray } from 'rxjs/operators';
+import { filter, map, mergeMap } from 'rxjs/operators';
 import { Quest, Household } from 'src/app/classes';
 import { AppState } from 'src/store/app.state';
-import { getHousehold, getHouseholds, setHousehold } from 'src/store/household/household.store';
+import { setHousehold } from 'src/store/household/household.store';
 import { HouseholdService } from './household.service';
 import { WardService } from './ward.service';
 
@@ -14,6 +14,11 @@ import { WardService } from './ward.service';
 })
 export class QuestService {
 	private questUrl: string = 'quests/'
+
+	private updateQuest(quest: Quest, updates: any) {
+		updates["/dateUpdated"] = new Date().toISOString()
+		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
+	}
 
 	constructor(private fireDB: AngularFireDatabase,
 		private store: Store<AppState>,
@@ -89,10 +94,6 @@ export class QuestService {
 		)
 	}
 
-	updateQuest(quest: Quest) {
-		this.fireDB.object(this.getExistingQuestUrl(quest) ).set(quest.prepareForSave())
-	}
-
 	markQuestAsComplete(quest: Quest) {
 		this.wardervice.awardWardReward(quest)
 
@@ -104,5 +105,20 @@ export class QuestService {
 	deleteQuest(quest: Quest, household: Household) {
 		this.removeQuest(quest)
 		this.hhService.removeQuestFromHousehold(quest, household)
+	}
+
+	removeQuestCompletionDate(quest: Quest) {
+		var updates: any = {}
+
+		updates["/dateCompleted"] = null
+		this.updateQuest(quest, updates)
+	}
+
+	reuseQuest(quest: Quest) {
+		var updates: any = {}
+
+		updates["/dateCompleted"] = null
+		updates["/assignee"] = null
+		this.updateQuest(quest, updates)
 	}
 }
