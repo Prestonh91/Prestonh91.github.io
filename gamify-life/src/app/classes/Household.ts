@@ -14,6 +14,7 @@ export class Household {
 	public guardians: GObject = {};
 	public wards: GObject = {};
 	public quests: GObject = {};
+	public perks: GObject = {};
 
 	constructor(data: Household = {} as Household) {
 		let {

@@ -9,16 +9,6 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-// Declarations
-import { GuardianLayoutComponent } from './guardian/guardian-layout/guardian-layout.component';
-import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
-import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-summary.component';
-import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
-import { SelectComponent } from './components/core/select/select.component';
-import { SelectComponentForm } from './components/core/select/gl-select.component';
-import { ViewQuestComponent } from './components/modals/view-quest/view-quest.component';
-import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
-
 // Store
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -29,6 +19,18 @@ import { wardReducer } from 'src/store/ward/ward.store';
 // Feature Modules
 import { AuthModule } from './auth/auth.module';
 import { householdReducer } from 'src/store/household/household.store';
+
+// Declarations
+import { GuardianLayoutComponent } from './guardian/guardian-layout/guardian-layout.component';
+import { WardLandingComponent } from './ward/ward-landing/ward-landing.component';
+import { GuardianSummaryComponent } from './guardian/guardian-summary/guardian-summary.component';
+import { CreateQuestComponent } from './components/modals/create-quest/create-quest.component';
+import { SelectComponent } from './components/core/select/select.component';
+import { SelectComponentForm } from './components/core/select/gl-select.component';
+import { ViewQuestComponent } from './components/modals/view-quest/view-quest.component';
+import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
+import { GuardianPerksComponent } from './guardian/guardian-perks/guardian-perks.component';
+import { CreatePerkComponent } from './components/modals/create-perk/create-perk.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { householdReducer } from 'src/store/household/household.store';
 	SelectComponentForm,
 	ViewQuestComponent,
 	EditQuestComponent,
+	GuardianPerksComponent,
+	CreatePerkComponent,
   ],
   imports: [
     BrowserModule,
