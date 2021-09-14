@@ -25,15 +25,51 @@
 						(keydown.arrowdown)="(false)"
 					>
 				</div>
+				<div class="uk-margin-bottom" uk-grid>
+					<div class="uk-width-1-2 uk-width-1-4@m">
+						<p
+							class="uk-text-bold uk-margin-remove"
+							[class]="{ 'uk-form-danger': perk.get('household')?.touched && perk.get('household')?.invalid }"
+						>Household:</p>
+						<gl-select-form
+							class="gl-margin-tiny-top gl-select-primary uk-width-1-1"
+							[options]="hhOptions"
+							[selectPlaceholder]="'Household'"
+							formControlName="household"
+							[error]="(perk.get('household')?.touched === true) && (perk.get('household')?.invalid === true)"
+						></gl-select-form>
+					</div>
+					<div class="uk-width-1-2 uk-width-1-4@m uk-flex uk-flex-column uk-flex-between">
+						<p
+							class="uk-text-bold uk-margin-remove"
+							[class]="{ 'uk-form-danger': perk.get('durability')?.touched && perk.get('durability')?.invalid }"
+						>Quantity</p>
+						<input
+							formControlName="durability"
+							class="gl-text-input"
+							[class]="{ 'uk-form-danger': perk.get('durability')?.touched && perk.get('durability')?.invalid }"
+							type="number"
+							(keydown.arrowup)="(false)"
+							(keydown.arrowdown)="(false)"
+						>
+					</div>
+					<div class="uk-flex uk-flex-column uk-flex-middle">
+						<p class="uk-margin-remove uk-text-bold">Unlimited Uses?</p>
+						<input
+							formControlName="hasUnlimited"
+							class="uk-checkbox uk-margin-small-top"
+							type="checkbox"
+						>
+					</div>
+				</div>
 				<div class="uk-margin-bottom">
-					<span class="uk-text-bold" [class]="{ 'uk-form-danger': perk.get('household')?.touched && perk.get('household')?.invalid }">Household:</span>
-					<gl-select-form
-						class="gl-margin-tiny-top uk-width-1-1"
-						[options]="hhOptions"
-						[selectPlaceholder]="'Household'"
-						formControlName="household"
-						[error]="(perk.get('household')?.touched === true) && (perk.get('household')?.invalid === true)"
-					></gl-select-form>
+					<span class="uk-text-bold uk-text-top">Description</span>
+					<textarea
+						formControlName="description"
+						class="gl-textarea uk-margin-left uk-width-2-3"
+						[class]="{ 'uk-form-danger': perk.get('description')?.touched && perk.get('description')?.invalid }"
+						rows="6"
+					></textarea>
 				</div>
 			</form>
 		</div>

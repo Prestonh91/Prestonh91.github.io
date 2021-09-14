@@ -24,10 +24,8 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 	storeSubscription = new Subscription();
 	questSubscription = new Subscription();
-	householdSubscription = new Subscription();
 
   	constructor(
-		private hhService: HouseholdService,
 		private questService: QuestService,
 		private store: Store<AppState>) { }
 
@@ -56,10 +54,6 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 				}))
 			})
-			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
-				this.households = x
-				this.store.dispatch(setHouseholds({households: x}))
-			})
 		})
 
 		UIkit.util.on('#viewQuest', 'hide', () => { this.questToView = new Quest() })
@@ -69,7 +63,6 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.storeSubscription.unsubscribe()
 		this.questSubscription.unsubscribe()
-		this.householdSubscription.unsubscribe()
 	}
 
 	getUnclaimedQuests(list: Array<Quest>) {

@@ -16,6 +16,4 @@ export class GuardianPerksComponent implements OnInit {
 	addNewPerk() {
 		UIkit.modal('#createPerk').show()
 	}
-
-
 }
