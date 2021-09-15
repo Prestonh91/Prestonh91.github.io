@@ -1,14 +1,18 @@
-<header class="uk-background-primary uk-padding-small">
-	<h2 class="uk-heading-medium gl-text-white">Gamify Life!</h2>
-	<p class="uk-text-large gl-text-white">Change the way you think about life.</p>
-</header>
-<router-outlet></router-outlet>
+<div class="uk-flex uk-flex-column" uk-height-viewport>
+	<header class="uk-background-primary uk-padding-small">
+		<h2 class="uk-heading-medium gl-text-white">Gamify Life!</h2>
+		<p class="uk-text-large gl-text-white">Change the way you think about life.</p>
+	</header>
+	<div class="uk-background-muted uk-flex-1">
+		<router-outlet></router-outlet>
+	</div>
+</div>
 <footer class="footer-nav uk-width-1-1 uk-margin-auto">
 	<nav class="uk-width-5-6 uk-margin-auto uk-background-primary gl-padding-tiny" uk-navbar>
 		<div class="uk-nav-left">
 			<ul class="uk-navbar-nav">
-				<li><a [routerLink]="['/guardian/summary']" class="gl-text-white link-min-height">Summary</a></li>
-				<li><a [routerLink]="['/guardian/perks']" class=" gl-text-white link-min-height">Perks</a></li>
+				<li><a routerLink="/guardian/summary" routerLinkActive="gl-active" class="gl-text-white link-min-height">Summary</a></li>
+				<li><a routerLink="/guardian/perks" routerLinkActive="gl-active" class=" gl-text-white link-min-height">Perks</a></li>
 			</ul>
 		</div>
 		<div class="uk-navbar-right">

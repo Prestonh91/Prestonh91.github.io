@@ -54,7 +54,7 @@ export class QuestService {
 		quest.uid = questDbRef.key
 
 		// Fetch the household to add the new quest to it, save the household, update the store
-		this.hhService.getHousehouldPromise(quest.household!).then(hh => {
+		this.hhService.getHouseholdPromise(quest.household!).then(hh => {
 			if (hh.val()) {
 				let h = new Household(hh.val())
 				h.addQuest(quest.uid!)

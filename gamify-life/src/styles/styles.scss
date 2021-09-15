@@ -39,3 +39,7 @@ body {
 .gl-scrollbar::-webkit-scrollbar-track-piece:start {
 	margin-top: $global-tiny-margin;
 }
+
+input:disabled {
+	background-color: $global-muted-background;
+}

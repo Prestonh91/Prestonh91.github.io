@@ -9,7 +9,7 @@ export class Perk {
 
 	dateCreated: Date;
 	dateUpdated: Date;
-	dateAccepted: Date;
+	dateAccepted: Date | null;
 	uid: string;
 
 	constructor(data: Perk = {} as Perk) {
@@ -22,7 +22,7 @@ export class Perk {
 			household = "",
 			dateCreated = new Date(),
 			dateUpdated = new Date(),
-			dateAccepted = new Date(),
+			dateAccepted = null,
 			uid = ""
 		} = data
 
@@ -38,10 +38,23 @@ export class Perk {
 		this.uid = uid
 	}
 
+	static createNewPerk(data: any): Perk {
+		let perk = new Perk()
+		perk.title = data.title
+		perk.cost = data.cost
+		perk.household = data.household
+		perk.durability = data.durability
+		perk.hasUnlimited = data.hasUnlimited
+		perk.description = data.description
+		perk.dateCreated = new Date()
+		perk.dateUpdated = new Date()
+		return perk
+	}
+
 	prepareForSave() {
 		return {
 			...this,
-			dateAccepted: this.dateAccepted.toISOString(),
+			dateAccepted: this.dateAccepted ? this.dateAccepted.toISOString() : null,
 			dateCreated: this.dateCreated.toISOString(),
 			dateUpdated: new Date().toISOString(),
 		}

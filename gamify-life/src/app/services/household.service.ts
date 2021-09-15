@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
+import { Store } from '@ngrx/store';
 import { forkJoin, from, of } from 'rxjs';
 import { combineAll, exhaust, exhaustMap, map, mergeAll, take, tap, toArray } from 'rxjs/operators';
 import { Guardian, Household, Quest } from 'src/app/classes';
+import { AppState } from 'src/store/app.state';
+import { setHousehold } from 'src/store/household/household.store';
+import { Perk } from '../classes/Perk';
 import { GuardianService } from './guardian.service';
 
 @Injectable({
@@ -20,7 +24,11 @@ export class HouseholdService {
 		this.fireDb.object(this.getHHUrl(hh)).update(updates)
 	}
 
-	constructor(private fireDb: AngularFireDatabase, private guardianService: GuardianService) { }
+	constructor(
+		private fireDb: AngularFireDatabase,
+		private guardianService: GuardianService,
+		private store: Store<AppState>
+	) { }
 
 	getHouseholdObserver(uid: string) {
 		return this.fireDb.object(this.householdUrl + uid).valueChanges()
@@ -30,7 +38,7 @@ export class HouseholdService {
 		return (await this.fireDb.database.ref(this.householdUrl + uid).once('value')).val()
 	}
 
-	getHousehouldPromise(uid: string) {
+	getHouseholdPromise(uid: string) {
 		return this.fireDb.database.ref(this.householdUrl + uid).once('value')
 	}
 
@@ -95,5 +103,16 @@ export class HouseholdService {
 			updates["/quests"] = household.quests
 			this.updateHousehold(household, updates)
 		}
+	}
+
+	async addPerkToHousehold(perk: Perk) {
+		this.getHouseholdPromise(perk.household).then(res => {
+			if (res.val()) {
+				let hh = new Household(res.val())
+				hh.addPerk(perk.uid)
+				this.voidSaveHousehold(hh)
+				this.store.dispatch(setHousehold({ household: hh }))
+			}
+		})
 	}
 }

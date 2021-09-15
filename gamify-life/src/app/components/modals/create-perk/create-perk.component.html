@@ -42,28 +42,38 @@
 					<div class="uk-width-1-2 uk-width-1-4@m uk-flex uk-flex-column uk-flex-between">
 						<p
 							class="uk-text-bold uk-margin-remove"
-							[class]="{ 'uk-form-danger': perk.get('durability')?.touched && perk.get('durability')?.invalid }"
+							[class]="{ 'uk-form-danger': durabilityHasError }"
 						>Quantity</p>
 						<input
 							formControlName="durability"
 							class="gl-text-input"
-							[class]="{ 'uk-form-danger': perk.get('durability')?.touched && perk.get('durability')?.invalid }"
+							[class]="{ 'uk-form-danger': durabilityHasError }"
 							type="number"
 							(keydown.arrowup)="(false)"
 							(keydown.arrowdown)="(false)"
+							[attr.disabled]="isDurabilityDisabled ? true : null"
+							(input)="handleDurabilityInput()"
 						>
 					</div>
 					<div class="uk-flex uk-flex-column uk-flex-middle">
-						<p class="uk-margin-remove uk-text-bold">Unlimited Uses?</p>
+						<p
+							class="uk-margin-remove uk-text-bold"
+							[class]="{ 'uk-form-danger': hasUnlimitedHasError }"
+						>Unlimited Uses?</p>
 						<input
 							formControlName="hasUnlimited"
 							class="uk-checkbox uk-margin-small-top"
+							[class]="{ 'uk-form-danger': hasUnlimitedHasError }"
 							type="checkbox"
+							(change)="handleCheckUnlimited()"
 						>
 					</div>
 				</div>
 				<div class="uk-margin-bottom">
-					<span class="uk-text-bold uk-text-top">Description</span>
+					<span
+						class="uk-text-bold uk-text-top"
+						[class]="{ 'uk-form-danger': perk.get('description')?.touched && perk.get('description')?.invalid }"
+					>Description</span>
 					<textarea
 						formControlName="description"
 						class="gl-textarea uk-margin-left uk-width-2-3"
@@ -76,7 +86,7 @@
 		<div class="uk-modal-footer">
 			<div class="uk-flex uk-flex-right uk-flex-middle">
 				<p (click)="resetForm()" class="uk-margin-remove uk-modal-close gl-pointer-cursor" type="button">Cancel</p>
-				<button class="gl-button-primary uk-margin-left">Save Perk</button>
+				<button (click)="createPerk()" class="gl-button-primary uk-margin-left">Save Perk</button>
 			</div>
 		</div>
 	</div>

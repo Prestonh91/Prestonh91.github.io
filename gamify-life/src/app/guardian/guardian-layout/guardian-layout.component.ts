@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { Guardian } from 'src/app/classes/Guardian';
@@ -18,7 +19,10 @@ export class GuardianLayoutComponent implements OnInit {
 	storeSS = new Subscription();
 	hhSS = new Subscription();
 
-	constructor(public store: Store<AppState>, private hhService: HouseholdService) { }
+	constructor(
+		public store: Store<AppState>,
+		private hhService: HouseholdService
+	) { }
 
 	ngOnInit() {
 		this.storeSS = this.store.pipe(select(selectGuardian)).subscribe((guardian: Readonly<Guardian>) => {

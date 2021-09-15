@@ -77,6 +77,18 @@ export class Household {
 		delete this.wards[wardUid]
 	}
 
+	public addPerk(perkUid: string) {
+		let tempP = {
+			...this.perks
+		}
+		tempP[perkUid] = true
+		this.perks = tempP
+	}
+
+	public removePerk(perkUid: string) {
+		delete this.perks[perkUid]
+	}
+
 	public prepareHouseholdForSave() {
 		return {
 			...this,

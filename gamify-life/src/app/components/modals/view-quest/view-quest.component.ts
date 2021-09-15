@@ -33,7 +33,7 @@ export class ViewQuestComponent implements OnInit, OnChanges {
 
 	ngOnChanges() {
 		if (this.quest.household !== null)
-			this.hhService.getHousehouldPromise(this.quest.household).then((res: DataSnapshot) => {
+			this.hhService.getHouseholdPromise(this.quest.household).then((res: DataSnapshot) => {
 				if (res.val())
 					this.household = res.val()
 			})

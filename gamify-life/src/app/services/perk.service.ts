@@ -13,7 +13,11 @@ export class PerkService {
 	private perkUrl = "perks/"
 
 	private getPerkUrl(pUid: string, hhUid: string): string {
-		return `${this.perkUrl}/${hhUid}/${pUid}`
+		return `${this.perkUrl}${hhUid}/${pUid}`
+	}
+
+	private getPerkContainerUrl(hhUid: string): string {
+		return `${this.perkUrl}${hhUid}`
 	}
 
 	private validatePerkRequest(householdUid: string | null = null, hh: Household | null = null): string {
@@ -54,5 +58,19 @@ export class PerkService {
 		var hhUid = this.validatePerkRequest(householdUid, hh)
 
 		return (await this.fireDb.database.ref(this.getPerkUrl(pUid, hhUid)).once('value')).val()
+	}
+
+	saveNewPerk(perk: Perk) {
+		// Get a new Uid
+		let perkRef = this.fireDb.database.ref(this.getPerkContainerUrl(perk.household)).push()
+
+		// Set the new Uid to the perk
+		perk.uid = perkRef.key!
+
+		// Add the perk to the household
+		this.hhService.addPerkToHousehold(perk)
+
+		// Save the perk
+		perkRef.set(perk.prepareForSave())
 	}
 }
