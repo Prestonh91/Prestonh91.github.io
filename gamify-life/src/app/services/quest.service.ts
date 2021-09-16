@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Store } from '@ngrx/store';
 import { from } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
-import { Quest, Household } from 'src/app/classes';
-import { AppState } from 'src/store/app.state';
-import { setHousehold } from 'src/store/household/household.store';
-import { HouseholdService } from './household.service';
+import { Quest } from 'src/app/classes';
 import { WardService } from './ward.service';
 
 @Injectable({
@@ -20,8 +16,8 @@ export class QuestService {
 		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
 	}
 
-	constructor(private fireDB: AngularFireDatabase,
-		private store: Store<AppState>,
+	constructor(
+		private fireDB: AngularFireDatabase,
 		private wardervice: WardService) { }
 
 	private getHouseholdQuestContainer(hhUid: string) {

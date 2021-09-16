@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { filter, map, mergeMap } from 'rxjs/operators';
 import { Household } from '../classes';
 import { Perk } from '../classes/Perk';
-import { HouseholdService } from './household.service';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +56,30 @@ export class PerkService {
 		var hhUid = this.validatePerkRequest(householdUid, hh)
 
 		return (await this.fireDb.database.ref(this.getPerkUrl(pUid, hhUid)).once('value')).val()
+	}
+
+	getGuardianPerks(households: Object) {
+		var perkFetchers = []
+
+		for (let hh of Object.keys(households)) {
+			perkFetchers.push(this.fireDb.object(this.getPerkContainerUrl(hh)).valueChanges())
+		}
+
+		return from(perkFetchers).pipe(
+			// Get the inner observable
+			mergeMap(x => x),
+			// Filter out any null/empty observables
+			filter((x: any) => x),
+			map(hhPerks => {
+				let perks = []
+
+				for (let pKey of Object.keys(hhPerks)) {
+					perks.push(new Perk(hhPerks[pKey]))
+				}
+
+				return perks
+			})
+		)
 	}
 
 	saveNewPerk(perk: Perk): Perk {
