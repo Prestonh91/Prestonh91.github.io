@@ -22,7 +22,6 @@ export class QuestService {
 
 	constructor(private fireDB: AngularFireDatabase,
 		private store: Store<AppState>,
-		private hhService: HouseholdService,
 		private wardervice: WardService) { }
 
 	private getHouseholdQuestContainer(hhUid: string) {
@@ -46,25 +45,18 @@ export class QuestService {
 		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
 	}
 
-	createNewQuest(quest: Quest) {
+	createNewQuest(quest: Quest): Quest {
 		// Get a new key for the quests
 		var questDbRef = this.fireDB.database.ref(this.getHouseholdQuestContainer(quest.household!)).push()
 
 		// Put the new key on the new quest
 		quest.uid = questDbRef.key
 
-		// Fetch the household to add the new quest to it, save the household, update the store
-		this.hhService.getHouseholdPromise(quest.household!).then(hh => {
-			if (hh.val()) {
-				let h = new Household(hh.val())
-				h.addQuest(quest.uid!)
-				this.hhService.voidSaveHousehold(h)
-				this.store.dispatch(setHousehold({ household: h }))
-			}
-		})
-
 		// Save the quest
-		return questDbRef.set(quest.prepareForSave())
+		questDbRef.set(quest.prepareForSave())
+
+		// Return the newly saved quest
+		return quest
 	}
 
 	getQuests(households: Object) {
@@ -102,9 +94,8 @@ export class QuestService {
 		this.voidUpdateQuest(quest, updates)
 	}
 
-	deleteQuest(quest: Quest, household: Household) {
+	deleteQuest(quest: Quest) {
 		this.removeQuest(quest)
-		this.hhService.removeQuestFromHousehold(quest, household)
 	}
 
 	removeQuestCompletionDate(quest: Quest) {

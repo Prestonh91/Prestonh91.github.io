@@ -32,7 +32,6 @@ export class PerkService {
 
 	constructor(
 		private fireDb: AngularFireDatabase,
-		private hhService: HouseholdService,
 	) {}
 
 	voidSavePerk(p: Perk, householdUid: string | null = null, hh: Household | null = null) {
@@ -60,17 +59,16 @@ export class PerkService {
 		return (await this.fireDb.database.ref(this.getPerkUrl(pUid, hhUid)).once('value')).val()
 	}
 
-	saveNewPerk(perk: Perk) {
+	saveNewPerk(perk: Perk): Perk {
 		// Get a new Uid
 		let perkRef = this.fireDb.database.ref(this.getPerkContainerUrl(perk.household)).push()
 
 		// Set the new Uid to the perk
 		perk.uid = perkRef.key!
 
-		// Add the perk to the household
-		this.hhService.addPerkToHousehold(perk)
-
 		// Save the perk
 		perkRef.set(perk.prepareForSave())
+
+		return perk
 	}
 }

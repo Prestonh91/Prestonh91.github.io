@@ -32,9 +32,9 @@ export class Perk {
 		this.durability = durability
 		this.hasUnlimited = hasUnlimited
 		this.household = household
-		this.dateCreated = dateCreated
-		this.dateUpdated = dateUpdated
-		this.dateAccepted = dateAccepted
+		this.dateCreated = typeof dateCreated === 'string' ? new Date(dateCreated) : dateCreated
+		this.dateUpdated = typeof dateUpdated === 'string' ? new Date(dateUpdated) : dateUpdated
+		this.dateAccepted = typeof dateAccepted === 'string' ? new Date(dateAccepted) : dateAccepted
 		this.uid = uid
 	}
 

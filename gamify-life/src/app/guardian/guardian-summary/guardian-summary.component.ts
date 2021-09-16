@@ -6,7 +6,7 @@ import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
-import { setHouseholds } from 'src/store/household/household.store';
+import { getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
@@ -16,7 +16,7 @@ declare var UIkit: any;
 })
 export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	quests = Array<Quest>();
-	households: Array<Household> = new Array<Household>();
+	households: Array<Household> = new Array()
 
 	questToView: Quest = new Quest();
 	questToEdit: Quest = new Quest();
@@ -24,9 +24,11 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 	storeSubscription = new Subscription();
 	questSubscription = new Subscription();
+	hhSub = new Subscription();
 
   	constructor(
 		private questService: QuestService,
+		private hhService: HouseholdService,
 		private store: Store<AppState>) { }
 
 	ngOnInit(): void {
@@ -56,6 +58,13 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 			})
 		})
 
+		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
+			this.households = []
+			hhs.forEach((hh: Household) => {
+				this.households.push(new Household(hh))
+			})
+		})
+
 		UIkit.util.on('#viewQuest', 'hide', () => { this.questToView = new Quest() })
 		UIkit.util.on('#editQuest', 'hide', () => { this.questToEdit = new Quest() })
 	}
@@ -63,6 +72,7 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.storeSubscription.unsubscribe()
 		this.questSubscription.unsubscribe()
+		this.hhSub.unsubscribe()
 	}
 
 	getUnclaimedQuests(list: Array<Quest>) {
@@ -91,7 +101,7 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 		UIkit.modal.confirm("Are you sure? Deleting this quest is irreversible.").then(() => {
 			let questHH = this.households.find(x => x.uid === quest.household)
 			if (questHH) {
-				this.questService.deleteQuest(quest, questHH)
+				this.hhService.removeQuestFromHousehold(quest, questHH)
 			}
 		}, () => {})
 	}

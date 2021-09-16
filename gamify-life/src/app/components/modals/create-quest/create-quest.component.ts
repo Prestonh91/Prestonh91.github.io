@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { from, Subscription } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { Guardian, Household, Quest } from 'src/app/classes';
+import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
@@ -29,7 +30,13 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 	assigneeSubscription = new Subscription()
 	guardianSubscription = new Subscription()
 
-  	constructor(private questService: QuestService, private fb: FormBuilder, private store: Store<AppState>, private wardService: WardService) {}
+  	constructor(
+		private questService: QuestService,
+		private wardService: WardService,
+		private hhService: HouseholdService,
+		private fb: FormBuilder,
+		private store: Store<AppState>
+	) {}
 
 	ngOnInit(): void {
 		this.guardianSubscription = this.store.pipe(select(selectGuardian)).subscribe(g => {
@@ -95,11 +102,9 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 		newQuest.author = this.guardian.uid
 		newQuest.assignee = this.assignee.value
 
-		this.questService.createNewQuest(newQuest)
-		.then(x => {
-			UIkit.modal('#createQuest')?.hide()
-			this.resetForm()
-		})
+		this.hhService.createNewQuest(newQuest)
+		UIkit.modal('#createQuest')?.hide()
+		this.resetForm()
 	}
 
 	resetForm() {

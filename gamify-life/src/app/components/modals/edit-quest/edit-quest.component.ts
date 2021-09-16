@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
+import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
@@ -16,6 +17,7 @@ declare var UIkit: any;
 })
 export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() quest = new Quest()
+	public originalHousehold: string | null = null;
 	public mutableQuest = this.newQuest()
 
 	public households: ReadonlyArray<Household> = new Array()
@@ -37,7 +39,8 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	constructor(private fb: FormBuilder,
 		private store: Store<AppState>,
 		private wardService: WardService,
-		private questService: QuestService
+		private questService: QuestService,
+		private hhService: HouseholdService
 	) { }
 
 	ngOnInit(): void {
@@ -62,6 +65,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	ngOnChanges(): void {
 		if (this.quest.uid) {
+			this.originalHousehold = this.quest.household
 			this.setQuest()
 			this.initAssigneeOptions(this.households)
 		}
@@ -138,6 +142,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	resetQuest() {
 		this.mutableQuest = this.newQuest()
+		this.originalHousehold = null
 	}
 
 	closeEdit() {
@@ -163,7 +168,13 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 			edittedQuest.description = this.mutableQuest.get('description')?.value,
 			edittedQuest.objectives = this.mutableQuest.get('objectives')?.value
 
-			this.questService.voidSaveQuest(edittedQuest)
+			if (this.originalHousehold !== edittedQuest.household) {
+				var hh = new Household(this.households.find(x => x.uid === this.originalHousehold))
+				this.hhService.removeQuestFromHousehold(this.quest, hh)
+				this.hhService.addQuestToHousehold(edittedQuest)
+			} else {
+				this.questService.voidSaveQuest(edittedQuest)
+			}
 
 			this.closeEdit()
 		}

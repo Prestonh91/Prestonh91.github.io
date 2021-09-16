@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household } from 'src/app/classes';
 import { Perk } from 'src/app/classes/Perk';
+import { HouseholdService } from 'src/app/services/household.service';
 import { PerkService } from 'src/app/services/perk.service';
 import { AppState } from 'src/store/app.state';
 import { getHouseholds } from 'src/store/household/household.store';
@@ -34,7 +35,7 @@ export class CreatePerkComponent implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private store: Store<AppState>,
-		private perkService: PerkService
+		private hhService: HouseholdService
 	) { }
 
 	ngOnInit(): void {
@@ -83,7 +84,7 @@ export class CreatePerkComponent implements OnInit {
 		}
 
 		let newPerk = Perk.createNewPerk(this.perk.value)
-		this.perkService.saveNewPerk(newPerk)
+		this.hhService.createNewPerk(newPerk)
 		UIkit.modal("#createPerk")?.hide()
 	}
 
