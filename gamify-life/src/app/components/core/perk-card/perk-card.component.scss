@@ -1,0 +1,29 @@
+.quantity-badge {
+	position: absolute;
+	bottom: 12px;
+	right: 12px;
+}
+
+// .perk-body {
+// 	display: -webkit-box;
+// 	-webkit-line-clamp: 3;
+// 	-webkit-box-orient: vertical;
+// 	overflow: hidden;
+// }
+
+.perk-body {
+	overflow: hidden;
+	position: relative;
+	height: 8.7em; /* exactly three lines */
+}
+
+.perk-body:after {
+	content: "";
+	text-align: right;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 70%;
+	height: 1.2em;
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 80%);
+}

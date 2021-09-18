@@ -1,0 +1,11 @@
+<section class="uk-card-default uk-card uk-card-hover uk-text-center uk-position-relative uk-height-medium" id="perk">
+	<div class="uk-card-header uk-flex uk-flex-between uk-background-secondary">
+		<h4 class="uk-card-tile gl-text-white uk-margin-remove">{{ perk.title }}</h4>
+		<p class="uk-margin-remove gl-text-white">{{ perk.cost }}</p>
+	</div>
+	<div class="uk-card-body perk-body uk-text-secondary">
+		{{ perk.description }}
+	</div>
+	<div class="quantity-badge uk-text-secondary" *ngIf="perk.durability">{{ perk.durability }}</div>
+	<div class="quantity-badge" *ngIf="perk.hasUnlimited"><img src="assets/infinity-secondary.svg" height="20" width="20"></div>
+</section>
