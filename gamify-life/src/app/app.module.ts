@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,6 +32,7 @@ import { ViewQuestComponent } from './components/modals/view-quest/view-quest.co
 import { EditQuestComponent } from './components/modals/edit-quest/edit-quest.component';
 import { GuardianPerksComponent } from './guardian/guardian-perks/guardian-perks.component';
 import { CreatePerkComponent } from './components/modals/create-perk/create-perk.component';
+import { PerkCardComponent } from './components/core/perk-card/perk-card.component';
 
 @NgModule({
   declarations: [
@@ -45,9 +47,11 @@ import { CreatePerkComponent } from './components/modals/create-perk/create-perk
 	EditQuestComponent,
 	GuardianPerksComponent,
 	CreatePerkComponent,
+	PerkCardComponent,
   ],
   imports: [
     BrowserModule,
+	BrowserAnimationsModule,
 	ReactiveFormsModule,
 	FormsModule,
 	AngularFireModule.initializeApp(environment.firebase),

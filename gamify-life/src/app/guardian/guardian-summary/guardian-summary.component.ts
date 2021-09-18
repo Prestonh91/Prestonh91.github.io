@@ -53,7 +53,6 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 					return x.household === currentHousehold ?
 						newQuestUids.includes(x.uid) :
 						true
-
 				}))
 			})
 		})
