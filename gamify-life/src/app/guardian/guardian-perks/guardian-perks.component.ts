@@ -1,47 +1,33 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Guardian } from 'src/app/classes';
+import { Guardian, Household } from 'src/app/classes';
 import { Perk } from 'src/app/classes/Perk';
+import { HouseholdService } from 'src/app/services/household.service';
 import { PerkService } from 'src/app/services/perk.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
-import { trigger, animate, transition, state, style } from '@angular/animations'
+import { getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
 	selector: 'app-guardian-perks',
 	templateUrl: './guardian-perks.component.html',
 	styleUrls: ['./guardian-perks.component.scss'],
-	// animations: [
-	// 	trigger('selectionEmpty', [
-	// 		state('selection', style({
-	// 			height: '25px',
-	// 			backgroundColor: 'white'
-	// 		})),
-	// 		state('empty', style({
-	// 			height: '0px',
-	// 		})),
-	// 		transition('empty => selection', [
-	// 			animate('500ms ease-in')
-	// 		]),
-	// 		transition('selection => empty', [
-	// 			animate('500ms ease-out')
-	// 		])
-	// 	]),
-	// ]
 })
 export class GuardianPerksComponent implements OnInit, OnDestroy {
+	households: Array<Household> = new Array()
 	perks: Array<Perk> = new Array()
 	perkSelections: Array<Perk> = new Array()
 
 	guardianSub = new Subscription()
 	perkSub = new Subscription()
-
+	hhSub = new Subscription()
 
 	constructor(
 		private store: Store<AppState>,
 		private perkService: PerkService,
+		private hhService: HouseholdService,
 	) { }
 
 	ngOnInit(): void {
@@ -66,6 +52,18 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 				}))
 			})
 		})
+		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
+			for (let h of hhs) {
+				let hh = new Household(h)
+
+				let existingHH = this.households.findIndex(x => x.uid ===  hh.uid)
+				if (existingHH > -1) {
+					this.households.splice(existingHH, 1, hh)
+				} else {
+					this.households.push(hh)
+				}
+			}
+		})
 	}
 
 	ngOnDestroy(): void {
@@ -88,5 +86,34 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 
 	isPerkSelected(perk: Perk): boolean {
 		return !!this.perkSelections.find(x => x.uid === perk.uid)
+	}
+
+	editQuest() {}
+
+	purchaseQuestsForWard() {}
+
+	deleteQuests() {
+		var uniqueHHs: Array<string> = []
+
+		// Get an array of unique household uids
+		for (let p of this.perkSelections) {
+			if (!uniqueHHs.includes(p.household)) {
+				uniqueHHs.push(p.household)
+			}
+		}
+
+		// Loop over the unique HH uids
+		for (let hhUid of uniqueHHs) {
+			// Get all the perks in our selection pertaining to the HH interation
+			let hhPerks = this.perkSelections.filter(x => x.household == hhUid)
+
+			// Get the HH we are currently looking at
+			let hh = this.households.find(x => x.uid === hhUid)
+
+			// Remove the perks from that HH
+			if (hh && hhPerks.length) {
+				this.hhService.removePerksFromHousehold(hhPerks, hh)
+			}
+		}
 	}
 }

@@ -112,6 +112,14 @@ export class Household {
 		this.perks = tempP
 	}
 
+	public removePerks(perkUids: Array<string>) {
+		let tempP: GObject = {}
+		for (let pKey of Object.keys(this.perks).filter(x => !perkUids.includes(x))) {
+			tempP[pKey] = true
+		}
+		this.perks = tempP
+	}
+
 	public prepareHouseholdForSave() {
 		this.dateUpdated = new Date()
 		return {

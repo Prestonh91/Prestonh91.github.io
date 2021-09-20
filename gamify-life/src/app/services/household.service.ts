@@ -144,6 +144,15 @@ export class HouseholdService {
 		this.questService.deleteQuest(quest)
 	}
 
+	removePerksFromHousehold(perkList: Array<Perk>, household: Household) {
+		let perkUidsToRemove = perkList.map(x => x.uid)
+		household.removePerks(perkUidsToRemove)
+
+		this.voidSaveHousehold(household)
+
+		this.perkService.deletePerks(perkList)
+	}
+
 	createNewPerk(perk: Perk) {
 		// Add the perk to the household
 		perk = this.perkService.saveNewPerk(perk)

@@ -94,4 +94,21 @@ export class PerkService {
 
 		return perk
 	}
+
+	deletePerks(perkList: Array<Perk>) {
+		// An updates object to allow us to delete multiple quests at once
+		var updates: any = {}
+
+		for (let p of perkList) {
+			// Validate to make sure each perk has a household
+			this.validatePerkRequest(p.household)
+
+			// Build the update url and assign the perk to null
+			updates[this.getPerkUrl(p.uid, p.household)] = null
+		}
+
+		debugger
+		// Grab the base DB ref as each update has the whole path to the perk
+		this.fireDb.object('/').update(updates)
+	}
 }
