@@ -32,6 +32,7 @@
 				<perk-card
 					[perk]="p"
 					[class]="{ 'selected': isPerkSelected(p) }"
+					[isSelected]="isPerkSelected(p)"
 					(click)="toggleSelectPerk(p)"
 				></perk-card>
 			</div>

@@ -54,7 +54,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 					let existingPerkUid = this.perks.findIndex(x => x.uid === perk.uid)
 					if (existingPerkUid > -1) {
 						this.perks.splice(existingPerkUid, 1, perk)
-					} {
+					} else {
 						this.perks.push(perk)
 					}
 				}

@@ -1,11 +1,17 @@
-<section class="uk-card-default uk-card uk-card-hover uk-text-center uk-position-relative uk-height-medium" id="perk">
-	<div class="uk-card-header uk-flex uk-flex-between uk-background-secondary">
-		<h4 class="uk-card-tile gl-text-white uk-margin-remove">{{ perk.title }}</h4>
-		<p class="uk-margin-remove gl-text-white">{{ perk.cost }}</p>
+<section class="uk-card-default uk-card uk-card-hover uk-text-center uk-position-relative" id="perk">
+	<div class="gl-card-header-small uk-background-secondary uk-flex uk-flex-between uk-flex-middle">
+		<h4 class="gl-card-title-small gl-text-white uk-margin-remove">{{ perk.title }}</h4>
+		<span class="gl-text-white" uk-icon="chevron-down" ratio="1.2" (click)="toggleCollapseExpand($event)" [@collapseExpand]="isCollapsed ? 'collapse' : 'expand'"></span>
 	</div>
-	<div class="uk-card-body perk-body uk-text-secondary">
+	<div class="gl-card-body-small uk-text-secondary gl-scrollbar-secondary" [@openClosed]="isCollapsed ? 'closed' : 'open'  ">
 		{{ perk.description }}
 	</div>
-	<div class="quantity-badge uk-text-secondary" *ngIf="perk.durability">{{ perk.durability }}</div>
-	<div class="quantity-badge" *ngIf="perk.hasUnlimited"><img src="assets/infinity-secondary.svg" height="20" width="20"></div>
+	<div class="gl-card-footer-small uk-flex uk-flex-between">
+		<div>
+			<span class="uk-text-secondary"># Available: </span>
+			<span class="uk-text-secondary" *ngIf="perk.durability">{{ perk.durability }}</span>
+			<span *ngIf="perk.hasUnlimited"><img src="assets/infinity-secondary.svg" height="20" width="20"></span>
+		</div>
+		<div class="uk-text-secondary">$ {{ perk.cost }}</div>
+	</div>
 </section>

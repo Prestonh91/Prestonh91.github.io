@@ -35,37 +35,37 @@ import { CreatePerkComponent } from './components/modals/create-perk/create-perk
 import { PerkCardComponent } from './components/core/perk-card/perk-card.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-	WardLandingComponent,
-	GuardianLayoutComponent,
-	GuardianSummaryComponent,
-	CreateQuestComponent,
-	SelectComponent,
-	SelectComponentForm,
-	ViewQuestComponent,
-	EditQuestComponent,
-	GuardianPerksComponent,
-	CreatePerkComponent,
-	PerkCardComponent,
-  ],
-  imports: [
-    BrowserModule,
-	BrowserAnimationsModule,
-	ReactiveFormsModule,
-	FormsModule,
-	AngularFireModule.initializeApp(environment.firebase),
-	AngularFireAuthModule,
-	AngularFireDatabaseModule,
-	StoreModule.forRoot({ guardian: guardianReducer, ward: wardReducer, error: apiErrorReducer, households: householdReducer}),
-	StoreDevtoolsModule.instrument(),
-	//Feature Modules
-	AuthModule,
-    AppRoutingModule,
-  ],
-  providers: [
+	declarations: [
+		AppComponent,
+		WardLandingComponent,
+		GuardianLayoutComponent,
+		GuardianSummaryComponent,
+		CreateQuestComponent,
+		SelectComponent,
+		SelectComponentForm,
+		ViewQuestComponent,
+		EditQuestComponent,
+		GuardianPerksComponent,
+		CreatePerkComponent,
+		PerkCardComponent,
+  	],
+  	imports: [
+		BrowserModule,
+		BrowserAnimationsModule,
+		ReactiveFormsModule,
+		FormsModule,
+		AngularFireModule.initializeApp(environment.firebase),
+		AngularFireAuthModule,
+		AngularFireDatabaseModule,
+		StoreModule.forRoot({ guardian: guardianReducer, ward: wardReducer, error: apiErrorReducer, households: householdReducer}),
+		StoreDevtoolsModule.instrument(),
+		//Feature Modules
+		AuthModule,
+		AppRoutingModule,
+	],
+  	providers: [
 		{ provide: PERSISTENCE, useValue: 'session' },
-  ],
-  bootstrap: [AppComponent]
+  	],
+  	bootstrap: [AppComponent]
 })
 export class AppModule { }
