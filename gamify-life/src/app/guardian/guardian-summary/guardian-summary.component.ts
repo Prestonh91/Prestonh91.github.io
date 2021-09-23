@@ -33,8 +33,17 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
-			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
-				let currentHousehold = householdQuests[0].household
+			this.questSubscription = this.questService.getQuests(x.households).subscribe(hhQuestsSnapshot => {
+				var householdQuests: Array<Quest> = []
+				let data: any = hhQuestsSnapshot.val()
+
+				if (data) {
+					for (let q of Object.keys(data)) {
+						householdQuests.push(new Quest(data[q]))
+					}
+				}
+
+				let currentHousehold = hhQuestsSnapshot.key
 				let newQuestUids = householdQuests.map(x => x.uid)
 
 				for (let q of householdQuests) {

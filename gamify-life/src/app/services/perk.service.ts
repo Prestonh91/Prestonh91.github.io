@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { from, Observable } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { filter, map, mergeMap, pairwise } from 'rxjs/operators';
 import { Household } from '../classes';
 import { Perk } from '../classes/Perk';
 
@@ -62,23 +62,14 @@ export class PerkService {
 		var perkFetchers = []
 
 		for (let hh of Object.keys(households)) {
-			perkFetchers.push(this.fireDb.object(this.getPerkContainerUrl(hh)).valueChanges())
+			perkFetchers.push(this.fireDb.object(this.getPerkContainerUrl(hh)).snapshotChanges())
 		}
 
 		return from(perkFetchers).pipe(
 			// Get the inner observable
 			mergeMap(x => x),
-			// Filter out any null/empty observables
-			filter((x: any) => x),
-			map(hhPerks => {
-				let perks = []
-
-				for (let pKey of Object.keys(hhPerks)) {
-					perks.push(new Perk(hhPerks[pKey]))
-				}
-
-				return perks
-			})
+			// Get the payload of the snapshotChanges
+			map(x => x.payload)
 		)
 	}
 
@@ -107,7 +98,6 @@ export class PerkService {
 			updates[this.getPerkUrl(p.uid, p.household)] = null
 		}
 
-		debugger
 		// Grab the base DB ref as each update has the whole path to the perk
 		this.fireDb.object('/').update(updates)
 	}

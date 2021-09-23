@@ -85,6 +85,7 @@ export class CreatePerkComponent implements OnInit {
 
 		let newPerk = Perk.createNewPerk(this.perk.value)
 		this.hhService.createNewPerk(newPerk)
+		this.resetForm()
 		UIkit.modal("#createPerk")?.hide()
 	}
 

@@ -61,24 +61,14 @@ export class QuestService {
 		// Get a list of household Observers
 		for (var h of Object.keys(households)) {
 			let url = this.getHouseholdQuestContainer(h)
-			questFetchers.push(this.fireDB.object(url).valueChanges())
+			questFetchers.push(this.fireDB.object(url).snapshotChanges())
 		}
 
 		return from(questFetchers).pipe(
 			// Get the inner observable
 			mergeMap(x => x),
-			// Filter out the empty observables
-			filter((x: any) => x),
-			// Map over the objects return them as a list
-			map(householdQuests => {
-				var quests: Quest[] = []
-
-				for (let q of Object.keys(householdQuests)) {
-					quests.push(new Quest(householdQuests[q]))
-				}
-
-				return quests
-			})
+			// Get the payload of the snapshotChanges
+			map(x => x.payload)
 		)
 	}
 

@@ -9,6 +9,7 @@
 			class="uk-text-center"
 		>
 			<p>You currently have no perks for your wards to buy. Try creating some!</p>
+			<button (click)="addNewPerk()" class="gl-button-primary">Add Perk</button>
 		</div>
 		<!-- Action Bar -->
 		<div class="uk-background-default uk-padding-small-left gl-padding-small-horizontal gl-padding-tiny uk-margin-bottom" *ngIf="perks.length > 0">
@@ -17,9 +18,9 @@
 					<span (click)="addNewPerk()" class="gl-pointer-cursor" uk-icon="plus" ratio="1.25"></span>
 				</div>
 				<div>
-					<span (click)="editQuest()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.25" class="gl-pointer-cursor"></span>
-					<span (click)="purchaseQuestsForWard()" *ngIf="perkSelections.length" uk-icon="cart" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
-					<span (click)="deleteQuests()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
+					<span (click)="editPerk()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.25" class="gl-pointer-cursor"></span>
+					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length" uk-icon="cart" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
+					<span (click)="deletePerks()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
 				</div>
 			</div>
 		</div>

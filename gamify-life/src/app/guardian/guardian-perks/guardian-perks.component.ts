@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DatabaseSnapshot } from '@angular/fire/database/interfaces';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Guardian, Household } from 'src/app/classes';
@@ -32,9 +33,18 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.guardianSub = this.store.pipe(select(selectGuardian)).subscribe((g: Readonly<Guardian>) => {
-			this.perkSub = this.perkService.getGuardianPerks(g.households).subscribe((hhPerks: Array<Perk>) => {
-				let currentHousehold = hhPerks[0].household
-				let newPerkUids = hhPerks.map(x => x.uid)
+			this.perkSub = this.perkService.getGuardianPerks(g.households).subscribe((hhPerksSnapshot: DatabaseSnapshot<unknown>) => {
+				var hhPerks: Array<Perk> = []
+				let data: any = hhPerksSnapshot.val()
+
+				if (data) {
+					for (let p of Object.keys(data)) {
+						hhPerks.push(new Perk(data[p]))
+					}
+				}
+
+				let currentHousehold = hhPerksSnapshot.key
+				let newPerkUids = hhPerks.map((x: any) => x.uid)
 
 				for (let perk of hhPerks) {
 					let existingPerkUid = this.perks.findIndex(x => x.uid === perk.uid)
@@ -53,15 +63,9 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 			})
 		})
 		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
-			for (let h of hhs) {
-				let hh = new Household(h)
-
-				let existingHH = this.households.findIndex(x => x.uid ===  hh.uid)
-				if (existingHH > -1) {
-					this.households.splice(existingHH, 1, hh)
-				} else {
-					this.households.push(hh)
-				}
+			this.households = []
+			for (let hh of hhs) {
+				this.households.push(new Household(hh))
 			}
 		})
 	}
@@ -69,6 +73,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.perkSub.unsubscribe()
 		this.guardianSub.unsubscribe()
+		this.hhSub.unsubscribe()
 	}
 
 	addNewPerk() {
@@ -88,11 +93,11 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		return !!this.perkSelections.find(x => x.uid === perk.uid)
 	}
 
-	editQuest() {}
+	editPerk() {}
 
-	purchaseQuestsForWard() {}
+	purchasePerksForWard() {}
 
-	deleteQuests() {
+	deletePerks() {
 		var uniqueHHs: Array<string> = []
 
 		// Get an array of unique household uids
@@ -115,5 +120,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 				this.hhService.removePerksFromHousehold(hhPerks, hh)
 			}
 		}
+
+		this.perkSelections = []
 	}
 }
