@@ -20,6 +20,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	households: Array<Household> = new Array()
 	perks: Array<Perk> = new Array()
 	perkSelections: Array<Perk> = new Array()
+	perkToEdit: Perk = new Perk()
 
 	guardianSub = new Subscription()
 	perkSub = new Subscription()
@@ -93,7 +94,11 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		return !!this.perkSelections.find(x => x.uid === perk.uid)
 	}
 
-	editPerk() {}
+	editPerk() {
+		this.perkToEdit = this.perkSelections[0]
+		this.perkSelections = []
+		UIkit.modal('#editPerk').show()
+	}
 
 	purchasePerksForWard() {}
 

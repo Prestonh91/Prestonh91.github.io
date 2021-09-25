@@ -48,6 +48,7 @@ export class CreatePerkComponent implements OnInit {
 
 	resetForm() {
 		this.perk = this.newPerk()
+		this.isDurabilityDisabled = false
 	}
 
 	newPerk(): FormGroup {
