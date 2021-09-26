@@ -20,7 +20,7 @@ export class PerkService {
 	}
 
 	private validatePerkRequest(householdUid: string | null = null, hh: Household | null = null): string {
-		var hhUid = householdUid || hh?.uid!
+		var hhUid = hh !== null ? hh.uid : householdUid
 
 		if (hhUid === null) {
 			throw new Error("Perk Service: A household ID is required to save a perk")

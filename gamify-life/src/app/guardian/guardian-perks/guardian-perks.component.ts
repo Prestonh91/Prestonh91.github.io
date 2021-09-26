@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatabaseSnapshot } from '@angular/fire/database/interfaces';
+import { FormControl } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Guardian, Household } from 'src/app/classes';
@@ -19,12 +20,22 @@ declare var UIkit: any;
 export class GuardianPerksComponent implements OnInit, OnDestroy {
 	households: Array<Household> = new Array()
 	perks: Array<Perk> = new Array()
+	public get filteredPerks(): Array<Perk> {
+		if (!this.sortSelection.value) return this.perks
+
+		return this.perks.filter(x => x.household === this.sortSelection.value)
+	}
+
+	sortOptions: any[] = []
+	sortSelection: FormControl = new FormControl()
+
 	perkSelections: Array<Perk> = new Array()
 	perkToEdit: Perk = new Perk()
 
 	guardianSub = new Subscription()
 	perkSub = new Subscription()
 	hhSub = new Subscription()
+	sortSub = new Subscription()
 
 	constructor(
 		private store: Store<AppState>,
@@ -67,14 +78,23 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 			this.households = []
 			for (let hh of hhs) {
 				this.households.push(new Household(hh))
+				this.sortOptions.push({ value: hh.uid, display: hh.name })
 			}
 		})
+
+		UIkit.util.on('#editPerk', 'hide', () => { this.perkToEdit = new Perk() })
+
+		// this.sortSub = this.sortSelection.valueChanges.subscribe(x => {
+		// 	debugger
+		// 	this.filteredPerks = this.perks.filter(x => x.uid === this)
+		// })
 	}
 
 	ngOnDestroy(): void {
 		this.perkSub.unsubscribe()
 		this.guardianSub.unsubscribe()
 		this.hhSub.unsubscribe()
+		this.sortSub.unsubscribe()
 	}
 
 	addNewPerk() {

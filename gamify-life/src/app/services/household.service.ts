@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireDatabase, snapshotChanges } from '@angular/fire/database';
 import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { Store } from '@ngrx/store';
 import { from } from 'rxjs';
@@ -142,6 +142,18 @@ export class HouseholdService {
 		this.voidSaveHousehold(household)
 
 		this.questService.deleteQuest(quest)
+	}
+
+	addPerkToHousehold(perk: Perk) {
+		this.getHouseholdPromise(perk.household).then((snapShot: DataSnapshot) => {
+			if (snapShot.exists()) {
+				let hh = new Household(snapShot.val())
+				hh.addPerk(perk.uid)
+				this.voidSaveHousehold(hh)
+
+				this.perkService.voidSavePerk(perk, hh.uid)
+			}
+		})
 	}
 
 	removePerksFromHousehold(perkList: Array<Perk>, household: Household) {
