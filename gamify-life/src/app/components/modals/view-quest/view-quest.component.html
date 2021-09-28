@@ -7,7 +7,10 @@
 				<h3 [class]="{ 'gl-text-tertiary' : isUnassigned, 'uk-text-primary' : isInProgress, 'uk-text-secondary': isComplete}">Reward: {{quest.reward}}</h3>
 			</div>
 		</div>
-		<div class="uk-modal-body uk-height-max-large uk-overflow-auto gl-scrollbar">
+		<div
+			class="uk-modal-body uk-height-max-large uk-overflow-auto"
+			[class]="{ 'gl-scrollbar': isInProgress, 'gl-scrollbar-secondary': isComplete, 'gl-scrollbar-tertiary': isUnassigned }"
+		>
 			<div *ngIf="noBodyToDisplay">
 				<p>There is nothing here to display, try adding a description or objectives to your quest!</p>
 			</div>

@@ -123,29 +123,31 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	purchasePerksForWard() {}
 
 	deletePerks() {
-		var uniqueHHs: Array<string> = []
+		UIkit.modal.confirm("Are you sure you want to delete the selected perk(s)?").then(() => {
+			var uniqueHHs: Array<string> = []
 
-		// Get an array of unique household uids
-		for (let p of this.perkSelections) {
-			if (!uniqueHHs.includes(p.household)) {
-				uniqueHHs.push(p.household)
+			// Get an array of unique household uids
+			for (let p of this.perkSelections) {
+				if (!uniqueHHs.includes(p.household)) {
+					uniqueHHs.push(p.household)
+				}
 			}
-		}
 
-		// Loop over the unique HH uids
-		for (let hhUid of uniqueHHs) {
-			// Get all the perks in our selection pertaining to the HH interation
-			let hhPerks = this.perkSelections.filter(x => x.household == hhUid)
+			// Loop over the unique HH uids
+			for (let hhUid of uniqueHHs) {
+				// Get all the perks in our selection pertaining to the HH interation
+				let hhPerks = this.perkSelections.filter(x => x.household == hhUid)
 
-			// Get the HH we are currently looking at
-			let hh = this.households.find(x => x.uid === hhUid)
+				// Get the HH we are currently looking at
+				let hh = this.households.find(x => x.uid === hhUid)
 
-			// Remove the perks from that HH
-			if (hh && hhPerks.length) {
-				this.hhService.removePerksFromHousehold(hhPerks, hh)
+				// Remove the perks from that HH
+				if (hh && hhPerks.length) {
+					this.hhService.removePerksFromHousehold(hhPerks, hh)
+				}
 			}
-		}
 
-		this.perkSelections = []
+			this.perkSelections = []
+		}, () => {})
 	}
 }

@@ -6,7 +6,10 @@
 				<div><button *ngIf="isInProgress" (click)="markQuestAsCompleted()" class="gl-button-secondary">Mark as Complete</button></div>
 			</div>
 		</div>
-		<div class="uk-modal-body uk-overflow-auto uk-height-max-large gl-scrollbar">
+		<div
+			class="uk-modal-body uk-overflow-auto uk-height-max-large"
+			[class]="{ 'gl-scrollbar': isInProgress, 'gl-scrollbar-secondary': isComplete, 'gl-scrollbar-tertiary': isUnassigned }"
+		>
 			<form [formGroup]="mutableQuest">
 				<div class="uk-margin-bottom uk-flex uk-flex-left">
 					<label class="uk-text-bold" [class]="{ 'uk-form-danger': mutableQuest.get('title')?.touched && mutableQuest.get('title')?.invalid }">Title:</label>

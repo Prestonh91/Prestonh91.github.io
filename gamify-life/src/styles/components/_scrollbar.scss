@@ -1,0 +1,94 @@
+// Primary
+.gl-scrollbar::-webkit-scrollbar {
+	width: 10px;
+	// border-radius: $global-radius-medium;
+}
+
+.gl-scrollbar::-webkit-scrollbar-thumb {
+	border: 2px solid transparent;
+	box-shadow: inset 0 0 5px 5px $global-color;
+	border-radius: $global-radius-large;
+}
+
+.gl-scrollbar::-webkit-scrollbar-track-piece {
+	margin-right: $global-tiny-margin;
+}
+
+.gl-scrollbar::-webkit-scrollbar-track-piece:end {
+	margin-bottom: $global-tiny-margin;
+}
+
+.gl-scrollbar::-webkit-scrollbar-track-piece:start {
+	margin-top: $global-tiny-margin;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar {
+	width: 10px;
+	// border-radius: $global-radius-medium;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-thumb {
+	border: 2px solid transparent;
+	box-shadow: inset 0 0 5px 5px $global-color-secondary;
+	border-radius: $global-radius-large;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece {
+	margin-right: $global-tiny-margin;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece:end {
+	margin-bottom: $global-tiny-margin;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece:start {
+	margin-top: $global-tiny-margin;
+}
+
+// Secondary
+.gl-scrollbar-secondary::-webkit-scrollbar {
+	width: 10px;
+	// border-radius: $global-radius-medium;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-thumb {
+	border: 2px solid transparent;
+	box-shadow: inset 0 0 5px 5px $global-color-secondary;
+	border-radius: $global-radius-large;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece {
+	margin-right: $global-tiny-margin;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece:end {
+	margin-bottom: $global-tiny-margin;
+}
+
+.gl-scrollbar-secondary::-webkit-scrollbar-track-piece:start {
+	margin-top: $global-tiny-margin;
+}
+
+// Tertiary
+.gl-scrollbar-tertiary::-webkit-scrollbar {
+	width: 10px;
+	// border-radius: $global-radius-medium;
+}
+
+.gl-scrollbar-tertiary::-webkit-scrollbar-thumb {
+	border: 2px solid transparent;
+	box-shadow: inset 0 0 5px 5px $global-color-tertiary;
+	border-radius: $global-radius-large;
+}
+
+.gl-scrollbar-tertiary::-webkit-scrollbar-track-piece {
+	margin-right: $global-tiny-margin;
+}
+
+.gl-scrollbar-tertiary::-webkit-scrollbar-track-piece:end {
+	margin-bottom: $global-tiny-margin;
+}
+
+.gl-scrollbar-tertiary::-webkit-scrollbar-track-piece:start {
+	margin-top: $global-tiny-margin;
+}
