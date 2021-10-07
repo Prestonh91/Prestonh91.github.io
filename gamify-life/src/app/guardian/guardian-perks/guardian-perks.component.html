@@ -12,6 +12,10 @@
 			<button (click)="addNewPerk()" class="gl-button-primary">Add Perk</button>
 		</div>
 		<!-- Action Bar -->
+		<p
+			*ngIf="purchaseForSelection.value"
+			class="uk-margin-small"
+		>You are selecting perks to purchase for {{ getWardDisplayName(purchaseForSelection.value) }}</p>
 		<div class="uk-background-default uk-padding-small-left gl-padding-small-horizontal gl-padding-tiny uk-margin-bottom" *ngIf="perks.length > 0">
 			<div class="uk-flex uk-flex-between">
 				<div class="uk-flex uk-flex-middle">
@@ -20,7 +24,13 @@
 						class="uk-margin-small-left"
 						[formControl]="sortSelection"
 						[selectPlaceholder]="'Sort By'"
-						[options]="sortOptions"
+						[options]="filterOptions"
+					></gl-select-form>
+					<gl-select-form
+						class="uk-margin-small-left"
+						[formControl]="purchaseForSelection"
+						[selectPlaceholder]="'Purchase Perks For'"
+						[options]="wardPurchaseOptions"
 					></gl-select-form>
 				</div>
 				<div>
@@ -47,4 +57,5 @@
 	</div>
 	<create-perk id="createPerk" uk-modal></create-perk>
 	<edit-perk [perk]="perkToEdit" id="editPerk" uk-modal></edit-perk>
+	<redeem-perks [perks]="perksToRedeem" [households]="households" id="redeemPerks" uk-modal></redeem-perks>
 </section>

@@ -3,10 +3,11 @@ import { DatabaseSnapshot } from '@angular/fire/database/interfaces';
 import { FormControl } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Guardian, Household } from 'src/app/classes';
+import { Guardian, Household, Ward } from 'src/app/classes';
 import { Perk } from 'src/app/classes/Perk';
 import { HouseholdService } from 'src/app/services/household.service';
 import { PerkService } from 'src/app/services/perk.service';
+import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
 import { getHouseholds } from 'src/store/household/household.store';
@@ -18,29 +19,52 @@ declare var UIkit: any;
 	styleUrls: ['./guardian-perks.component.scss'],
 })
 export class GuardianPerksComponent implements OnInit, OnDestroy {
-	households: Array<Household> = new Array()
-	perks: Array<Perk> = new Array()
+	households: Array<Household> = new Array();
+	perks: Array<Perk> = new Array();
+	wards: Array<Ward> = new Array();
+
 	public get filteredPerks(): Array<Perk> {
 		if (!this.sortSelection.value) return this.perks
 
+		// let hhs = this.households.map(x => {
+		// 	if (this.sortSelection.value && this.purchaseForSelection.value) {
+		// 		if (x.uid === this.sortSelection.value && !!x.wards[this.purchaseForSelection.value])
+		// 			return x.uid
+		// 	} else if (this.sortSelection.value) {
+		// 		if (x.uid === this.sortSelection.value)
+		// 			return x.uid
+		// 	} else if (this.purchaseForSelection.value) {
+		// 		if (!!x.wards[this.purchaseForSelection.value])
+		// 			return x.uid
+		// 	}
+
+		// 	return null
+		// }).filter(x => x)
+
+		console.warn("hhs")
 		return this.perks.filter(x => x.household === this.sortSelection.value)
+		// return this.perks.filter(x => hhs.includes(x.uid))
 	}
 
-	sortOptions: any[] = []
-	sortSelection: FormControl = new FormControl()
+	filterOptions: any[] = [];
+	wardPurchaseOptions: any[] = [];
+	sortSelection: FormControl = new FormControl();
+	purchaseForSelection: FormControl = new FormControl();
 
-	perkSelections: Array<Perk> = new Array()
-	perkToEdit: Perk = new Perk()
+	perkSelections: Array<Perk> = new Array();
+	perkToEdit: Perk = new Perk();
+	perksToRedeem: Array<Perk> = new Array();
 
-	guardianSub = new Subscription()
-	perkSub = new Subscription()
-	hhSub = new Subscription()
-	sortSub = new Subscription()
+	guardianSub = new Subscription();
+	perkSub = new Subscription();
+	hhSub = new Subscription();
+	sortSub = new Subscription();
 
 	constructor(
 		private store: Store<AppState>,
 		private perkService: PerkService,
 		private hhService: HouseholdService,
+		private wardService: WardService,
 	) { }
 
 	ngOnInit(): void {
@@ -76,18 +100,22 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		})
 		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
 			this.households = []
+
 			for (let hh of hhs) {
 				this.households.push(new Household(hh))
-				this.sortOptions.push({ value: hh.uid, display: hh.name })
+				this.filterOptions.push({ value: hh.uid, display: hh.name })
+				this.wardService.getListOfWardsValue(Object.keys(hh.wards)).then((wards: Ward[]) => {
+					for (let ward of wards) {
+						if (!this.wards.find(x => x.uid === ward.uid)) {
+							this.wards.push(new Ward(ward))
+							this.wardPurchaseOptions.push({ value: ward.uid, display: ward.displayName })
+						}
+					}
+				})
 			}
 		})
 
 		UIkit.util.on('#editPerk', 'hide', () => { this.perkToEdit = new Perk() })
-
-		// this.sortSub = this.sortSelection.valueChanges.subscribe(x => {
-		// 	debugger
-		// 	this.filteredPerks = this.perks.filter(x => x.uid === this)
-		// })
 	}
 
 	ngOnDestroy(): void {
@@ -120,7 +148,10 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		UIkit.modal('#editPerk').show()
 	}
 
-	purchasePerksForWard() {}
+	purchasePerksForWard() {
+		this.perksToRedeem = this.perkSelections
+		UIkit.modal('#redeemPerks').show()
+	}
 
 	deletePerks() {
 		UIkit.modal.confirm("Are you sure you want to delete the selected perk(s)?").then(() => {
@@ -149,5 +180,9 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 
 			this.perkSelections = []
 		}, () => {})
+	}
+
+	getWardDisplayName(uid: string) {
+		return this.wards.find(x => x.uid === uid)?.displayName
 	}
 }

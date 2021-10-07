@@ -67,7 +67,7 @@
 					<textarea
 						formControlName="description"
 						class="uk-margin-left uk-width-expand"
-						[class]="{ 'uk-form-danger': mutableQuest.get('description')?.touched && mutableQuest.get('description')?.invalid, 'gl-textarea-tertiary': isUnassigned, 'gl-textarea': isInProgress, 'gl-textarea-secondary': isComplete }"
+						[ngClass]="{ 'uk-form-danger': mutableQuest.get('description')?.touched && mutableQuest.get('description')?.invalid, 'gl-textarea-tertiary gl-scrollbar-textarea-tertiary': isUnassigned, 'gl-textarea gl-scrollbar-textarea': isInProgress, 'gl-textarea-secondary gl-scrollbar-textarea-secondary': isComplete }"
 						rows="6"
 					></textarea>
 				</div>
