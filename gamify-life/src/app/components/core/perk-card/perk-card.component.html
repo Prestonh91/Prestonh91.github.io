@@ -1,7 +1,7 @@
 <section class="uk-card-default uk-card uk-card-hover uk-text-center uk-position-relative" id="perk">
 	<div class="gl-card-header-small uk-background-secondary uk-flex uk-flex-between uk-flex-middle">
 		<h4 class="gl-card-title-small gl-text-white uk-margin-remove">{{ perk.title }}</h4>
-		<span class="gl-text-white" uk-icon="chevron-down" ratio="1.2" (click)="toggleCollapseExpand($event)" [@collapseExpand]="isCollapsed ? 'collapse' : 'expand'"></span>
+		<span class="gl-text-white gl-pointer-cursor" uk-icon="chevron-down" ratio="1.2" (click)="toggleCollapseExpand($event)" [@collapseExpand]="isCollapsed ? 'collapse' : 'expand'"></span>
 	</div>
 	<div class="gl-card-body-small uk-text-secondary gl-scrollbar-secondary" [@openClosed]="isCollapsed ? 'closed' : 'open'  ">
 		{{ perk.description }}

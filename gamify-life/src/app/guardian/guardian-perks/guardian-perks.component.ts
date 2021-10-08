@@ -21,34 +21,12 @@ declare var UIkit: any;
 export class GuardianPerksComponent implements OnInit, OnDestroy {
 	households: Array<Household> = new Array();
 	perks: Array<Perk> = new Array();
+	filteredPerks: Array<Perk> = new Array();
 	wards: Array<Ward> = new Array();
-
-	public get filteredPerks(): Array<Perk> {
-		if (!this.sortSelection.value) return this.perks
-
-		// let hhs = this.households.map(x => {
-		// 	if (this.sortSelection.value && this.purchaseForSelection.value) {
-		// 		if (x.uid === this.sortSelection.value && !!x.wards[this.purchaseForSelection.value])
-		// 			return x.uid
-		// 	} else if (this.sortSelection.value) {
-		// 		if (x.uid === this.sortSelection.value)
-		// 			return x.uid
-		// 	} else if (this.purchaseForSelection.value) {
-		// 		if (!!x.wards[this.purchaseForSelection.value])
-		// 			return x.uid
-		// 	}
-
-		// 	return null
-		// }).filter(x => x)
-
-		console.warn("hhs")
-		return this.perks.filter(x => x.household === this.sortSelection.value)
-		// return this.perks.filter(x => hhs.includes(x.uid))
-	}
 
 	filterOptions: any[] = [];
 	wardPurchaseOptions: any[] = [];
-	sortSelection: FormControl = new FormControl();
+	filterSelection: FormControl = new FormControl();
 	purchaseForSelection: FormControl = new FormControl();
 
 	perkSelections: Array<Perk> = new Array();
@@ -58,7 +36,8 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	guardianSub = new Subscription();
 	perkSub = new Subscription();
 	hhSub = new Subscription();
-	sortSub = new Subscription();
+	filterSub = new Subscription();
+	purchaseForSub = new Subscription();
 
 	constructor(
 		private store: Store<AppState>,
@@ -96,6 +75,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 						newPerkUids.includes(p.uid) :
 						true
 				}))
+				this.filteredPerks = this.perks
 			})
 		})
 		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
@@ -115,18 +95,56 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 			}
 		})
 
+		this.filterSub = this.filterSelection.valueChanges.subscribe(x => this.handleFilterPerks())
+		this.purchaseForSub = this.purchaseForSelection.valueChanges.subscribe(x => this.handleFilterPerks())
+
 		UIkit.util.on('#editPerk', 'hide', () => { this.perkToEdit = new Perk() })
 	}
 
 	ngOnDestroy(): void {
-		this.perkSub.unsubscribe()
-		this.guardianSub.unsubscribe()
-		this.hhSub.unsubscribe()
-		this.sortSub.unsubscribe()
+		this.perkSub.unsubscribe();
+		this.guardianSub.unsubscribe();
+		this.hhSub.unsubscribe();
+		this.filterSub.unsubscribe();
+		this.purchaseForSub.unsubscribe();
 	}
 
 	addNewPerk() {
 		UIkit.modal('#createPerk').show()
+	}
+
+	handleFilterPerks() {
+		if (!this.filterSelection.value && !this.purchaseForSelection.value) {
+			this.filteredPerks = this.perks
+			return
+		}
+
+		let hhs = this.households.map(x => {
+			if (this.filterSelection.value && this.purchaseForSelection.value) {
+				if (x.uid === this.filterSelection.value && !!x.wards[this.purchaseForSelection.value])
+					return x.uid
+			} else if (this.filterSelection.value) {
+				if (x.uid === this.filterSelection.value)
+					return x.uid
+			} else if (this.purchaseForSelection.value) {
+				if (!!x.wards[this.purchaseForSelection.value])
+					return x.uid
+			}
+
+			return null
+		}).filter(x => x)
+
+		this.filteredPerks = this.perks.filter(x => hhs.includes(x.household))
+		this.clearFilteredSelectedPerks()
+	}
+
+	clearFilteredSelectedPerks() {
+		let reverseIndices = Object.keys(this.perkSelections).sort((a, b) =>  Number(b) - Number(a))
+		for (let i of reverseIndices) {
+			if (this.filteredPerks.findIndex(x => x.uid === this.perkSelections[Number(i)].uid) === -1) {
+				this.perkSelections.splice(Number(i), 1)
+			}
+		}
 	}
 
 	toggleSelectPerk(perk: Perk) {

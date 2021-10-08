@@ -22,8 +22,8 @@
 					<span (click)="addNewPerk()" class="gl-pointer-cursor" uk-icon="plus" ratio="1.25"></span>
 					<gl-select-form
 						class="uk-margin-small-left"
-						[formControl]="sortSelection"
-						[selectPlaceholder]="'Sort By'"
+						[formControl]="filterSelection"
+						[selectPlaceholder]="'Filter By'"
 						[options]="filterOptions"
 					></gl-select-form>
 					<gl-select-form
