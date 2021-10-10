@@ -1,0 +1,22 @@
+<section class="uk-offcanvas-bar">
+	<button type="button" class="uk-offcanvas-close" uk-close></button>
+	<header class="gl-border-bottom-white">
+		<h3>Purchase Perks for {{ ward ? ward.displayName : "" }}</h3>
+	</header>
+	<div class="uk-margin-top">
+		<ul class="uk-list gl-text-white">
+			<li *ngFor="let p of perksToRedeem">
+				<div class="uk-flex uk-flex-between">
+					<p class="uk-margin-remove">{{ p.title }}</p>
+					<p class="uk-margin-remove">{{ p.cost }}</p>
+				</div>
+				<div>
+					<span (click)="removeFromPerkCount(p)" *ngIf="perkRedeemAmounts[p.uid] > 1" class="gl-pointer-cursor" uk-icon="minus" ratio="0.8"></span>
+					<span (click)="removePerkFromRedeemList(p)" class="gl-pointer-cursor" *ngIf="perkRedeemAmounts[p.uid] === 1" uk-icon="trash" ratio="0.8"></span>
+					<span class="gl-margin-tiny-left gl-margin-tiny-right">{{ perkRedeemAmounts[p.uid] }}</span>
+					<span (click)="addToPerkCount(p)" class="gl-pointer-cursor" uk-icon="plus" ratio="0.9"></span>
+				</div>
+			</li>
+		</ul>
+	</div>
+</section>
