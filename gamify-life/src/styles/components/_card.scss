@@ -1,16 +1,12 @@
 .gl-card-header-small {
-	padding: $global-small-margin $global-small-margin;
+	padding: $global-tiny-margin $global-tiny-margin;
 }
 
 .gl-card-body-small {
-	padding: $global-small-margin;
+	padding: $global-tiny-margin;
 }
 
 .gl-card-footer-small {
 	border-top: 1px solid $global-muted-background;
-	padding: $global-small-margin $global-small-margin;
-}
-
-.gl-card-title-small {
-	font-size: $global-medium-font-size;
+	padding: $global-tiny-margin $global-tiny-margin;
 }

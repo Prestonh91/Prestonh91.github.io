@@ -19,7 +19,7 @@
 		<div class="uk-background-default uk-padding-small-left gl-padding-small-horizontal gl-padding-tiny uk-margin-bottom" *ngIf="perks.length > 0">
 			<div class="uk-flex uk-flex-between">
 				<div class="uk-flex uk-flex-middle">
-					<span (click)="addNewPerk()" class="gl-pointer-cursor" uk-icon="plus" ratio="1.25"></span>
+					<span (click)="addNewPerk()" class="gl-pointer-cursor" uk-icon="plus" ratio="1.15"></span>
 					<gl-select-form
 						class="uk-margin-small-left"
 						[formControl]="filterSelection"
@@ -32,18 +32,22 @@
 						[selectPlaceholder]="'Purchase Perks For'"
 						[options]="wardPurchaseOptions"
 					></gl-select-form>
+					<div (click)="clearAllFilters()" class="uk-margin-small-left gl-pointer-cursor">
+						<p class="uk-margin-remove uk-text-small">Clear Filters</p>
+					</div>
 				</div>
 				<div>
 					<span (click)="editPerk()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.25" class="gl-pointer-cursor"></span>
-					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length" uk-icon="cart" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
+					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length && purchaseForSelection.value" uk-icon="cart" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
 					<span (click)="deletePerks()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
 				</div>
 			</div>
 		</div>
+		<!-- End action bar -->
 		<div
 			*ngIf="perks.length > 0"
 			uk-grid
-			class="uk-child-width-1-2 uk-child-width-1-3@m uk-child-width-1-4@l"
+			class="uk-child-width-1-2 uk-child-width-1-4@m uk-child-width-1-5@l"
 		>
 			<div *ngFor="let p of filteredPerks">
 				<perk-card
@@ -57,5 +61,5 @@
 	</div>
 	<create-perk id="createPerk" uk-modal></create-perk>
 	<edit-perk [perk]="perkToEdit" id="editPerk" uk-modal></edit-perk>
-	<redeem-perks [perks]="perksToRedeem" [households]="households" id="redeemPerks" uk-modal></redeem-perks>
+	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
 </section>

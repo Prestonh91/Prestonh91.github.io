@@ -28,6 +28,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	wardPurchaseOptions: any[] = [];
 	filterSelection: FormControl = new FormControl();
 	purchaseForSelection: FormControl = new FormControl();
+	wardSelectedForRedeem: Ward = new Ward();
 
 	perkSelections: Array<Perk> = new Array();
 	perkToEdit: Perk = new Perk();
@@ -99,6 +100,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		this.purchaseForSub = this.purchaseForSelection.valueChanges.subscribe(x => this.handleFilterPerks())
 
 		UIkit.util.on('#editPerk', 'hide', () => { this.perkToEdit = new Perk() })
+		UIkit.util.on('#perkRedeem', 'hide', () => { this.perksToRedeem = [] })
 	}
 
 	ngOnDestroy(): void {
@@ -114,6 +116,12 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	}
 
 	handleFilterPerks() {
+		if (this.purchaseForSelection.value) {
+			this.wardSelectedForRedeem = new Ward(this.wards.find(x => x.uid === this.purchaseForSelection.value))
+		} else {
+			this.wardSelectedForRedeem = new Ward()
+		}
+
 		if (!this.filterSelection.value && !this.purchaseForSelection.value) {
 			this.filteredPerks = this.perks
 			return
@@ -136,6 +144,13 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 
 		this.filteredPerks = this.perks.filter(x => hhs.includes(x.household))
 		this.clearFilteredSelectedPerks()
+	}
+
+	clearAllFilters() {
+		this.purchaseForSelection.reset()
+		this.filterSelection.reset()
+		this.perkSelections = []
+		this.wardSelectedForRedeem = new Ward()
 	}
 
 	clearFilteredSelectedPerks() {
@@ -168,7 +183,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 
 	purchasePerksForWard() {
 		this.perksToRedeem = this.perkSelections
-		UIkit.modal('#redeemPerks').show()
+		UIkit.offcanvas('#perkRedeem').show()
 	}
 
 	deletePerks() {

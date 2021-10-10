@@ -34,7 +34,7 @@ import { GuardianPerksComponent } from './guardian/guardian-perks/guardian-perks
 import { CreatePerkComponent } from './components/modals/create-perk/create-perk.component';
 import { PerkCardComponent } from './components/core/perk-card/perk-card.component';
 import { EditPerkComponent } from './components/modals/edit-perk/edit-perk.component';
-import { RedeemPerksComponent } from './components/modals/redeem-perks/redeem-perks.component';
+import { PerkRedeemComponent } from './components/off-canvas/perk-redeem/perk-redeem.component';
 
 @NgModule({
 	declarations: [
@@ -51,7 +51,7 @@ import { RedeemPerksComponent } from './components/modals/redeem-perks/redeem-pe
 		CreatePerkComponent,
 		PerkCardComponent,
 		EditPerkComponent,
-		RedeemPerksComponent,
+		PerkRedeemComponent,
   	],
   	imports: [
 		BrowserModule,
