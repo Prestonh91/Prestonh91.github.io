@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import { Ward } from 'src/app/classes';
 import { Perk } from 'src/app/classes/Perk';
 
@@ -10,6 +10,7 @@ import { Perk } from 'src/app/classes/Perk';
 export class PerkRedeemComponent implements OnInit, OnChanges {
 	@Input() perks: Array<Perk> = new Array();
 	@Input() ward: Ward | null = null;
+	@Output() cancel: EventEmitter<any> = new EventEmitter();
 
 	public perksToRedeem:  Array<Perk> = new Array();
 	public perkRedeemAmounts: any = {};
@@ -34,7 +35,7 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 		let perkCount = this.perkRedeemAmounts[perk.uid]
 
 		// Only add on if the perk has enough durability
-		if ((perkCount + 1) <= perk.durability) {
+		if ((perkCount + 1) <= perk.durability || perk.hasUnlimited) {
 			this.perkRedeemAmounts[perk.uid] += 1
 		}
 	}
@@ -49,5 +50,13 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 		if (i > -1) {
 			this.perksToRedeem.splice(i, 1)
 		}
+	}
+
+	redeemPerks() {
+
+	}
+
+	cancelRedeem() {
+		this.cancel.emit()
 	}
 }

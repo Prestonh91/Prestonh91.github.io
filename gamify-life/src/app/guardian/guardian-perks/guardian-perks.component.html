@@ -36,10 +36,10 @@
 						<p class="uk-margin-remove uk-text-small">Clear Filters</p>
 					</div>
 				</div>
-				<div>
-					<span (click)="editPerk()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.25" class="gl-pointer-cursor"></span>
-					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length && purchaseForSelection.value" uk-icon="cart" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
-					<span (click)="deletePerks()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.25" class="uk-margin-small-left gl-pointer-cursor"></span>
+				<div class="uk-flex uk-flex-middle">
+					<span (click)="editPerk()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.15" class="gl-pointer-cursor"></span>
+					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length && purchaseForSelection.value" uk-icon="cart" ratio="1.15" class="uk-margin-small-left gl-pointer-cursor"></span>
+					<span (click)="deletePerks()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.15" class="uk-margin-small-left gl-pointer-cursor"></span>
 				</div>
 			</div>
 		</div>
@@ -61,5 +61,5 @@
 	</div>
 	<create-perk id="createPerk" uk-modal></create-perk>
 	<edit-perk [perk]="perkToEdit" id="editPerk" uk-modal></edit-perk>
-	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
+	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" (cancel)="cancelRedeem()" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
 </section>
