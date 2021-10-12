@@ -15,13 +15,26 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 	public perksToRedeem:  Array<Perk> = new Array();
 	public perkRedeemAmounts: any = {};
 
+	public get total(): number {
+		return this.perksToRedeem.map(p => {
+			return Number(p.cost) * Number(this.perkRedeemAmounts[p.uid])
+		}).reduce((prev, curr) => {
+			debugger
+			return prev + curr
+		}, 0)
+	}
+
+	public get totalExceedsFunds(): boolean {
+		return this.total > Number(this.ward?.credits)
+	}
+
 	constructor() { }
 
 	ngOnInit(): void {
 	}
 
 	ngOnChanges(): void {
-			if (this.perks.length) {
+		if (this.perks.length) {
 			this.perkRedeemAmounts = {}
 			this.perksToRedeem = []
 			for (let p of this.perks) {

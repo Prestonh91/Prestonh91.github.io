@@ -100,6 +100,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 		this.purchaseForSub = this.purchaseForSelection.valueChanges.subscribe(x => this.handleFilterPerks())
 
 		UIkit.util.on('#editPerk', 'hide', () => { this.perkToEdit = new Perk() })
+		UIkit.util.on('#perkRedeem', 'hide', () => { this.perksToRedeem = new Array() })
 	}
 
 	ngOnDestroy(): void {
@@ -187,6 +188,7 @@ export class GuardianPerksComponent implements OnInit, OnDestroy {
 	}
 
 	purchasePerksForWard() {
+		this.perksToRedeem = []
 		this.perksToRedeem = this.perkSelections
 		UIkit.offcanvas('#perkRedeem').show()
 	}
