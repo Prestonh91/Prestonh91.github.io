@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import { Ward } from 'src/app/classes';
 import { Perk } from 'src/app/classes/Perk';
+import { HouseholdService } from 'src/app/services/household.service';
+declare var UIkit: any;
 
 @Component({
   selector: 'perk-redeem',
@@ -9,7 +11,7 @@ import { Perk } from 'src/app/classes/Perk';
 })
 export class PerkRedeemComponent implements OnInit, OnChanges {
 	@Input() perks: Array<Perk> = new Array();
-	@Input() ward: Ward | null = null;
+	@Input() ward: Ward = new Ward();
 	@Output() cancel: EventEmitter<any> = new EventEmitter();
 
 	public perksToRedeem:  Array<Perk> = new Array();
@@ -18,17 +20,16 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 	public get total(): number {
 		return this.perksToRedeem.map(p => {
 			return Number(p.cost) * Number(this.perkRedeemAmounts[p.uid])
-		}).reduce((prev, curr) => {
-			debugger
-			return prev + curr
-		}, 0)
+		}).reduce((prev, curr) => prev + curr, 0)
 	}
 
 	public get totalExceedsFunds(): boolean {
 		return this.total > Number(this.ward?.credits)
 	}
 
-	constructor() { }
+	constructor(
+		private hhService: HouseholdService,
+	) { }
 
 	ngOnInit(): void {
 	}
@@ -66,7 +67,10 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 	}
 
 	redeemPerks() {
+		if (this.total > this.ward.credits) return
 
+		this.hhService.redeemPerks(this.ward, this.perksToRedeem, this.perkRedeemAmounts)
+		UIkit.offcanvas('#perkRedeem').hide()
 	}
 
 	cancelRedeem() {

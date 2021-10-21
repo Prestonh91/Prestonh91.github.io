@@ -70,6 +70,14 @@ export class Ward {
 		this.credits = Number(this.credits) + Number(reward)
 	}
 
+	public subtractCredits(cost: number) {
+		if (Number(this.credits) - Number(cost) < 0) {
+			throw new Error("Credit would be negative")
+		}
+
+		this.credits = Number(this.credits) - Number(cost)
+	}
+
 	public prepareUserForSave(): any {
 		return {
 			...this,

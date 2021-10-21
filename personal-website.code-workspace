@@ -1,9 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "."
-		},
-		{
 			"path": "./gamify-life",
 			"name": "Gamify Life"
 		},

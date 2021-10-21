@@ -4,13 +4,14 @@ import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { Store } from '@ngrx/store';
 import { from } from 'rxjs';
 import { map, mergeAll, take, toArray } from 'rxjs/operators';
-import { Guardian, Household, Quest } from 'src/app/classes';
+import { Guardian, Household, Quest, Ward } from 'src/app/classes';
 import { AppState } from 'src/store/app.state';
 import { setHousehold } from 'src/store/household/household.store';
 import { Perk } from '../classes/Perk';
 import { GuardianService } from './guardian.service';
 import { PerkService } from './perk.service';
 import { QuestService } from './quest.service';
+import { WardService } from './ward.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,7 @@ export class HouseholdService {
 		private guardianService: GuardianService,
 		private questService: QuestService,
 		private perkService: PerkService,
+		private wardService: WardService,
 		private store: Store<AppState>
 	) { }
 
@@ -177,5 +179,30 @@ export class HouseholdService {
 				this.voidSaveHousehold(hh)
 			}
 		})
+	}
+
+	redeemPerks(ward: Ward, perks: Array<Perk>, amounts: any) {
+		let total = perks.map(x => amounts[x.uid] * x.cost).reduce((prev, accum) => prev + accum, 0)
+		let wardToUse = new Ward(ward)
+		wardToUse.subtractCredits(total)
+
+		this.wardService.voidSaveWard(wardToUse)
+
+		for (let p of perks) {
+			let amount = Number(amounts[p.uid])
+			let remainingDurability = p.durability - amount
+
+			if (remainingDurability === 0) {
+				this.getHouseholdPromise(p.household).then(snapshot => {
+					if (snapshot.val()) {
+						let hh = new Household(snapshot.val())
+						this.removePerksFromHousehold([p], hh)
+					}
+				})
+			} else {
+				p.removeDurability(amount)
+				this.perkService.voidSavePerk(p, p.household)
+			}
+		}
 	}
 }

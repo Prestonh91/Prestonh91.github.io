@@ -51,6 +51,14 @@ export class Perk {
 		return perk
 	}
 
+	removeDurability(removeAmount: Number) {
+		if (Number(this.durability) - Number(removeAmount) < 0) {
+			throw new Error("Durability will be negative")
+		}
+
+		this.durability = Number(this.durability) - Number(removeAmount)
+	}
+
 	prepareForSave() {
 		return {
 			...this,
