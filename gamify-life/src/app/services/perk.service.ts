@@ -11,12 +11,20 @@ import { Perk } from '../classes/Perk';
 export class PerkService {
 	private perkUrl = "perks/"
 
-	private getPerkUrl(pUid: string, hhUid: string): string {
+	public getPerkContainerUrl(hhUid: string): string {
+		return `${this.perkUrl}${hhUid}`
+	}
+
+	public getPerkUrl(pUid: string, hhUid: string): string {
 		return `${this.perkUrl}${hhUid}/${pUid}`
 	}
 
-	private getPerkContainerUrl(hhUid: string): string {
-		return `${this.perkUrl}${hhUid}`
+	public getPerkDurabilityUrl(pUid: string, hhUid: string): string {
+		return `${this.getPerkUrl(pUid, hhUid)}/durability`
+	}
+
+	public getPerkDateUpdatedUrl(pUid: string, hhUid: string): string {
+		return `${this.getPerkUrl(pUid, hhUid)}/dateUpdated`
 	}
 
 	private validatePerkRequest(householdUid: string | null = null, hh: Household | null = null): string {
@@ -55,7 +63,12 @@ export class PerkService {
 	async getPerkValue(pUid: string, householdUid: string | null = null, hh: Household | null = null): Promise<Perk | null> {
 		var hhUid = this.validatePerkRequest(householdUid, hh)
 
-		return (await this.fireDb.database.ref(this.getPerkUrl(pUid, hhUid)).once('value')).val()
+		let results = (await this.fireDb.database.ref(this.getPerkUrl(pUid, hhUid)).once('value')).val()
+
+		if (results !== null)
+			return new Perk(results)
+
+		return null
 	}
 
 	getGuardianPerks(households: Object) {
@@ -100,5 +113,14 @@ export class PerkService {
 
 		// Grab the base DB ref as each update has the whole path to the perk
 		this.fireDb.object('/').update(updates)
+	}
+
+	public updatePerkDurability(perk: Perk, updates: any) {
+		updates[this.getPerkDurabilityUrl(perk.uid!, perk.household)] = perk.durability
+		updates[this.getPerkDateUpdatedUrl(perk.uid!, perk.household)] = new Date().toISOString()
+	}
+
+	public updateRemovePerk(perk: Perk, updates: any) {
+		updates[this.getPerkUrl(perk.uid!, perk.household)] = null
 	}
 }

@@ -14,6 +14,18 @@ import { Quest, Ward } from '../classes';
 export class WardService {
 	private wardURL = "wards/"
 
+	public getWardUrl(wUid: string) {
+		return `${this.wardURL}${wUid}`
+	}
+
+	public getWardCreditsUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/credits`
+	}
+
+	public getWardLastUpdatedUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/lastUpdated`
+	}
+
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
 	async getWardValue(wUid: string): Promise<Ward | null> {
@@ -73,5 +85,10 @@ export class WardService {
 			ward.addCredits(reward)
 			this.voidSaveWard(ward)
 		}
+	}
+
+	updateWardCredis(ward: Ward, updatesObject: any) {
+		updatesObject[this.getWardCreditsUrl(ward.uid!)] = ward.credits
+		updatesObject[this.getWardLastUpdatedUrl(ward.uid!)] = new Date().toISOString()
 	}
 }

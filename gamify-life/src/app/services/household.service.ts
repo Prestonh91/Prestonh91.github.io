@@ -23,6 +23,14 @@ export class HouseholdService {
 		return this.householdUrl + hhUid!
 	}
 
+	private getHHPerksUrl(hhUid: string) {
+		return `${this.getHHUrl(hhUid)}/perks`
+	}
+
+	private getHHDateUpdatedUrl(hhUid: string) {
+		return `${this.getHHUrl(hhUid)}/dateUpdated`
+	}
+
 	constructor(
 		private fireDb: AngularFireDatabase,
 		private guardianService: GuardianService,
@@ -40,8 +48,13 @@ export class HouseholdService {
 		return this.fireDb.object(this.getHHUrl(uid)).valueChanges()
 	}
 
-	async getHouseholdValue(uid: string) {
-		return (await this.fireDb.database.ref(this.getHHUrl(uid)).once('value')).val()
+	async getHouseholdValue(uid: string): Promise<Household | null> {
+		const results = (await this.fireDb.database.ref(this.getHHUrl(uid)).once('value')).val()
+
+		if (results)
+			return new Household(results)
+
+		return null
 	}
 
 	getHouseholdPromise(uid: string) {
@@ -115,7 +128,10 @@ export class HouseholdService {
 		var guardian = new Guardian(await this.guardianService.getGuardianValue(guardianUid))
 
 		// Fetch the household
-		var hh = new Household(await this.getHouseholdValue(hhUid))
+		var hh = await this.getHouseholdValue(hhUid)
+
+		if (hh === null)
+			throw new Error("Household service: Join Household household is null")
 
 		// Add the guardian to the household and the household to the guardain
 		hh.addGuardian(guardian)
@@ -181,15 +197,15 @@ export class HouseholdService {
 		})
 	}
 
-	redeemPerks(ward: Ward, perks: Array<Perk>, amounts: any) {
-		let total = perks.map(x => amounts[x.uid] * x.cost).reduce((prev, accum) => prev + accum, 0)
+	redeemPerks(ward: Ward, perks: Array<Perk>, perkRedeemAmounts: any) {
+		let total = perks.map(x => perkRedeemAmounts[x.uid] * x.cost).reduce((prev, accum) => prev + accum, 0)
 		let wardToUse = new Ward(ward)
 		wardToUse.subtractCredits(total)
 
 		this.wardService.voidSaveWard(wardToUse)
 
 		for (let p of perks) {
-			let amount = Number(amounts[p.uid])
+			let amount = Number(perkRedeemAmounts[p.uid])
 			let remainingDurability = p.durability - amount
 
 			if (remainingDurability === 0) {
@@ -204,5 +220,72 @@ export class HouseholdService {
 				this.perkService.voidSavePerk(p, p.household)
 			}
 		}
+	}
+
+	async redeemPerksTest(ward: Ward, perks: Array<Perk>, perkRedeemAmounts: any) {
+		// An object to hold the updates to be sent to the DB
+		let updates: any = {}
+
+		// Get the total amount of credits this is going to cost
+		let total = perks.map(x => perkRedeemAmounts[x.uid] * x.cost).reduce((prev, accum) => prev + accum, 0)
+
+		// Grab the ward to get the most up to date version
+		let wardToUpdate = await this.wardService.getWardValue(ward.uid!)
+
+		// If the ward doesn't exist Uh-Oh
+		if (wardToUpdate === null)
+			throw new Error("Household Service: Redeem Perks ward is null")
+
+		// Subtract the credits from the ward, will throw if the credits will go negative
+		wardToUpdate.subtractCredits(total)
+
+		// Add the updates for the ward to the updates object
+		this.wardService.updateWardCredis(wardToUpdate, updates)
+
+		// Loop over the perks and subtract the durability from them, delete them if their durability is zero
+		for (let p of perks) {
+			// If the perk has unlimited uses skip doing anything to this perk
+			if (p.hasUnlimited) continue
+
+			// Get how much durability to remove
+			let amount = Number(perkRedeemAmounts[p.uid])
+
+			// Get the updated perk
+			let freshPerk = await this.perkService.getPerkValue(p.uid!, p.household)
+
+			if (freshPerk === null)
+				throw new Error("Household Service: Redeem Perks perk is null")
+
+			// Subtract the amount used from the durability, this will throw if durability will be negative
+			freshPerk.removeDurability(amount)
+
+			if (freshPerk.durability === 0) {
+				// Get the fresh household
+				let hh = await this.getHouseholdValue(p.household)
+
+				if (hh === null)
+					throw new Error("Household Service: Redeem Perks household is null")
+
+				// Remove the perk from the household
+				hh.removePerk(freshPerk.uid!)
+
+				// Add the updated household perk list to the updates object
+				this.updateHHPerks(hh, updates)
+
+				// Null out the perk on the updates object to remove it from the db
+				this.perkService.updateRemovePerk(freshPerk, updates)
+			} else {
+				// Add the perks updated durability to the updates object
+				this.perkService.updatePerkDurability(freshPerk, updates)
+			}
+		}
+
+		// Fire off the update to finalize everything
+		this.fireDb.database.ref().update(updates)
+	}
+
+	public updateHHPerks(hh: Household, updates: any) {
+		updates[this.getHHPerksUrl(hh.uid!)] = hh.perks
+		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date().toISOString()
 	}
 }

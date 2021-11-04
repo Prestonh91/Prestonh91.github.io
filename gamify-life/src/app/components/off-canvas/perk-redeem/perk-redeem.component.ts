@@ -66,10 +66,10 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 		}
 	}
 
-	redeemPerks() {
+	async redeemPerks() {
 		if (this.total > this.ward.credits) return
 
-		this.hhService.redeemPerks(this.ward, this.perksToRedeem, this.perkRedeemAmounts)
+		await this.hhService.redeemPerksTest(this.ward, this.perksToRedeem, this.perkRedeemAmounts)
 		UIkit.offcanvas('#perkRedeem').hide()
 	}
 

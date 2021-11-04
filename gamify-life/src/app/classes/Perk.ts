@@ -52,6 +52,8 @@ export class Perk {
 	}
 
 	removeDurability(removeAmount: Number) {
+		if (this.hasUnlimited) return
+
 		if (Number(this.durability) - Number(removeAmount) < 0) {
 			throw new Error("Durability will be negative")
 		}
