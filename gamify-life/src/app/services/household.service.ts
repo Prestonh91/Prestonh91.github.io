@@ -11,6 +11,7 @@ import { Perk } from '../classes/Perk';
 import { GuardianService } from './guardian.service';
 import { PerkService } from './perk.service';
 import { QuestService } from './quest.service';
+import { TransactionService } from './transaction.service';
 import { WardService } from './ward.service';
 
 @Injectable({
@@ -37,6 +38,7 @@ export class HouseholdService {
 		private questService: QuestService,
 		private perkService: PerkService,
 		private wardService: WardService,
+		private transactionService: TransactionService,
 		private store: Store<AppState>
 	) { }
 
@@ -255,6 +257,12 @@ export class HouseholdService {
 
 			if (freshPerk === null)
 				throw new Error("Household Service: Redeem Perks perk is null")
+
+			// Create a transaction to record this redemption
+			var perkTransaction = this.transactionService.createPerkTransaction(freshPerk.cost, freshPerk.title!, wardToUpdate.uid!)
+
+			// Add the transaction to the updates object
+			this.transactionService.updateSaveTransaction(perkTransaction, updates)
 
 			// Subtract the amount used from the durability, this will throw if durability will be negative
 			freshPerk.removeDurability(amount)

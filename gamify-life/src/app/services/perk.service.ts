@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { from, Observable, of } from 'rxjs';
-import { filter, map, mergeMap, pairwise } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { Household } from '../classes';
 import { Perk } from '../classes/Perk';
 
