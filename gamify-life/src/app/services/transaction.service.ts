@@ -39,8 +39,8 @@ export class TransactionService {
 		updates[this.getTransactionUrl(transaction.ward!, transaction.uid!)] = transaction
 	}
 
-	public createPerkTransaction(amount: Number, perkName: string, ward: string): Transaction {
+	public createPerkTransaction(amount: Number, purchaseTimes: Number, perkName: string, ward: string): Transaction {
 		var uid = this.db.database.ref().push()
-		return new Transaction({amount: amount, perkName: perkName, ward: ward, uid: uid.key})
+		return new Transaction({amount: amount, purchaseTimes: purchaseTimes, perkName: perkName, ward: ward, uid: uid.key})
 	}
 }

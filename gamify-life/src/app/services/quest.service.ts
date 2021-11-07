@@ -16,6 +16,10 @@ export class QuestService {
 		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
 	}
 
+	private finalizeRootUpdates(updates: any) {
+		this.fireDB.database.ref().update(updates)
+	}
+
 	constructor(
 		private fireDB: AngularFireDatabase,
 		private wardervice: WardService) { }
@@ -33,7 +37,13 @@ export class QuestService {
 	}
 
 	voidSaveQuest(quest: Quest) {
-		this.fireDB.object(this.getExistingQuestUrl(quest)).set(quest.prepareForSave())
+		let updates: any = {}
+
+		// Add quest to updates object
+		this.updateAddQuest(quest, updates)
+
+		// Finalize the updates
+		this.finalizeRootUpdates(updates)
 	}
 
 	voidUpdateQuest(quest: Quest, updates: any) {
@@ -47,9 +57,6 @@ export class QuestService {
 
 		// Put the new key on the new quest
 		quest.uid = questDbRef.key
-
-		// Save the quest
-		questDbRef.set(quest.prepareForSave())
 
 		// Return the newly saved quest
 		return quest
@@ -97,5 +104,13 @@ export class QuestService {
 		updates["/dateCompleted"] = null
 		updates["/assignee"] = null
 		this.updateQuest(quest, updates)
+	}
+
+	updateRemoveQuest(quest: Quest, updates: any) {
+		updates[this.getExistingQuestUrl(quest)] = null
+	}
+
+	updateAddQuest(quest: Quest, updates: any) {
+		updates[this.getExistingQuestUrl(quest)] = quest.prepareForSave()
 	}
 }

@@ -61,12 +61,8 @@ export class Perk {
 		this.durability = Number(this.durability) - Number(removeAmount)
 	}
 
-	prepareForSave() {
-		return {
-			...this,
-			dateAccepted: this.dateAccepted ? this.dateAccepted.toISOString() : null,
-			dateCreated: this.dateCreated.toISOString(),
-			dateUpdated: new Date().toISOString(),
-		}
+	prepareForSave(): Perk {
+		this.dateUpdated = new Date()
+		return this
 	}
 }

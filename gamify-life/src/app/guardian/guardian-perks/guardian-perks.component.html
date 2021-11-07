@@ -61,5 +61,5 @@
 	</div>
 	<create-perk id="createPerk" uk-modal></create-perk>
 	<edit-perk [perk]="perkToEdit" id="editPerk" uk-modal></edit-perk>
-	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" (cancel)="cancelRedeem()" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
+	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" (cancel)="cancelRedeem()" (perksRedeemed)="clearAllFilters()" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
 </section>

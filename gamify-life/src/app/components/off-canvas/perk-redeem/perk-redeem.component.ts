@@ -13,6 +13,7 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 	@Input() perks: Array<Perk> = new Array();
 	@Input() ward: Ward = new Ward();
 	@Output() cancel: EventEmitter<any> = new EventEmitter();
+	@Output() perksRedeemed: EventEmitter<any> = new EventEmitter();
 
 	public perksToRedeem:  Array<Perk> = new Array();
 	public perkRedeemAmounts: any = {};
@@ -70,6 +71,7 @@ export class PerkRedeemComponent implements OnInit, OnChanges {
 		if (this.total > this.ward.credits) return
 
 		await this.hhService.redeemPerksTest(this.ward, this.perksToRedeem, this.perkRedeemAmounts)
+		this.perksRedeemed.emit()
 		UIkit.offcanvas('#perkRedeem').hide()
 	}
 

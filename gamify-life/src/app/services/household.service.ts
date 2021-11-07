@@ -28,8 +28,16 @@ export class HouseholdService {
 		return `${this.getHHUrl(hhUid)}/perks`
 	}
 
+	private getHHQuestsUrl(hhUid: string) {
+		return `${this.getHHUrl(hhUid)}/quests`
+	}
+
 	private getHHDateUpdatedUrl(hhUid: string) {
 		return `${this.getHHUrl(hhUid)}/dateUpdated`
+	}
+
+	private finalizeRootUpdates(updates: any) {
+		this.fireDb.database.ref().update(updates)
 	}
 
 	constructor(
@@ -111,16 +119,29 @@ export class HouseholdService {
 	}
 
 	createNewQuest(quest: Quest) {
+		let updates: any = {}
+
 		// Save the quest which also gives us a UID
 		quest = this.questService.createNewQuest(quest)
 
+		this.questService.updateAddQuest(quest, updates)
+
 		// Fetch the household to add the new quest to it, save the household, update the store
-		this.getHouseholdPromise(quest.household!).then(hh => {
-			if (hh.val()) {
-				let h = new Household(hh.val())
-				h.addQuest(quest.uid!)
-				this.voidSaveHousehold(h)
-				this.store.dispatch(setHousehold({ household: h }))
+		this.getHouseholdPromise(quest.household!).then(snapshot => {
+			if (snapshot.val()) {
+				let hh = new Household(snapshot.val())
+
+				// Add the quest to the household
+				hh.addQuest(quest.uid!)
+
+				// Add the updates household to the updates object
+				this.updateHHQuests(hh, updates)
+
+				// Update the store
+				this.store.dispatch(setHousehold({ household: hh }))
+
+				// Finalize the updates
+				this.finalizeRootUpdates(updates)
 			}
 		})
 	}
@@ -147,81 +168,98 @@ export class HouseholdService {
 	addQuestToHousehold(quest: Quest) {
 		this.getHouseholdPromise(quest.household!).then((hhSnap: DataSnapshot) => {
 			if (hhSnap.val()) {
+				let updates: any = {}
 				let hh = new Household(hhSnap.val())
+
+				// Update the household
 				hh.addQuest(quest.uid!)
-				this.voidSaveHousehold(hh)
+
+				// Add the updated hh to the updates object
+				this.updateHHQuests(hh, updates)
+
+				// Add quest save to updates object
+				this.questService.updateAddQuest(quest, updates)
+
+				// Finalize the updates
+				this.finalizeRootUpdates(updates)
 			}
 		})
-
-		this.questService.voidSaveQuest(quest)
 	}
 
 	removeQuestFromHousehold(quest: Quest, household: Household) {
+		let updates: any = {}
+
+		// Remove the quest from the household
 		household.removeQuest(quest.uid!)
 
-		this.voidSaveHousehold(household)
+		// Add the updates hh quests to the update object
+		this.updateHHQuests(household, updates)
 
-		this.questService.deleteQuest(quest)
+		// Add deleted quest to the update object
+		this.questService.updateRemoveQuest(quest, updates)
+
+		// Finalize the updates
+		this.finalizeRootUpdates(updates)
 	}
 
 	addPerkToHousehold(perk: Perk) {
 		this.getHouseholdPromise(perk.household).then((snapShot: DataSnapshot) => {
 			if (snapShot.exists()) {
+				let updates: any = {}
 				let hh = new Household(snapShot.val())
-				hh.addPerk(perk.uid)
-				this.voidSaveHousehold(hh)
 
-				this.perkService.voidSavePerk(perk, hh.uid)
+				// Add the new perk onto the HH
+				hh.addPerk(perk.uid)
+
+				// Add the updated HH perks to the update object
+				this.updateHHPerks(hh, updates)
+
+				// Add new perk to the update object
+				this.perkService.updateAddPerk(perk, updates)
+
+				// Finalize all the updates
+				this.finalizeRootUpdates(updates)
 			}
 		})
 	}
 
 	removePerksFromHousehold(perkList: Array<Perk>, household: Household) {
+		let updates: any = {}
 		let perkUidsToRemove = perkList.map(x => x.uid)
+
+		// Remove the perks from the HH
 		household.removePerks(perkUidsToRemove)
 
-		this.voidSaveHousehold(household)
+		// Add the updated hh to the updates object
+		this.updateHHPerks(household, updates)
 
-		this.perkService.deletePerks(perkList)
+		// Loop over all the perks and add their removal onto the updates object
+		for (let pUid of perkUidsToRemove) {
+			this.perkService.updateRemovePerk(pUid, household.uid!, updates)
+		}
+
+		// Finalize all the updates in the object
+		this.finalizeRootUpdates(updates)
 	}
 
 	createNewPerk(perk: Perk) {
+		let updates: any = {};
+
 		// Add the perk to the household
-		perk = this.perkService.saveNewPerk(perk)
+		perk.uid = this.perkService.getNewPerkUid()
+
+		// Add the new perk to the update object
+		this.perkService.updateAddPerk(perk, updates)
 
 		// Fetch the household, update the household, and save the household
 		this.getHouseholdPromise(perk.household).then(res => {
 			if (res.val()) {
 				let hh = new Household(res.val())
 				hh.addPerk(perk.uid)
-				this.voidSaveHousehold(hh)
+				this.updateHHPerks(hh, updates)
+				this.finalizeRootUpdates(updates)
 			}
 		})
-	}
-
-	redeemPerks(ward: Ward, perks: Array<Perk>, perkRedeemAmounts: any) {
-		let total = perks.map(x => perkRedeemAmounts[x.uid] * x.cost).reduce((prev, accum) => prev + accum, 0)
-		let wardToUse = new Ward(ward)
-		wardToUse.subtractCredits(total)
-
-		this.wardService.voidSaveWard(wardToUse)
-
-		for (let p of perks) {
-			let amount = Number(perkRedeemAmounts[p.uid])
-			let remainingDurability = p.durability - amount
-
-			if (remainingDurability === 0) {
-				this.getHouseholdPromise(p.household).then(snapshot => {
-					if (snapshot.val()) {
-						let hh = new Household(snapshot.val())
-						this.removePerksFromHousehold([p], hh)
-					}
-				})
-			} else {
-				p.removeDurability(amount)
-				this.perkService.voidSavePerk(p, p.household)
-			}
-		}
 	}
 
 	async redeemPerksTest(ward: Ward, perks: Array<Perk>, perkRedeemAmounts: any) {
@@ -259,7 +297,7 @@ export class HouseholdService {
 				throw new Error("Household Service: Redeem Perks perk is null")
 
 			// Create a transaction to record this redemption
-			var perkTransaction = this.transactionService.createPerkTransaction(freshPerk.cost, freshPerk.title!, wardToUpdate.uid!)
+			var perkTransaction = this.transactionService.createPerkTransaction(freshPerk.cost, amount ,freshPerk.title!, wardToUpdate.uid!)
 
 			// Add the transaction to the updates object
 			this.transactionService.updateSaveTransaction(perkTransaction, updates)
@@ -281,7 +319,7 @@ export class HouseholdService {
 				this.updateHHPerks(hh, updates)
 
 				// Null out the perk on the updates object to remove it from the db
-				this.perkService.updateRemovePerk(freshPerk, updates)
+				this.perkService.updateRemovePerk(freshPerk.uid!, freshPerk.household!, updates)
 			} else {
 				// Add the perks updated durability to the updates object
 				this.perkService.updatePerkDurability(freshPerk, updates)
@@ -289,11 +327,16 @@ export class HouseholdService {
 		}
 
 		// Fire off the update to finalize everything
-		this.fireDb.database.ref().update(updates)
+		this.finalizeRootUpdates(updates)
 	}
 
 	public updateHHPerks(hh: Household, updates: any) {
 		updates[this.getHHPerksUrl(hh.uid!)] = hh.perks
+		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date().toISOString()
+	}
+
+	public updateHHQuests(hh: Household, updates: any) {
+		updates[this.getHHQuestsUrl(hh.uid!)] = hh.quests
 		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date().toISOString()
 	}
 }

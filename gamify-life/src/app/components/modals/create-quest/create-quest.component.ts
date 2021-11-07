@@ -101,6 +101,7 @@ export class CreateQuestComponent implements OnInit, OnDestroy {
 		newQuest.objectives = this.quest.get('objectives')?.value?.filter((x: string) => x)
 		newQuest.author = this.guardian.uid
 		newQuest.assignee = this.assignee.value
+		newQuest.dateCreated = new Date()
 
 		this.hhService.createNewQuest(newQuest)
 		UIkit.modal('#createQuest')?.hide()
