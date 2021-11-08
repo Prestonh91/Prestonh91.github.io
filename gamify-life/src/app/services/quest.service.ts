@@ -3,6 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { from } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { Quest } from 'src/app/classes';
+import { TransactionService } from './transaction.service';
 import { WardService } from './ward.service';
 
 @Injectable({
@@ -22,7 +23,9 @@ export class QuestService {
 
 	constructor(
 		private fireDB: AngularFireDatabase,
-		private wardervice: WardService) { }
+		private wardervice: WardService,
+		private transactionService: TransactionService
+	) { }
 
 	private getHouseholdQuestContainer(hhUid: string) {
 		return `${this.questUrl}${hhUid}`
@@ -30,6 +33,14 @@ export class QuestService {
 
 	private getExistingQuestUrl(quest: Quest) {
 		return `${this.questUrl}${quest.household}/${quest.uid}`
+	}
+
+	private getQuestDateUpdatedUrl(quest: Quest) {
+		return `${this.getExistingQuestUrl(quest)}/dateUpdated`
+	}
+
+	private getQuestDateCompletedUrl(quest: Quest) {
+		return `${this.getExistingQuestUrl(quest)}/dateCompleted`
 	}
 
 	private removeQuest(quest: Quest) {
@@ -47,8 +58,8 @@ export class QuestService {
 	}
 
 	voidUpdateQuest(quest: Quest, updates: any) {
-		updates["dateUpdated"] = new Date().toISOString()
-		this.fireDB.object(this.getExistingQuestUrl(quest)).update(updates)
+		updates[this.getQuestDateUpdatedUrl(quest)] = new Date()
+		this.fireDB.object("/").update(updates)
 	}
 
 	createNewQuest(quest: Quest): Quest {
@@ -79,11 +90,18 @@ export class QuestService {
 		)
 	}
 
-	markQuestAsComplete(quest: Quest) {
-		this.wardervice.awardWardReward(quest)
+	async markQuestAsComplete(quest: Quest) {
+		let updates: any = {}
 
-		var updates: any = {}
-		updates["dateCompleted"] = new Date().toISOString()
+		// Add ward updates to the updates object
+		await this.wardervice.awardWardReward(quest, updates)
+
+		// Create the transaction, add the transaction to the updates object
+		let transaction = this.transactionService.createTransaction(quest.reward!, 1, quest.title!, quest.assignee!, true)
+		this.transactionService.updateSaveTransaction(transaction, updates)
+
+		// update the quest date completed and updated
+		updates[this.getQuestDateCompletedUrl(quest)] = new Date()
 		this.voidUpdateQuest(quest, updates)
 	}
 

@@ -280,7 +280,7 @@ export class HouseholdService {
 		wardToUpdate.subtractCredits(total)
 
 		// Add the updates for the ward to the updates object
-		this.wardService.updateWardCredis(wardToUpdate, updates)
+		this.wardService.updateWardCredits(wardToUpdate, updates)
 
 		// Loop over the perks and subtract the durability from them, delete them if their durability is zero
 		for (let p of perks) {
@@ -297,7 +297,7 @@ export class HouseholdService {
 				throw new Error("Household Service: Redeem Perks perk is null")
 
 			// Create a transaction to record this redemption
-			var perkTransaction = this.transactionService.createPerkTransaction(freshPerk.cost, amount ,freshPerk.title!, wardToUpdate.uid!)
+			var perkTransaction = this.transactionService.createTransaction(freshPerk.cost, amount ,freshPerk.title!, wardToUpdate.uid!)
 
 			// Add the transaction to the updates object
 			this.transactionService.updateSaveTransaction(perkTransaction, updates)

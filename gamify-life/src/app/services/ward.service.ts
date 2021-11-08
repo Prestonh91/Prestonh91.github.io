@@ -77,18 +77,18 @@ export class WardService {
 		return wardsValue
 	}
 
-	async awardWardReward(quest: Quest) {
+	async awardWardReward(quest: Quest, updates: any) {
 		let ward = await this.getWardValue(quest.assignee!)
 
 		if (ward) {
 			let reward: number = quest.reward ? quest.reward : 0
 			ward.addCredits(reward)
-			this.voidSaveWard(ward)
+			this.updateWardCredits(ward, updates)
 		}
 	}
 
-	updateWardCredis(ward: Ward, updatesObject: any) {
+	updateWardCredits(ward: Ward, updatesObject: any) {
 		updatesObject[this.getWardCreditsUrl(ward.uid!)] = ward.credits
-		updatesObject[this.getWardLastUpdatedUrl(ward.uid!)] = new Date().toISOString()
+		updatesObject[this.getWardLastUpdatedUrl(ward.uid!)] = new Date()
 	}
 }
