@@ -1,0 +1,31 @@
+<header>
+	<h2 class="uk-text-primary">{{ guardian.displayName }}'s Profile</h2>
+</header>
+<section>
+	<section>
+		<div
+			uk-grid
+			class="uk-flex-middle"
+		>
+			<h3 class="uk-margin-remove uk-text-primary">Current households</h3>
+			<div><button class="gl-button-primary-small">Join Household</button></div>
+			<div><button class="gl-button-primary-small">Create Household</button></div>
+		</div>
+		<table class="uk-table">
+			<tbody>
+				<tr
+					*ngFor="let hh of (households$ | async)"
+				>
+					<td><p class="uk-margin-remove uk-text-bold gl-text-medium">{{ hh.name }}</p></td>
+					<td class="uk-text-middle"><p class="uk-margin-remove">Guardians: <i>{{ getObjectLength(hh.guardians) }}</i></p></td>
+					<td class="uk-text-middle"><p class="uk-margin-remove">Wards: <i>{{ getObjectLength(hh.wards) }}</i></p></td>
+					<td class="uk-text-middle"><p class="uk-margin-remove">Quests: <i>{{ getObjectLength(hh.quests) }}</i></p></td>
+					<td class="uk-text-middle"><p class="uk-margin-remove">Perks: <i>{{ getObjectLength(hh.perks) }}</i></p></td>
+					<td class="uk-text-middle"><p class="uk-margin-remove">Household Key: <i>{{ hh.uid }}</i></p></td>
+					<td><button class="gl-button-primary-small" (click)="handleLeaveHousehold(hh.uid)">{{ getObjectLength(hh.guardians) > 1 ? "Leave Household" : "Delete Household" }}</button></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</section>
+</section>
