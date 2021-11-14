@@ -31,8 +31,16 @@ export class QuestService {
 		return `${this.questUrl}${hhUid}`
 	}
 
-	private getExistingQuestUrl(quest: Quest) {
-		return `${this.questUrl}${quest.household}/${quest.uid}`
+	private getExistingQuestUrl(quest: Quest | null = null, qUid: string = "", hhUid: string = "") {
+		if (!quest && !qUid && !hhUid) {
+			throw new Error("Quest Service: a quest or uids are needed.")
+		}
+
+		if (quest) {
+			return `${this.questUrl}${quest.household}/${quest.uid}`
+		} else {
+			return `${this.questUrl}${hhUid}/${qUid}`
+		}
 	}
 
 	private getQuestDateUpdatedUrl(quest: Quest) {
@@ -126,6 +134,10 @@ export class QuestService {
 
 	updateRemoveQuest(quest: Quest, updates: any) {
 		updates[this.getExistingQuestUrl(quest)] = null
+	}
+
+	updateRemoveQuestWithUids(qUid: string, hhUid: string, updates: any) {
+		updates[this.getExistingQuestUrl(null, qUid, hhUid)] = null
 	}
 
 	updateAddQuest(quest: Quest, updates: any) {

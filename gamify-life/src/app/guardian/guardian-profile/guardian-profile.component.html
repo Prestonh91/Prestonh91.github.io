@@ -3,29 +3,43 @@
 </header>
 <section>
 	<section>
-		<div
-			uk-grid
-			class="uk-flex-middle"
-		>
+		<div class="gl-border-bottom">
 			<h3 class="uk-margin-remove uk-text-primary">Current households</h3>
-			<div><button class="gl-button-primary-small">Join Household</button></div>
-			<div><button class="gl-button-primary-small">Create Household</button></div>
+			<table class="uk-table">
+				<tbody>
+					<tr
+						*ngFor="let hh of households"
+					>
+						<td><p class="uk-margin-remove uk-text-bold gl-text-medium">{{ hh.name }}</p></td>
+						<td class="uk-text-middle"><p class="uk-margin-remove">Guardians: <i>{{ getObjectLength(hh.guardians) }}</i></p></td>
+						<td class="uk-text-middle"><p class="uk-margin-remove">Wards: <i>{{ getObjectLength(hh.wards) }}</i></p></td>
+						<td class="uk-text-middle"><p class="uk-margin-remove">Quests: <i>{{ getObjectLength(hh.quests) }}</i></p></td>
+						<td class="uk-text-middle"><p class="uk-margin-remove">Perks: <i>{{ getObjectLength(hh.perks) }}</i></p></td>
+						<td class="uk-text-middle"><p class="uk-margin-remove">Household Key: <i>{{ hh.uid }}</i></p></td>
+						<td uk-grid class="uk-flex-right uk-flex-nowrap">
+							<div><button *ngIf="getNumberOfGuardians(hh) > 1" class="gl-button-primary-small" (click)="handleLeaveHousehold(hh.uid!)">Leave</button></div>
+							<div><button class="gl-button-primary-small" (click)="handleDeleteHousehold(hh.uid!)">Delete</button></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<table class="uk-table">
-			<tbody>
-				<tr
-					*ngFor="let hh of (households$ | async)"
-				>
-					<td><p class="uk-margin-remove uk-text-bold gl-text-medium">{{ hh.name }}</p></td>
-					<td class="uk-text-middle"><p class="uk-margin-remove">Guardians: <i>{{ getObjectLength(hh.guardians) }}</i></p></td>
-					<td class="uk-text-middle"><p class="uk-margin-remove">Wards: <i>{{ getObjectLength(hh.wards) }}</i></p></td>
-					<td class="uk-text-middle"><p class="uk-margin-remove">Quests: <i>{{ getObjectLength(hh.quests) }}</i></p></td>
-					<td class="uk-text-middle"><p class="uk-margin-remove">Perks: <i>{{ getObjectLength(hh.perks) }}</i></p></td>
-					<td class="uk-text-middle"><p class="uk-margin-remove">Household Key: <i>{{ hh.uid }}</i></p></td>
-					<td><button class="gl-button-primary-small" (click)="handleLeaveHousehold(hh.uid)">{{ getObjectLength(hh.guardians) > 1 ? "Leave Household" : "Delete Household" }}</button></td>
-				</tr>
-			</tbody>
-		</table>
-
+		<div class="uk-margin-top">
+			<div uk-grid>
+				<p class="uk-margin-remove gl-pointer-cursor" (click)="handleSelectCreateHH()" [ngClass]="{ 'uk-text-muted': !data.isCreateHHSelected, 'uk-text-bold': data.isCreateHHSelected }">Create Household</p>
+				<p class="uk-margin-remove gl-pointer-cursor" (click)="handleSelectJoinHH()" [ngClass]="{ 'uk-text-muted': !data.isJoinHHSelected, 'uk-text-bold': data.isJoinHHSelected }">Join Household</p>
+			</div>
+			<div class="uk-form-stacked uk-margin-small-top">
+				<div uk-grid>
+					<div><input [formControl]="data.householdInput" [placeholder]="hhPlaceholder" type="text" class="uk-form-controls uk-background-muted gl-text-input"></div>
+					<div>
+						<button
+							(click)="handeSubmitHousehold()"
+							class="gl-button-primary-small"
+							placeholder="">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 </section>

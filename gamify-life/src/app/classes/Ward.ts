@@ -27,6 +27,7 @@ export class Ward {
 			photoURL = null,
 			credits = 0,
 			uid = null,
+			households = {}
 		} = u
 
 		this.dateCreated = new Date(dateCreated || new Date());
@@ -38,6 +39,7 @@ export class Ward {
 		this.photoURL = photoURL
 		this.credits = credits
 		this.uid = uid
+		this.households = households
 	}
 
 	static createNewWard(user: User, hhUid: string, userName: string): Ward {

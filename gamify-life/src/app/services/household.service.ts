@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, snapshotChanges } from '@angular/fire/database';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { DataSnapshot } from '@angular/fire/database/interfaces';
 import { Store } from '@ngrx/store';
 import { from } from 'rxjs';
@@ -13,6 +13,7 @@ import { PerkService } from './perk.service';
 import { QuestService } from './quest.service';
 import { TransactionService } from './transaction.service';
 import { WardService } from './ward.service';
+import { setGuardian } from 'src/store/guardian/guardian.store';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,10 @@ export class HouseholdService {
 
 	private getHHDateUpdatedUrl(hhUid: string) {
 		return `${this.getHHUrl(hhUid)}/dateUpdated`
+	}
+
+	private getHHGuardiansUrl(hhUid: string) {
+		return `${this.getHHUrl(hhUid)}/guardians`
 	}
 
 	private finalizeRootUpdates(updates: any) {
@@ -101,21 +106,116 @@ export class HouseholdService {
 	}
 
 	async createNewHousehold(name: string, guardianUid: string) {
+		let updates: any = {}
+
 		// Get the guardian
-		var guardian = new Guardian(await this.guardianService.getGuardianValue(guardianUid))
+		var guardian = await this.guardianService.getGuardianValue(guardianUid)
+
+		if (guardian === null)
+			throw new Error("Household Service: Create New Household guardian is null")
 
 		// Create the new household, includes adding
 		var newHousehold = Household.createNewHousehold(name, this.fireDb.createPushId(), guardian)
+		this.updateAddGuardian(newHousehold, updates)
 
 		// Add the new household to the guardians array
 		guardian.addHousehold(newHousehold)
-
-		// Update the guardian
-		this.guardianService.voidSaveGuardian(guardian, true);
+		this.guardianService.updateGuardianHouseholds(guardian, updates)
 
 		// Save the household
-		var res = await this.fireDb.object(this.getHHUrl(newHousehold.uid!)).set(newHousehold.prepareHouseholdForSave())
-		return res
+		this.finalizeRootUpdates(updates)
+		this.store.dispatch(setGuardian({ guardian: guardian }))
+	}
+
+	async joinHousehold(hhUid: string, guardianUid: string) {
+		let updates: any = {}
+
+		// Fetch the guardian
+		var guardian = await this.guardianService.getGuardianValue(guardianUid)
+
+		if (guardian === null) {
+			throw new Error("Household Service: Join Household Guardian is null")
+		}
+
+		// Fetch the household
+		var hh = await this.getHouseholdValue(hhUid)
+
+		if (hh === null)
+			throw new Error("Household service: Join Household household is null")
+
+		// Add the guardian to the household and the household to the guardain
+		hh.addGuardian(guardian)
+		this.updateHHGuardian(hh, updates)
+
+		guardian.addHousehold(hh)
+		this.guardianService.updateGuardianHouseholds(guardian, updates)
+
+		this.finalizeRootUpdates(updates)
+		this.store.dispatch(setGuardian({ guardian: guardian }))
+	}
+
+	async guardianLeaveHousehold(guardian: Guardian, hh: Household) {
+		let updates: any = {}
+
+		// Remove the hh from the guardian, add to updates object
+		guardian.removeHousehold(hh)
+		this.guardianService.updateGuardianHouseholds(guardian, updates)
+
+		hh.removeGuardian(guardian)
+		this.updateHHGuardian(hh, updates)
+
+		this.finalizeRootUpdates(updates)
+		this.store.dispatch(setGuardian({ guardian : guardian }))
+	}
+
+	async deleteHousehold(hh: Household, loggedInGuardian: Guardian) {
+		let updates: any = {}
+		let guardianToUpdate: Guardian = new Guardian();
+
+		// Delete the houeshold from all its guardians
+		for (let gUid of Object.keys(hh.guardians)) {
+			// Get the guardian
+			let guardian = await this.guardianService.getGuardianValue(gUid)
+
+			// Update the guardians households, add to the updates objects
+			if (guardian) {
+				guardian.removeHousehold(hh)
+				this.guardianService.updateGuardianHouseholds(guardian, updates)
+
+				// Save the guardian later to update the store
+				if (guardian.uid === loggedInGuardian.uid) {
+					guardianToUpdate = guardian
+				}
+			}
+		}
+
+		// Delete the household from all its wards
+		for (let wUid of Object.keys(hh.wards)) {
+			// Get the ward
+			let ward = await this.wardService.getWardValue(wUid)
+
+			// Update the wards households, add ward to the updates object
+			if (ward) {
+				ward.removeHousehold(hh.uid!)
+				this.wardService.updateWardHouseholds(ward, updates)
+			}
+		}
+
+		// Delete all the quests that are tied to the household
+		for (let qUid of Object.keys(hh.quests)) {
+			this.questService.updateRemoveQuestWithUids(qUid, hh.uid!, updates)
+		}
+
+		// Delete all the perks that are tied to the household
+		for (let pUid of Object.keys(hh.perks)) {
+			this.perkService.updateRemovePerk(pUid, hh.uid!, updates)
+		}
+
+		// Delete the household
+		this.updateHHRemove(hh, updates)
+
+		this.finalizeRootUpdates(updates)
+		this.store.dispatch(setGuardian({ guardian: guardianToUpdate }))
 	}
 
 	createNewQuest(quest: Quest) {
@@ -144,25 +244,6 @@ export class HouseholdService {
 				this.finalizeRootUpdates(updates)
 			}
 		})
-	}
-
-	async joinHousehold(hhUid: string, guardianUid: string) {
-		// Fetch the guardian
-		var guardian = new Guardian(await this.guardianService.getGuardianValue(guardianUid))
-
-		// Fetch the household
-		var hh = await this.getHouseholdValue(hhUid)
-
-		if (hh === null)
-			throw new Error("Household service: Join Household household is null")
-
-		// Add the guardian to the household and the household to the guardain
-		hh.addGuardian(guardian)
-		guardian.addHousehold(hh)
-
-		await this.guardianService.voidSaveGuardian(guardian, true)
-		await this.voidSaveHousehold(hh);
-		return true
 	}
 
 	addQuestToHousehold(quest: Quest) {
@@ -332,11 +413,24 @@ export class HouseholdService {
 
 	public updateHHPerks(hh: Household, updates: any) {
 		updates[this.getHHPerksUrl(hh.uid!)] = hh.perks
-		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date().toISOString()
+		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date()
 	}
 
 	public updateHHQuests(hh: Household, updates: any) {
 		updates[this.getHHQuestsUrl(hh.uid!)] = hh.quests
-		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date().toISOString()
+		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date()
+	}
+
+	public updateHHRemove(hh: Household, updates: any) {
+		updates[this.getHHUrl(hh.uid!)] = null
+	}
+
+	public updateHHGuardian(hh: Household, updates: any) {
+		updates[this.getHHGuardiansUrl(hh.uid!)] = hh.guardians
+		updates[this.getHHDateUpdatedUrl(hh.uid!)] = new Date()
+	}
+
+	public updateAddGuardian(hh: Household, updates: any) {
+		updates[this.getHHUrl(hh.uid!)] = hh
 	}
 }

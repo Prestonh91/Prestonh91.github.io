@@ -45,6 +45,8 @@ export class Household {
 		newHouse.name = name
 		newHouse.uid = uid
 		newHouse.addGuardian(g)
+		newHouse.dateCreated = new Date()
+		newHouse.dateUpdated = new Date()
 		return newHouse
 	}
 

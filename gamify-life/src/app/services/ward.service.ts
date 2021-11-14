@@ -26,6 +26,10 @@ export class WardService {
 		return `${this.getWardUrl(wUid)}/lastUpdated`
 	}
 
+	public getWardHouseholdsUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/households`
+	}
+
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
 	async getWardValue(wUid: string): Promise<Ward | null> {
@@ -90,5 +94,10 @@ export class WardService {
 	updateWardCredits(ward: Ward, updatesObject: any) {
 		updatesObject[this.getWardCreditsUrl(ward.uid!)] = ward.credits
 		updatesObject[this.getWardLastUpdatedUrl(ward.uid!)] = new Date()
+	}
+
+	updateWardHouseholds(ward: Ward, updates: any) {
+		updates[this.getWardHouseholdsUrl(ward.uid!)] = ward.households
+		updates[this.getWardLastUpdatedUrl(ward.uid!)] = new Date()
 	}
 }

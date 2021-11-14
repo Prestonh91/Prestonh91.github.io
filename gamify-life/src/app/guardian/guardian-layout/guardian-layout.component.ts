@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { setHouseholds } from 'src/store/household/household.store';
   templateUrl: './guardian-layout.component.html',
   styleUrls: ['./guardian-layout.component.scss']
 })
-export class GuardianLayoutComponent implements OnInit {
+export class GuardianLayoutComponent implements OnInit, OnChanges {
 	user$: Observable<Guardian> = this.store.pipe(select(selectGuardian))
 
 	storeSS = new Subscription();
@@ -30,5 +30,10 @@ export class GuardianLayoutComponent implements OnInit {
 				this.store.dispatch(setHouseholds({ households: households}))
 			})
 		})
+	}
+
+	ngOnChanges() {
+		this.storeSS.unsubscribe()
+		this.hhSS.unsubscribe()
 	}
 }

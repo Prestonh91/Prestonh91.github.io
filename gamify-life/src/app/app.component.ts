@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from 'src/store/app.state';
-import { selectGuardian, setGuardian } from 'src/store/guardian/guardian.store';
-import { selectWard, setWard } from 'src/store/ward/ward.store';
+import { setGuardian } from 'src/store/guardian/guardian.store';
+import { setWard } from 'src/store/ward/ward.store';
 import { Guardian } from './classes/Guardian';
 import { Ward } from './classes/Ward';
 
