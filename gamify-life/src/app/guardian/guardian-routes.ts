@@ -1,3 +1,4 @@
+import { GuardianHouseholdComponent } from "./guardian-household/guardian-household.component";
 import { GuardianLayoutComponent } from "./guardian-layout/guardian-layout.component";
 import { GuardianPerksComponent } from "./guardian-perks/guardian-perks.component";
 import { GuardianProfileComponent } from "./guardian-profile/guardian-profile.component";
@@ -17,7 +18,8 @@ export const guardianRoutes = [
 		children: [
 			{ path: 'summary', component: GuardianSummaryComponent },
 			{ path: 'perks', component: GuardianPerksComponent },
-			{ path: 'profile', component: GuardianProfileComponent }
+			{ path: 'profile', component: GuardianProfileComponent },
+			{ path: 'household/:hhUid', component: GuardianHouseholdComponent }
 		],
 	},
 ]

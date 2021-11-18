@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { Guardian, Household } from 'src/app/classes';
@@ -33,6 +34,7 @@ export class GuardianProfileComponent implements OnInit, OnDestroy {
   	constructor(
 		private store: Store<AppState>,
 		private hhService: HouseholdService,
+		private router: Router
 	) { }
 
 	ngOnInit(): void {
@@ -54,14 +56,20 @@ export class GuardianProfileComponent implements OnInit, OnDestroy {
 		return Object.keys(object).length
 	}
 
-	handleLeaveHousehold(hhUid: string) {
+	handleLeaveHousehold(hhUid: string, event: Event) {
+		event.stopPropagation()
 		let hhToLeave = this.households.find(x => x.uid === hhUid)
 		this.hhService.guardianLeaveHousehold(this.guardian, hhToLeave!)
 	}
 
-	handleDeleteHousehold(hhUid: string) {
+	handleDeleteHousehold(hhUid: string, event: Event) {
+		event.stopPropagation()
 		const hhToDelete = this.households.find(x => x.uid === hhUid)
 		this.hhService.deleteHousehold(hhToDelete!, this.guardian)
+	}
+
+	handleSelectHousehold(hhUid: string, event: Event) {
+		this.router.navigate(['guardian/household', hhUid])
 	}
 
 	getNumberOfGuardians(hh: Household): Number {

@@ -60,7 +60,7 @@ export class HouseholdService {
 	//////////////////////////////////////////////////////
 
 	getHouseholdObserver(uid: string) {
-		return this.fireDb.object(this.getHHUrl(uid)).valueChanges()
+		return this.fireDb.object(this.getHHUrl(uid)).valueChanges().pipe(map((x:any) => new Household(x)))
 	}
 
 	async getHouseholdValue(uid: string): Promise<Household | null> {

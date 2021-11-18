@@ -36,6 +36,7 @@ import { PerkCardComponent } from './components/core/perk-card/perk-card.compone
 import { EditPerkComponent } from './components/modals/edit-perk/edit-perk.component';
 import { PerkRedeemComponent } from './components/off-canvas/perk-redeem/perk-redeem.component';
 import { GuardianProfileComponent } from './guardian/guardian-profile/guardian-profile.component';
+import { GuardianHouseholdComponent } from './guardian/guardian-household/guardian-household.component';
 
 @NgModule({
 	declarations: [
@@ -54,6 +55,7 @@ import { GuardianProfileComponent } from './guardian/guardian-profile/guardian-p
 		EditPerkComponent,
 		PerkRedeemComponent,
 		GuardianProfileComponent,
+		GuardianHouseholdComponent,
   	],
   	imports: [
 		BrowserModule,
