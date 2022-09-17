@@ -11,6 +11,10 @@
 		{
 			"path": "./turnip-calculator",
 			"name": "Turnip Calculator"
+		},
+		{
+			"path": "./midi-chlorian-scanner",
+			"name": "Midi-Chlorian Scanner"
 		}
 	],
 	"settings": {}
