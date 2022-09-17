@@ -7,7 +7,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 		<select
 			name="gl-select"
 			class="uk-select"
-			[class]="{ 'uk-form-danger': error === true, 'gl-select-primary': primary && !error, 'gl-select-secondary': secondary && !error , 'gl-select-tertiary': tertiary && !error }"
+			[class]="{ 'gl-form-danger': error === true }"
 			(change)="changeSelection($event)"
 			[(ngModel)]="selection"
 		>
@@ -17,19 +17,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 	`,
   	styles: [`
 		:host { display: block; }
-		.gl-select-primary {
-			border: 1px solid #623bb3;
-			color: #623bb3;
-		}
-
-		.gl-select-secondary {
-			border: 1px solid #8CB43C;
-			color: #8CB43C;
-		}
-
-		.gl-select-tertiary {
-			border: 1px solid #B43C50;
-			color: #B43C50;
+		.gl-form-danger, .gl-form-danger:focus {
+			border: 1px solid #f0506e;
+			color: #f0506e;
 		}
 	`],
 	providers: [

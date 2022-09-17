@@ -15,7 +15,6 @@ export class Guardian {
 	public phoneNumber: string | null = null;
 	public photoURL: string | null = null;
 	public uid: string | null = null;
-	public wards: Array<string> | null = null;
 
 	constructor(u: Guardian = {} as Guardian) {
 		let {
@@ -29,7 +28,6 @@ export class Guardian {
 			phoneNumber = null,
 			photoURL = null,
 			uid = null,
-			wards = null
 		} = u
 
 		this.dateCreated = new Date(dateCreated || new Date());
@@ -42,7 +40,6 @@ export class Guardian {
 		this.phoneNumber = phoneNumber
 		this.photoURL = photoURL
 		this.uid = uid
-		this.wards = wards
 	}
 
 	static createNewGuardian(user: User): Guardian {
@@ -59,13 +56,6 @@ export class Guardian {
 		return newUser
 	}
 
-	addWardToGuardian(guardianUid: string): void {
-		this.wards = this.wards || new Array()
-		if (!this.wards.find(x => x === guardianUid)) {
-			this.wards.push(guardianUid)
-		}
-	}
-
 	prepareUserForSave(): any {
 		const requestData = {
 			...this,
@@ -79,10 +69,18 @@ export class Guardian {
 	}
 
 	addHousehold(household: Household) {
-		this.households[household.uid || ''] = true
+		let tempHH = {
+			...this.households
+		}
+		tempHH[household.uid!] = true
+		this.households = tempHH
 	}
 
 	removeHousehold(household: Household) {
-		delete this.households[household.uid || '']
+		let tempHH: GObject = {}
+		for (let key of Object.keys(this.households).filter(x => x !== household.uid!)) {
+			tempHH[key] = true
+		}
+		this.households = tempHH
 	}
 }

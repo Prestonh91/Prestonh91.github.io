@@ -1,4 +1,4 @@
-<section class="uk-card uk-card-body uk-background-muted">
+<section class="uk-background-muted">
 	<div class="uk-width-5-6 uk-margin-auto">
 		<div class="uk-margin-bottom uk-margin-top">
 			<div uk-grid class="uk-child-width-1-2 uk-margin-medium-bottom">
@@ -28,11 +28,11 @@
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
-								<td class="">
+								<td>
 									<div class="uk-flex uk-flex-right">
-										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)" title="View Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)" title="Edit Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)" title="Delete Quest"></span>
 									</div>
 								</td>
 							</tr>
@@ -49,11 +49,11 @@
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
-								<td class="">
+								<td>
 									<div class="uk-flex uk-flex-right">
-										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)" title="View Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)" title="Edit Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)" title="Delete Quest"></span>
 									</div>
 								</td>
 							</tr>
@@ -66,15 +66,18 @@
 					<table class="uk-table uk-table-small gl-table-striped-secondary uk-text-secondary table-min-width-550">
 						<tbody>
 							<tr *ngIf="getCompletedQuests(quests).length === 0"><td class="uk-text-center">There is nothing here to display until some quests are complete!</td></tr>
-							<tr *ngFor="let quest of getCompletedQuests(quests)" class="uk-text-center">
+							<tr *ngFor="let quest of getCompletedQuests(quests); index as i" class="uk-text-center">
 								<td class="uk-text-middle">{{quest.title}}</td>
 								<td class="uk-text-middle">${{quest.reward}}</td>
 								<td class="uk-text-middle uk-text-truncate uk-table-expand">{{quest.description}}</td>
-								<td class="">
+								<td>
 									<div class="uk-flex uk-flex-right">
-										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="pencil" (click)="editQuest(quest)"></span>
-										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="trash" (click)="deleteQuest(quest)"></span>
+										<span class="gl-pointer-cursor" uk-icon="info" (click)="viewQuest(quest)" title="View Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" uk-icon="refresh" (click)="reuseQuest(quest)" title="Reuse Quest"></span>
+										<span class="gl-margin-tiny-left gl-pointer-cursor" (click)="reassignQuest(quest)" title="Reassign Quest">
+											<img *ngIf="i % 2 === 0" src="assets/refreshUser-white.svg" width="20" height="20" style="vertical-align: top;">
+											<img *ngIf="i % 2 !== 0" src="assets/refreshUser-secondary.svg" width="20" height="20" style="vertical-align: top;">
+										</span>
 									</div>
 								</td>
 							</tr>
@@ -86,6 +89,6 @@
 	</div>
 
 	<create-quest id="createQuest" uk-modal></create-quest>
-	<view-quest [quest]="questToView" [isUnassigned]="questToView.assignee === null" [isInProgress]="questToView.assignee !== null && questToView.dateCompleted === null" [isComplete]="questToView.dateCompleted !== null" id="viewQuest" uk-modal></view-quest>
-	<edit-quest id="editQuest" uk-modal [quest]="questToEdit" [isUnassigned]="questToEdit.assignee === null" [isInProgress]="questToEdit.assignee !== null && questToEdit.dateCompleted === null" [isComplete]="questToEdit.dateCompleted !== null"></edit-quest>
+	<view-quest id="viewQuest" uk-modal [quest]="questToView"></view-quest>
+	<edit-quest id="editQuest" uk-modal [quest]="questToEdit"></edit-quest>
 </section>

@@ -1,0 +1,65 @@
+<section class="">
+	<header class="uk-margin-bottom">
+		<h3 class="uk-text-primary">Perks</h3>
+		<p>Here you will create perks or rewards for your wards to purchase with their built up points from completing quests. You have complete control over what perks are available for your wards to buy and the cost value of the perks.</p>
+	</header>
+	<div>
+		<div
+			*ngIf="perks.length === 0"
+			class="uk-text-center"
+		>
+			<p>You currently have no perks for your wards to buy. Try creating some!</p>
+			<button (click)="addNewPerk()" class="gl-button-primary">Add Perk</button>
+		</div>
+		<!-- Action Bar -->
+		<p
+			*ngIf="purchaseForSelection.value"
+			class="uk-margin-small"
+		>You are selecting perks to purchase for {{ getWardDisplayName(purchaseForSelection.value) }}</p>
+		<div class="uk-background-default uk-padding-small-left gl-padding-small-horizontal gl-padding-tiny uk-margin-bottom" *ngIf="perks.length > 0">
+			<div class="uk-flex uk-flex-between">
+				<div class="uk-flex uk-flex-middle">
+					<span (click)="addNewPerk()" class="gl-pointer-cursor" uk-icon="plus" ratio="1.15"></span>
+					<gl-select-form
+						class="uk-margin-small-left"
+						[formControl]="filterSelection"
+						[selectPlaceholder]="'Filter By'"
+						[options]="filterOptions"
+					></gl-select-form>
+					<gl-select-form
+						class="uk-margin-small-left"
+						[formControl]="purchaseForSelection"
+						[selectPlaceholder]="'Purchase Perks For'"
+						[options]="wardPurchaseOptions"
+					></gl-select-form>
+					<div (click)="clearAllFilters()" class="uk-margin-small-left gl-pointer-cursor">
+						<p class="uk-margin-remove uk-text-small">Clear Filters</p>
+					</div>
+				</div>
+				<div class="uk-flex uk-flex-middle">
+					<span (click)="editPerk()" *ngIf="perkSelections.length === 1" uk-icon="pencil" ratio="1.15" class="gl-pointer-cursor"></span>
+					<span (click)="purchasePerksForWard()" *ngIf="perkSelections.length && purchaseForSelection.value" uk-icon="cart" ratio="1.15" class="uk-margin-small-left gl-pointer-cursor"></span>
+					<span (click)="deletePerks()" *ngIf="perkSelections.length" uk-icon="trash" ratio="1.15" class="uk-margin-small-left gl-pointer-cursor"></span>
+				</div>
+			</div>
+		</div>
+		<!-- End action bar -->
+		<div
+			*ngIf="perks.length > 0"
+			uk-grid
+			class="uk-child-width-1-2 uk-child-width-1-4@m uk-child-width-1-5@l"
+		>
+			<div *ngFor="let p of filteredPerks">
+				<perk-card
+					[perk]="p"
+					[class]="{ 'selected': isPerkSelected(p) }"
+					[isSelected]="isPerkSelected(p)"
+					(click)="toggleSelectPerk(p)"
+				></perk-card>
+			</div>
+		</div>
+	</div>
+	<create-perk id="createPerk" uk-modal></create-perk>
+	<edit-perk [perk]="perkToEdit" id="editPerk" uk-modal></edit-perk>
+	<perk-redeem id="perkRedeem" [perks]="perksToRedeem" [ward]="wardSelectedForRedeem" (cancel)="cancelRedeem()" (perksRedeemed)="clearAllFilters()" uk-offcanvas="overlay: true; bg-close: false; esc-close: false;"></perk-redeem>
+</section>

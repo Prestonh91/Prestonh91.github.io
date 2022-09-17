@@ -1,7 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": "./gamify-life",
+			"name": "Gamify Life"
+		},
+		{
+			"path": "./inventory-pricer",
+			"name": "Inventory Pricer"
+		},
+		{
+			"path": "./turnip-calculator",
+			"name": "Turnip Calculator"
 		}
 	],
 	"settings": {}

@@ -11,10 +11,19 @@ import { Guardian } from '../classes';
 export class GuardianService {
 	private readonly guardianURL = 'guardians/'
 
+	private getGuardianUrl(gUid: string) {
+		return `${this.guardianURL}${gUid}`
+	}
+
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
 	async getGuardianValue(uid: string) {
-		return (await this.fireDb.database.ref(this.guardianURL + uid).once('value')).val()
+		let response = (await this.fireDb.database.ref(this.getGuardianUrl(uid)).once('value')).val()
+
+		if (response)
+			return new Guardian(response)
+
+		return null
 	}
 
 	getGuardianPromise(uid: string) {
@@ -34,5 +43,11 @@ export class GuardianService {
 
 	saveGuardian(g: Guardian) {
 		return this.fireDb.database.ref(this.guardianURL + g.uid).set(g.prepareUserForSave())
+	}
+
+	updateGuardianHouseholds(g: Guardian, updates: any) {
+		const url = this.getGuardianUrl(g.uid!)
+		updates[`${url}/households`] = g.households
+		updates[`${url}/lastUpdated`] = new Date()
 	}
 }

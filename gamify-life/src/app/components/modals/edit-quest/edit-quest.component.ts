@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Household, Quest } from 'src/app/classes';
+import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { WardService } from 'src/app/services/ward.service';
 import { AppState } from 'src/store/app.state';
@@ -16,9 +17,7 @@ declare var UIkit: any;
 })
 export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() quest = new Quest()
-	@Input() isUnassigned = false
-	@Input() isInProgress = false
-	@Input() isComplete = false
+	public originalHousehold: string | null = null;
 	public mutableQuest = this.newQuest()
 
 	public households: ReadonlyArray<Household> = new Array()
@@ -26,8 +25,12 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	public assigneeOptions: any[] = []
 
 	private householdSub = new Subscription()
-	private householdChangesSub = new Subscription()
-	private assigneeSub = new Subscription()
+	private householdChangesSub: Subscription | null = null
+	private assigneeSub: Subscription | null = null
+
+	public get isUnassigned() { return this.quest.assignee === null }
+	public get isInProgress() { return this.quest.assignee && this.quest.dateCompleted === null }
+	public get isComplete() { return this.quest.assignee && this.quest.dateCompleted }
 
 	public get objectives(): FormArray {
 		return this.mutableQuest.get('objectives') as FormArray
@@ -36,7 +39,8 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 	constructor(private fb: FormBuilder,
 		private store: Store<AppState>,
 		private wardService: WardService,
-		private questService: QuestService
+		private questService: QuestService,
+		private hhService: HouseholdService
 	) { }
 
 	ngOnInit(): void {
@@ -47,30 +51,21 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 			})
 		})
 
-		var hhControl = this.mutableQuest.get('household')
-		if (hhControl) {
-			this.householdChangesSub = hhControl.valueChanges.subscribe((x: any) => {
-				this.mutableQuest.get('assignee')?.reset()
-				let household = this.households.find(y => y.uid === x)
-				if (household) {
-					this.assigneeSub = this.wardService.getListOfWardsObservable(Object.keys(household.wards)).subscribe(y => {
-						this.assigneeOptions = y.map(x => {
-							return { value: x.uid, display: x.displayName}
-						})
-					})
-				}
-			})
-		}
+		// var hhControl = this.mutableQuest.get('household')
+		// if (hhControl) {
+
+		// }
 	}
 
 	ngOnDestroy(): void {
 		this.householdSub.unsubscribe()
-		this.householdChangesSub.unsubscribe()
-		this.assigneeSub.unsubscribe()
+		this.householdChangesSub?.unsubscribe()
+		this.assigneeSub?.unsubscribe()
 	}
 
 	ngOnChanges(): void {
 		if (this.quest.uid) {
+			this.originalHousehold = this.quest.household
 			this.setQuest()
 			this.initAssigneeOptions(this.households)
 		}
@@ -78,6 +73,34 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	async initAssigneeOptions(households: ReadonlyArray<Household>) {
 		if (this.quest.household) {
+			// Get the household so we can subscribe to the changes
+			var hhControl = this.mutableQuest.get('household')
+			if (hhControl) {
+
+				// Subscribe to the household changes
+				this.householdChangesSub = hhControl.valueChanges.subscribe((x: any) => {
+
+					// Reset the assignee as we are about to get new values to choose from
+					this.mutableQuest.get('assignee')?.reset()
+
+					// Find the household so we can get the list of wards
+					let household = this.households.find(y => y.uid === x)
+
+					if (household) {
+						// Unsubscribe from the current subscription so we don't have lose subscriptions
+						this.assigneeSub?.unsubscribe()
+
+						// Re-subscribe to get the list of wards
+						this.assigneeSub = this.wardService.getListOfWardsObservable(Object.keys(household.wards)).subscribe(y => {
+							this.assigneeOptions = y.map(x => {
+								return { value: x.uid, display: x.displayName}
+							})
+						})
+					}
+				})
+			}
+
+			// Get the wards the first time right as we load the page with a chosen quest
 			let currentHousehold = households.find(x => x.uid === this.quest.household)
 			let wards = await this.wardService.getListOfWardsValue(Object.keys(currentHousehold?.wards!))
 			this.assigneeOptions = wards.map(x => {
@@ -119,6 +142,7 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 
 	resetQuest() {
 		this.mutableQuest = this.newQuest()
+		this.originalHousehold = null
 	}
 
 	closeEdit() {
@@ -144,7 +168,13 @@ export class EditQuestComponent implements OnInit, OnChanges, OnDestroy {
 			edittedQuest.description = this.mutableQuest.get('description')?.value,
 			edittedQuest.objectives = this.mutableQuest.get('objectives')?.value
 
-			this.questService.updateQuest(edittedQuest)
+			if (this.originalHousehold !== edittedQuest.household) {
+				var hh = new Household(this.households.find(x => x.uid === this.originalHousehold))
+				this.hhService.removeQuestFromHousehold(this.quest, hh)
+				this.hhService.addQuestToHousehold(edittedQuest)
+			} else {
+				this.questService.voidSaveQuest(edittedQuest)
+			}
 
 			this.closeEdit()
 		}

@@ -47,18 +47,13 @@ export class Quest {
 		this.uid = uid
 	}
 
-	prepareForSave(): any {
-		return {
-			...this,
-			objectives: this.cleanUpObjectives(),
-			dateCreated: this.dateCreated ? this.dateCreated.toISOString() : new Date().toISOString(),
-			dateCompleted: this.dateCompleted ? this.dateCompleted.toISOString() : null,
-			dateUpdated: new Date().toISOString(),
-			dueDate: this.dueDate ? this.dueDate.toISOString() : null
-		}
+	cleanUpObjectives() {
+		this.objectives = this.objectives.filter(x => x)
 	}
 
-	cleanUpObjectives(): Array<string> | null {
-		return this.objectives.some(x => x) ? this.objectives : null
+	prepareForSave(): Quest {
+		this.cleanUpObjectives(),
+		this.dateUpdated = new Date()
+		return this
 	}
 }

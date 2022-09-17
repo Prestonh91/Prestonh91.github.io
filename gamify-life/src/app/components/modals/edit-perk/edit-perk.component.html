@@ -1,0 +1,93 @@
+<section class="uk-text-secondary">
+	<div class="uk-background-default">
+		<div class="uk-modal-header">
+			<h3 class="uk-text-secondary">Edit Perk: {{ perk.title }}</h3>
+		</div>
+		<div class="uk-modal-body uk-overflow-auto uk-height-max-large gl-scrollbar">
+			<form [formGroup]="mutablePerk">
+				<div class="uk-margin-bottom">
+					<span class="uk-text-bold" [class]="{ 'uk-form-danger': mutablePerk.get('title')?.touched && mutablePerk.get('title')?.invalid }">Title:</span>
+					<input
+						formControlName="title"
+						class="gl-text-input-secondary uk-margin-left uk-width-2-3"
+						[class]="{ 'uk-form-danger': mutablePerk.get('title')?.touched && mutablePerk.get('title')?.invalid }"
+						type="text"
+					>
+				</div>
+				<div class="uk-margin-bottom">
+					<span class="uk-text-bold" [class]="{ 'uk-form-danger': mutablePerk.get('cost')?.touched && mutablePerk.get('cost')?.invalid }">Cost:</span>
+					<input
+						formControlName="cost"
+						class="gl-text-input-secondary uk-margin-left uk-width-1-2 uk-width-1-4@m"
+						[class]="{ 'uk-form-danger': mutablePerk.get('cost')?.touched && mutablePerk.get('cost')?.invalid }"
+						type="number"
+						(keydown.arrowup)="(false)"
+						(keydown.arrowdown)="(false)"
+					>
+				</div>
+				<div class="uk-margin-bottom" uk-grid>
+					<div class="uk-width-1-2 uk-width-1-4@m">
+						<p
+							class="uk-text-bold uk-margin-remove"
+							[class]="{ 'uk-form-danger': mutablePerk.get('household')?.touched && mutablePerk.get('household')?.invalid }"
+						>Household:</p>
+						<gl-select-form
+							class="gl-margin-tiny-top gl-select-secondary uk-width-1-1"
+							[options]="householdOptions"
+							[selectPlaceholder]="'Household'"
+							formControlName="household"
+							[error]="(mutablePerk.get('household')?.touched === true) && (mutablePerk.get('household')?.invalid === true)"
+						></gl-select-form>
+					</div>
+					<div class="uk-width-1-2 uk-width-1-4@m uk-flex uk-flex-column uk-flex-between">
+						<p
+							class="uk-text-bold uk-margin-remove"
+							[class]="{ 'uk-form-danger': durabilityHasError }"
+						>Quantity</p>
+						<input
+							formControlName="durability"
+							class="gl-text-input-secondary"
+							[class]="{ 'uk-form-danger': durabilityHasError }"
+							type="number"
+							(keydown.arrowup)="(false)"
+							(keydown.arrowdown)="(false)"
+							[attr.disabled]="isDurabilityDisabled ? true : null"
+							(input)="handleDurabilityInput()"
+						>
+					</div>
+					<div class="uk-flex uk-flex-column uk-flex-middle">
+						<p
+							class="uk-margin-remove uk-text-bold"
+							[class]="{ 'uk-form-danger': hasUnlimitedHasError }"
+						>Unlimited Uses?</p>
+						<input
+							formControlName="hasUnlimited"
+							class="uk-checkbox gl-checkbox-secondary uk-margin-small-top"
+							[class]="{ 'uk-form-danger': hasUnlimitedHasError }"
+							type="checkbox"
+							(change)="handleCheckUnlimited()"
+						>
+					</div>
+				</div>
+				<div class="uk-margin-bottom">
+					<span
+						class="uk-text-bold uk-text-top"
+						[class]="{ 'uk-form-danger': mutablePerk.get('description')?.touched && mutablePerk.get('description')?.invalid }"
+					>Description</span>
+					<textarea
+						formControlName="description"
+						class="gl-textarea-secondary gl-scrollbar-textarea-secondary uk-margin-left uk-width-2-3"
+						[class]="{ 'uk-form-danger': mutablePerk.get('description')?.touched && mutablePerk.get('description')?.invalid }"
+						rows="6"
+					></textarea>
+				</div>
+			</form>
+		</div>
+		<div class="uk-modal-footer">
+			<div class="uk-flex uk-flex-right uk-flex-middle">
+				<p (click)="resetForm()" class="uk-margin-remove uk-modal-close gl-pointer-cursor" type="button">Cancel</p>
+				<button (click)="savePerk()" class="gl-button-secondary uk-margin-left">Save Perk</button>
+			</div>
+		</div>
+	</div>
+</section>

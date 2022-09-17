@@ -14,6 +14,22 @@ import { Quest, Ward } from '../classes';
 export class WardService {
 	private wardURL = "wards/"
 
+	public getWardUrl(wUid: string) {
+		return `${this.wardURL}${wUid}`
+	}
+
+	public getWardCreditsUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/credits`
+	}
+
+	public getWardLastUpdatedUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/lastUpdated`
+	}
+
+	public getWardHouseholdsUrl(wUid: string) {
+		return `${this.getWardUrl(wUid)}/households`
+	}
+
 	constructor(private fireDb: AngularFireDatabase, private store: Store<AppState>) { }
 
 	async getWardValue(wUid: string): Promise<Ward | null> {
@@ -65,13 +81,23 @@ export class WardService {
 		return wardsValue
 	}
 
-	async awardWardReward(quest: Quest) {
+	async awardWardReward(quest: Quest, updates: any) {
 		let ward = await this.getWardValue(quest.assignee!)
 
 		if (ward) {
 			let reward: number = quest.reward ? quest.reward : 0
 			ward.addCredits(reward)
-			this.voidSaveWard(ward)
+			this.updateWardCredits(ward, updates)
 		}
+	}
+
+	updateWardCredits(ward: Ward, updatesObject: any) {
+		updatesObject[this.getWardCreditsUrl(ward.uid!)] = ward.credits
+		updatesObject[this.getWardLastUpdatedUrl(ward.uid!)] = new Date()
+	}
+
+	updateWardHouseholds(ward: Ward, updates: any) {
+		updates[this.getWardHouseholdsUrl(ward.uid!)] = ward.households
+		updates[this.getWardLastUpdatedUrl(ward.uid!)] = new Date()
 	}
 }

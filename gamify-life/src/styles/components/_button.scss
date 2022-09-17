@@ -3,7 +3,7 @@
 .gl-button-primary {
 	background-color: $global-color-primary;
 	border-radius: $global-radius-medium;
-	color: $global-emphasis-color;
+	color: white;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -21,7 +21,7 @@
 .gl-button-secondary {
 	background-color: $global-color-secondary;
 	border-radius: $global-radius-medium;
-	color: $global-inverse-color !important;
+	color: white !important;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -39,7 +39,7 @@
 .gl-button-tertiary {
 	background-color: $global-color-tertiary;
 	border-radius: $global-radius-medium;
-	color: $global-inverse-color !important;
+	color: white !important;
 	cursor: pointer;
 	padding: 10px 15px;
 	font-size: 0.9rem;
@@ -51,5 +51,59 @@
 }
 
 .gl-button-tertiary:hover {
+	background-color: darken($global-color-tertiary, $amount: 5);
+}
+
+.gl-button-primary-small {
+	background-color: $global-color-primary;
+	border-radius: $global-radius-medium;
+	color: white;
+	cursor: pointer;
+	padding: 7px 12px;
+	font-size: 0.85rem;
+	text-align: center;
+	vertical-align: middle;
+	border: none;
+	min-width: 75px;
+	max-height: 45px;
+}
+
+.gl-button-primary-small:hover {
+	background-color: darken($global-color-primary, $amount: 5);
+}
+
+.gl-button-secondary-small {
+	background-color: $global-color-secondary;
+	border-radius: $global-radius-medium;
+	color: white !important;
+	cursor: pointer;
+	padding: 7px 12px;
+	font-size: 0.85rem;
+	text-align: center;
+	vertical-align: middle;
+	border: none;
+	min-width: 75px;
+	max-height: 45px;
+}
+
+.gl-button-secondary-small:hover {
+	background-color: darken($global-color-secondary, $amount: 5);
+}
+
+.gl-button-tertiary-small {
+	background-color: $global-color-tertiary;
+	border-radius: $global-radius-medium;
+	color: white !important;
+	cursor: pointer;
+	padding: 7px 12px;
+	font-size: 0.85rem;
+	text-align: center;
+	vertical-align: middle;
+	border: none;
+	min-width: 75px;
+	max-height: 45px;
+}
+
+.gl-button-tertiary-small:hover {
 	background-color: darken($global-color-tertiary, $amount: 5);
 }

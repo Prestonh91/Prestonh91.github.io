@@ -6,7 +6,7 @@ import { HouseholdService } from 'src/app/services/household.service';
 import { QuestService } from 'src/app/services/quest.service';
 import { AppState } from 'src/store/app.state';
 import { selectGuardian } from 'src/store/guardian/guardian.store';
-import { setHouseholds } from 'src/store/household/household.store';
+import { getHouseholds } from 'src/store/household/household.store';
 declare var UIkit: any;
 
 @Component({
@@ -16,7 +16,7 @@ declare var UIkit: any;
 })
 export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	quests = Array<Quest>();
-	households: Array<Household> = new Array<Household>();
+	households: Array<Household> = new Array()
 
 	questToView: Quest = new Quest();
 	questToEdit: Quest = new Quest();
@@ -24,17 +24,26 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 
 	storeSubscription = new Subscription();
 	questSubscription = new Subscription();
-	householdSubscription = new Subscription();
+	hhSub = new Subscription();
 
   	constructor(
-		private hhService: HouseholdService,
 		private questService: QuestService,
+		private hhService: HouseholdService,
 		private store: Store<AppState>) { }
 
 	ngOnInit(): void {
 		this.storeSubscription = this.store.pipe(select(selectGuardian)).subscribe(x => {
-			this.questSubscription = this.questService.getQuests(x.households).subscribe(householdQuests => {
-				let currentHousehold = householdQuests[0].household
+			this.questSubscription = this.questService.getQuests(x.households).subscribe(hhQuestsSnapshot => {
+				var householdQuests: Array<Quest> = []
+				let data: any = hhQuestsSnapshot.val()
+
+				if (data) {
+					for (let q of Object.keys(data)) {
+						householdQuests.push(new Quest(data[q]))
+					}
+				}
+
+				let currentHousehold = hhQuestsSnapshot.key
 				let newQuestUids = householdQuests.map(x => x.uid)
 
 				for (let q of householdQuests) {
@@ -53,12 +62,14 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 					return x.household === currentHousehold ?
 						newQuestUids.includes(x.uid) :
 						true
-
 				}))
 			})
-			this.householdSubscription = this.hhService.getHouseHolds(x.households).subscribe((x: any) => {
-				this.households = x
-				this.store.dispatch(setHouseholds({households: x}))
+		})
+
+		this.hhSub = this.store.pipe(select(getHouseholds)).subscribe((hhs: ReadonlyArray<Household>) => {
+			this.households = []
+			hhs.forEach((hh: Household) => {
+				this.households.push(new Household(hh))
 			})
 		})
 
@@ -69,7 +80,7 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.storeSubscription.unsubscribe()
 		this.questSubscription.unsubscribe()
-		this.householdSubscription.unsubscribe()
+		this.hhSub.unsubscribe()
 	}
 
 	getUnclaimedQuests(list: Array<Quest>) {
@@ -95,7 +106,19 @@ export class GuardianSummaryComponent implements OnInit, OnDestroy {
 	}
 
 	deleteQuest(quest: Quest) {
-		console.warn('deleting quest', quest)
+		UIkit.modal.confirm("Are you sure? Deleting this quest is irreversible.").then(() => {
+			let questHH = this.households.find(x => x.uid === quest.household)
+			if (questHH) {
+				this.hhService.removeQuestFromHousehold(quest, questHH)
+			}
+		}, () => {})
+	}
 
+	reuseQuest(quest: Quest) {
+		this.questService.reuseQuest(quest)
+	}
+
+	reassignQuest(quest: Quest) {
+		this.questService.removeQuestCompletionDate(quest)
 	}
 }

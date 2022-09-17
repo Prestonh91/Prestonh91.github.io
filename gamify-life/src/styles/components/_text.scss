@@ -1,5 +1,9 @@
 @import 'variables';
 
+.gl-text-white {
+	color: white !important;
+}
+
 .gl-text-medium {
 	font-size: $global-medium-font-size;
 }
