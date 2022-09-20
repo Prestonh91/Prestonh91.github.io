@@ -2,11 +2,28 @@
 <main class="scanner-core">
 	<div 
 		class="vertical-scanner-bar"
-		:class="{ 'vertical-scanner-bar-animate' : scanning, 'hidden': !scanning}"	
+		:class="{ 'vertical-scanner-bar-animate' : verticalScanning, 'hidden': !verticalScanning}"	
 	></div>
+	<div style="display: flex; justify-content: end;">	
+		<div 
+			class="vertical-scanner-bar"
+			:class="{ 'vertical-scanner-bar-animate-reverse' : verticalScanning, 'hidden': !verticalScanning}"	
+		></div>
+	</div>
+	<div 
+		id="horizontal-scanner"
+		class="horizontal-scanner-bar"
+		:class="{ 'horizontal-scanner-bar-animate' : horizontalScanning, 'hidden': !horizontalScanning}"	
+	></div>
+	<div style="display: flex; align-items: end; position: absolute;">	
+		<div 
+			class="horizontal-scanner-bar"
+			:class="{ 'horizontal-scanner-bar-animate-reverse' : horizontalScanning, 'hidden': !horizontalScanning}"	
+		></div>
+	</div>
 	<div
 		style="display: flex; justify-content: center; align-items: center; height: 100vh;"
-		:class="{ 'hidden' : scanning }"
+		:class="{ 'hidden' : horizontalScanning || verticalScanning }"
 	>
 		<button class="sc-button" @click="startScan">initiate scan</button>
 	</div>
@@ -18,8 +35,10 @@
 import { defineComponent } from 'vue'
 
 class AppData {
-	scanning: Boolean = false;
+	horizontalScanning: Boolean = false;
+	verticalScanning: Boolean = false;
 	audio: HTMLAudioElement | null = null;
+
 }
 
 export default defineComponent({
@@ -40,16 +59,19 @@ export default defineComponent({
 			return new Audio('/scanner.mp3')
 		},
 		startScan() {
-			this.scanning = true
+			this.verticalScanning = true
 
 			this.audio?.play()
 
+			setTimeout(() => {
+				this.verticalScanning = false
+				this.horizontalScanning = true 
+			}, 2000);
 
 			setTimeout(() => {
+				this.horizontalScanning = false
 				this.audio?.pause()
-				this.scanning = false
-				this.audio = this.requestAudio()
-			}, 3000);
+			}, 4000);
 		}
 	}
 })
@@ -67,16 +89,33 @@ export default defineComponent({
 }
 
 .vertical-scanner-bar {
+	position: absolute;
 	height: 100vh;
 	width: 1.5vw;
-	/* margin-left: 50px; */
-	/* background: rgb(232,23,24); */
 	background: linear-gradient(90deg, rgba(232,23,24,0.3) 0%,rgba(232,23,24,0.7) 10%, rgba(232,23,24,1) 50%, rgba(232,23,24,0.7) 90%, rgba(232,23,24,0.3) 100%);
-	/* box-shadow: 3px 0px 2px 2px #f8b7b8, -3px 0px 2px 2px #f8b7b8; */
+}
+
+.horizontal-scanner-bar {
+	position: absolute;
+	width: 100vw;
+	height: 2vh;
+	background: linear-gradient(rgba(232,23,24,0.3) 0%,rgba(232,23,24,0.7) 10%, rgba(232,23,24,1) 50%, rgba(232,23,24,0.7) 90%, rgba(232,23,24,0.3) 100%);
 }
 
 .vertical-scanner-bar-animate {
-	animation: horizontal-scanner 3s ease-in-out forwards;
+	animation: vertical-scanner 2s ease-in-out forwards;
+}
+
+.vertical-scanner-bar-animate-reverse {
+	animation: vertical-scanner-reverse 2s ease-in-out forwards;
+}
+
+.horizontal-scanner-bar-animate {
+	animation: horizontal-scanner 2s ease-in-out forwards;
+}
+
+.horizontal-scanner-bar-animate-reverse {
+	animation: horizontal-scanner-reverse 2s ease-in-out forwards;
 }
 
 .hidden {
@@ -125,19 +164,57 @@ export default defineComponent({
 	position: absolute;
 	font-family: "Mandolor";
 	bottom: 75px;
-	right: 75px;
+	right: 0;
+	width: 100vw;
+	text-align: center;
 	font-size: 48px;
 }
 
-@keyframes horizontal-scanner {
+@keyframes vertical-scanner {
 	0% {
 		transform: translate(0vw);
 	}
 	50% {
-		transform: translate(98.5vw);
+		transform: translate(49vw);
 	}
 	100% {
 		transform: translate(0vw);
+	}
+}
+
+@keyframes vertical-scanner-reverse {
+	0% {
+		transform: translate(0vw);
+	}
+	50% {
+		transform: translate(-49vw);
+	}
+	100% {
+		transform: translate(0vw);
+	}
+}
+
+@keyframes horizontal-scanner {
+	0% {
+		transform: translate(0, 0vh);
+	}
+	50% {
+		transform: translate(0, 49vh);
+	}
+	100% {
+		transform: translate(0, 0vh);
+	}
+}
+
+@keyframes horizontal-scanner-reverse {
+	0% {
+		transform: translate(0, 0vh);
+	}
+	50% {
+		transform: translate(0, -49vh);
+	}
+	100% {
+		transform: translate(0, 0vh);
 	}
 }
 </style>
