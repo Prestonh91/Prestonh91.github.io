@@ -15,7 +15,7 @@
 		class="horizontal-scanner-bar"
 		:class="{ 'horizontal-scanner-bar-animate' : horizontalScanning, 'hidden': !horizontalScanning}"	
 	></div>
-	<div style="display: flex; align-items: end; position: absolute;">	
+	<div style="display: flex; align-items: end; position: absolute; height: 100vh">	
 		<div 
 			class="horizontal-scanner-bar"
 			:class="{ 'horizontal-scanner-bar-animate-reverse' : horizontalScanning, 'hidden': !horizontalScanning}"	
