@@ -56,7 +56,7 @@ export default defineComponent({
 
 	methods: {
 		requestAudio(): HTMLAudioElement {
-			return new Audio('/scanner.mp3')
+			return new Audio('../dist/scanner.mp3')
 		},
 		startScan() {
 			this.verticalScanning = true
