@@ -98,7 +98,7 @@ export default defineComponent({
 .horizontal-scanner-bar {
 	position: absolute;
 	width: 100vw;
-	height: 2vh;
+	height: 1vh;
 	background: linear-gradient(rgba(232,23,24,0.3) 0%,rgba(232,23,24,0.7) 10%, rgba(232,23,24,1) 50%, rgba(232,23,24,0.7) 90%, rgba(232,23,24,0.3) 100%);
 }
 
@@ -199,7 +199,7 @@ export default defineComponent({
 		transform: translate(0, 0vh);
 	}
 	50% {
-		transform: translate(0, 49vh);
+		transform: translate(0, 49.5vh);
 	}
 	100% {
 		transform: translate(0, 0vh);
@@ -211,7 +211,7 @@ export default defineComponent({
 		transform: translate(0, 0vh);
 	}
 	50% {
-		transform: translate(0, -49vh);
+		transform: translate(0, -49.5vh);
 	}
 	100% {
 		transform: translate(0, 0vh);
