@@ -56,7 +56,7 @@ export default defineComponent({
 
 	methods: {
 		requestAudio(): HTMLAudioElement {
-			return new Audio('/scanner.mp3')
+			return new Audio('../../public/scanner.mp3')
 		},
 		startScan() {
 			this.verticalScanning = true
@@ -66,12 +66,12 @@ export default defineComponent({
 			setTimeout(() => {
 				this.verticalScanning = false
 				this.horizontalScanning = true 
-			}, 2000);
+			}, 1700);
 
 			setTimeout(() => {
 				this.horizontalScanning = false
 				this.audio?.pause()
-			}, 4000);
+			}, 3400);
 		}
 	}
 })
@@ -103,19 +103,19 @@ export default defineComponent({
 }
 
 .vertical-scanner-bar-animate {
-	animation: vertical-scanner 2s ease-in-out forwards;
+	animation: vertical-scanner 1.7s ease-in-out forwards;
 }
 
 .vertical-scanner-bar-animate-reverse {
-	animation: vertical-scanner-reverse 2s ease-in-out forwards;
+	animation: vertical-scanner-reverse 1.7s ease-in-out forwards;
 }
 
 .horizontal-scanner-bar-animate {
-	animation: horizontal-scanner 2s ease-in-out forwards;
+	animation: horizontal-scanner 1.7s ease-in-out forwards;
 }
 
 .horizontal-scanner-bar-animate-reverse {
-	animation: horizontal-scanner-reverse 2s ease-in-out forwards;
+	animation: horizontal-scanner-reverse 1.7s ease-in-out forwards;
 }
 
 .hidden {
