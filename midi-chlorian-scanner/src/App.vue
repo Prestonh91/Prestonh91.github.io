@@ -75,10 +75,9 @@ export default defineComponent({
 		startScan() {
 			this.gridAnimating = true
 
-			this.audio?.play()
-
 			setTimeout(() => {
 				this.verticalScanning = true
+				this.audio?.play()
 
 				setTimeout(() => {
 					this.verticalScanning = false
