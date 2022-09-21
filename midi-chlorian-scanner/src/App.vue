@@ -1,5 +1,9 @@
 <template>
 <main class="scanner-core">
+	<div class="grid-background" :class="{ 'grid-background-animate': gridAnimating }"></div>
+	<div class="grid-bars-container" :class="{ 'hidden' : !gridAnimating}">
+		<div v-for="row in gridBars" :key="row" class="grid-bar"></div>
+	</div>
 	<div 
 		class="vertical-scanner-bar"
 		:class="{ 'vertical-scanner-bar-animate' : verticalScanning, 'hidden': !verticalScanning}"	
@@ -22,12 +26,15 @@
 		></div>
 	</div>
 	<div
-		style="display: flex; justify-content: center; align-items: center; height: 100vh;"
-		:class="{ 'hidden' : horizontalScanning || verticalScanning }"
+		class="sc-button-container"
+		:class="{ 'hidden' : isAnimating }"
 	>
-		<button class="sc-button" @click="startScan">initiate scan</button>
+		<button class="sc-button" @click="startScan">Activate ScaN</button>
 	</div>
-	<div class="welcome-badge">Midi-Chlorian Scanner</div>
+	<div
+		class="welcome-badge"
+		:class="{ 'hidden' : isAnimating }"
+	>Midi-Chlorian Scanner</div>
 </main>
 </template>
 
@@ -37,8 +44,9 @@ import { defineComponent } from 'vue'
 class AppData {
 	horizontalScanning: Boolean = false;
 	verticalScanning: Boolean = false;
+	gridAnimating: Boolean = false;
 	audio: HTMLAudioElement | null = null;
-
+	gridBars: Array<any> = new Array(32);
 }
 
 export default defineComponent({
@@ -54,24 +62,37 @@ export default defineComponent({
 	mounted() {
 	},
 
+	computed: {
+		isAnimating() {
+			return this.verticalScanning || this.horizontalScanning || this.gridAnimating
+		}
+	},
+
 	methods: {
 		requestAudio(): HTMLAudioElement {
 			return new Audio('../dist/scanner.mp3')
 		},
 		startScan() {
-			this.verticalScanning = true
+			this.gridAnimating = true
 
 			this.audio?.play()
 
 			setTimeout(() => {
-				this.verticalScanning = false
-				this.horizontalScanning = true 
-			}, 1700);
+				this.verticalScanning = true
 
-			setTimeout(() => {
-				this.horizontalScanning = false
-				this.audio?.pause()
-			}, 3400);
+				setTimeout(() => {
+					this.verticalScanning = false
+					this.horizontalScanning = true
+
+					setTimeout(() => {
+						this.horizontalScanning = false
+						this.gridAnimating = false
+						this.audio?.pause()
+					}, 1700);
+				}, 1700);
+			}, 1500);
+
+			
 		}
 	}
 })
@@ -83,23 +104,76 @@ export default defineComponent({
 	--scanner-red: #a8030b;
 }
 
+.grid-background {
+	position:absolute;
+	width: 100vw;
+	height: 100vh;
+	background-color: #C3C55B;
+	right: 100vw;
+	bottom: 100vh;
+	z-index: 5;
+}
+
+.grid-background-animate {
+	animation: grid-background-change 1.5s linear forwards;
+}
+
+.grid-bars-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	height: 100vh;
+	width: 100vw;
+}
+
+.grid-bar {
+	box-sizing: border-box;
+	width: 24.9%;
+	height: 12.35%;
+	background-color: black;
+	z-index: 6;
+}
+/* 
+.grid-bar:nth-child(n+17) {
+	height: 20%;
+} */
+
+@keyframes grid-background-change {
+	0% {
+		right: 100vw;
+		bottom: 100vh;
+	}
+	100% {
+		right: 0;
+		bottom: 0;
+	}
+}
+
 .scanner-core {
 	height: 100vh;
 	position: relative;
+	overflow: hidden;
 }
 
 .vertical-scanner-bar {
 	position: absolute;
 	height: 100vh;
-	width: 1.5vw;
-	background: linear-gradient(90deg, rgba(232,23,24,0.3) 0%,rgba(232,23,24,0.7) 10%, rgba(232,23,24,1) 50%, rgba(232,23,24,0.7) 90%, rgba(232,23,24,0.3) 100%);
+	width: 10px;
+	background: linear-gradient(90deg, rgb(255, 220, 208) 0%, rgb(255, 231, 217)  ,rgb(255, 220, 208) 100%);
+	box-shadow: 0 0 20px 10px #FB6159;
+	z-index: 10;
 }
 
 .horizontal-scanner-bar {
 	position: absolute;
 	width: 100vw;
-	height: 1vh;
-	background: linear-gradient(rgba(232,23,24,0.3) 0%,rgba(232,23,24,0.7) 10%, rgba(232,23,24,1) 50%, rgba(232,23,24,0.7) 90%, rgba(232,23,24,0.3) 100%);
+	height: 10px;
+	box-shadow: 0 0 14px 12px #6DC8E9;
+	background: linear-gradient(rgb(223,245,251) 0%, rgb(254,250,252) 50%, rgb(223,245,251) 100%);
+	z-index: 10;
 }
 
 .vertical-scanner-bar-animate {
@@ -120,6 +194,14 @@ export default defineComponent({
 
 .hidden {
 	display: none !important;
+}
+
+.sc-button-container {
+	z-index: 20;
+	display: flex; 
+	justify-content: center; 
+	align-items: center; 
+	height: 100vh;
 }
 
 .sc-button {
@@ -168,6 +250,7 @@ export default defineComponent({
 	width: 100vw;
 	text-align: center;
 	font-size: 48px;
+	z-index: 20;
 }
 
 @keyframes vertical-scanner {
@@ -199,7 +282,7 @@ export default defineComponent({
 		transform: translate(0, 0vh);
 	}
 	50% {
-		transform: translate(0, 49.5vh);
+		transform: translate(0, 49vh);
 	}
 	100% {
 		transform: translate(0, 0vh);
@@ -211,7 +294,7 @@ export default defineComponent({
 		transform: translate(0, 0vh);
 	}
 	50% {
-		transform: translate(0, -49.5vh);
+		transform: translate(0, -49vh);
 	}
 	100% {
 		transform: translate(0, 0vh);
