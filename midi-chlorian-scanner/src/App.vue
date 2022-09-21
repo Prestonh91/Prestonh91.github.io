@@ -87,6 +87,7 @@ export default defineComponent({
 						this.horizontalScanning = false
 						this.gridAnimating = false
 						this.audio?.pause()
+						this.requestAudio()
 					}, 1700);
 				}, 1700);
 			}, 1500);
