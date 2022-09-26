@@ -1,5 +1,12 @@
 <template>
 <main class="scanner-core">
+	<div 
+		class="results-container"
+		:class="{ 'hidden': !showResults }"	
+	>
+		<p>Your Midi-Chlorian Count is: {{ results }}</p>
+		<p>{{ resultsSubText }}</p>
+	</div>
 	<div class="grid-background" :class="{ 'grid-background-animate': gridAnimating }"></div>
 	<div class="grid-bars-container" :class="{ 'hidden' : !gridAnimating}">
 		<div v-for="row in gridBars" :key="row" class="grid-bar"></div>
@@ -45,6 +52,9 @@ class AppData {
 	horizontalScanning: Boolean = false;
 	verticalScanning: Boolean = false;
 	gridAnimating: Boolean = false;
+	showResults: Boolean = false;
+	results: number = 0;
+	midiChlorianMax: number = 25000;
 	audio: HTMLAudioElement | null = null;
 	gridBars: Array<any> = new Array(32);
 }
@@ -65,7 +75,22 @@ export default defineComponent({
 	computed: {
 		isAnimating() {
 			return this.verticalScanning || this.horizontalScanning || this.gridAnimating
-		}
+		},
+		showingResults() {
+			return this.showResults
+		},
+		resultsSubText() {
+			if (this.results < 6250) {
+				return "I find your lack of faith disturbing."
+			} else if (this.results >= 6250 && this.results < 12500) {
+				return "Your path you must decide."
+				// Difficult to see. Always in motion is the future.
+			} else if (this.results >= 12500 && this.results < 18750) {
+				return "The Force is strong with this one."
+			} else {
+				return "Even Master Yoda doesn't have a midi-chlorian count that high. No Jedi has."
+			}
+		},
 	},
 
 	methods: {
@@ -73,6 +98,10 @@ export default defineComponent({
 			return new Audio('../dist/scanner.mp3')
 		},
 		startScan() {
+			this.results = 0
+			this.showResults = false
+
+			this.fetchMidiChlorianCount()
 			this.gridAnimating = true
 
 			setTimeout(() => {
@@ -86,13 +115,16 @@ export default defineComponent({
 					setTimeout(() => {
 						this.horizontalScanning = false
 						this.gridAnimating = false
+						this.showResults = true
 						this.audio?.pause()
 						this.requestAudio()
 					}, 1700);
 				}, 1700);
-			}, 1500);
-
-			
+			}, 1500);			
+		},
+		fetchMidiChlorianCount() {
+			this.results = Math.floor(Math.random() * this.midiChlorianMax)
+			console.warn(this.results)
 		}
 	}
 })
@@ -196,9 +228,19 @@ export default defineComponent({
 	display: none !important;
 }
 
+.results-container {
+	position: absolute;
+	width: 100vw;
+	text-align: center;
+	color: white;
+	top: 100px;
+	font-size: 20px;
+}
+
 .sc-button-container {
 	z-index: 20;
 	display: flex; 
+	flex-direction: column;
 	justify-content: center; 
 	align-items: center; 
 	height: 100vh;
