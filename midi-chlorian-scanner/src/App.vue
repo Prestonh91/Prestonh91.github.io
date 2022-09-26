@@ -2,7 +2,7 @@
 <main class="scanner-core">
 	<div 
 		class="results-container"
-		:class="{ 'hidden': !showResults }"	
+		:class="{ 'hidden': !showResults, 'animate-results-container': showResults }"	
 	>
 		<p>Your Midi-Chlorian Count is: {{ results }}</p>
 		<p>{{ resultsSubText }}</p>
@@ -75,9 +75,6 @@ export default defineComponent({
 	computed: {
 		isAnimating() {
 			return this.verticalScanning || this.horizontalScanning || this.gridAnimating
-		},
-		showingResults() {
-			return this.showResults
 		},
 		resultsSubText() {
 			if (this.results < 6250) {
@@ -233,8 +230,23 @@ export default defineComponent({
 	width: 100vw;
 	text-align: center;
 	color: white;
-	top: 100px;
 	font-size: 20px;
+	font-family: 'Star Wars';
+}
+
+.animate-results-container {
+	animation: fade-in-slide-in 1s ease-out both;
+}
+
+@keyframes fade-in-slide-in {
+	0% {
+		top: -50px;
+		opacity: 0;
+	}
+	100% {
+		top: 100px;
+		opacity: 1;
+	}
 }
 
 .sc-button-container {
