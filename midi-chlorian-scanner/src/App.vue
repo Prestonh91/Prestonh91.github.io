@@ -8,7 +8,7 @@
 		<p>{{ resultsSubText }}</p>
 	</div>
 	<div class="grid-background" :class="{ 'grid-background-animate': gridAnimating }"></div>
-	<div class="grid-bars-container" :class="{ 'hidden' : !gridAnimating}">
+	<div class="grid-bars-container" :class="{ 'hidden' : !gridAnimating }">
 		<div v-for="row in gridBars" :key="row" class="grid-bar"></div>
 	</div>
 	<div 
@@ -56,7 +56,7 @@ class AppData {
 	results: number = 0;
 	midiChlorianMax: number = 25000;
 	audio: HTMLAudioElement | null = null;
-	gridBars: Array<any> = new Array(32);
+	gridBars: Array<any> = new Array(36);
 }
 
 export default defineComponent({
@@ -66,7 +66,6 @@ export default defineComponent({
 
 	created() {
 		this.audio = this.requestAudio()
-
 	},
 
 	mounted() {
@@ -117,11 +116,10 @@ export default defineComponent({
 						this.requestAudio()
 					}, 1700);
 				}, 1700);
-			}, 1500);			
+			}, 1700);
 		},
 		fetchMidiChlorianCount() {
 			this.results = Math.floor(Math.random() * this.midiChlorianMax)
-			console.warn(this.results)
 		}
 	}
 })
@@ -144,7 +142,7 @@ export default defineComponent({
 }
 
 .grid-background-animate {
-	animation: grid-background-change 1.5s linear forwards;
+	animation: grid-background-change 1.7s linear forwards;
 }
 
 .grid-bars-container {
@@ -154,21 +152,20 @@ export default defineComponent({
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
+	gap: 1px;
 	height: 100vh;
 	width: 100vw;
 }
 
 .grid-bar {
 	box-sizing: border-box;
-	width: 24.9%;
-	height: 12.35%;
 	background-color: black;
 	z-index: 6;
+	flex-grow: 1;
+	flex-basis: 24%;
+	flex-shrink: 1;
 }
-/* 
-.grid-bar:nth-child(n+17) {
-	height: 20%;
-} */
+
 
 @keyframes grid-background-change {
 	0% {
@@ -226,6 +223,8 @@ export default defineComponent({
 }
 
 .results-container {
+	box-sizing: border-box;
+	padding: 0 7px;
 	position: absolute;
 	width: 100vw;
 	text-align: center;
@@ -244,7 +243,7 @@ export default defineComponent({
 		opacity: 0;
 	}
 	100% {
-		top: 100px;
+		top: 20px;
 		opacity: 1;
 	}
 }
