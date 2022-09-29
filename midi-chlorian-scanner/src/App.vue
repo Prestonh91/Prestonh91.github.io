@@ -94,6 +94,7 @@ export default defineComponent({
 			return new Audio('../dist/scanner.mp3')
 		},
 		startScan() {
+			this.audio?.play()
 			this.results = 0
 			this.showResults = false
 
@@ -102,7 +103,6 @@ export default defineComponent({
 
 			setTimeout(() => {
 				this.verticalScanning = true
-				this.audio?.play()
 
 				setTimeout(() => {
 					this.verticalScanning = false
