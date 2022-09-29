@@ -104,6 +104,7 @@ export default defineComponent({
 
 			setTimeout(() => {
 				this.verticalScanning = true
+				this.audio?.play()
 
 				setTimeout(() => {
 					this.verticalScanning = false
