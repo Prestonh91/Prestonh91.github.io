@@ -95,6 +95,7 @@ export default defineComponent({
 		},
 		startScan() {
 			this.audio?.play()
+			this.audio?.pause()
 			this.results = 0
 			this.showResults = false
 
