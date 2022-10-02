@@ -1,5 +1,6 @@
 <template>
 <main class="scanner-core">
+	<div v-if="decidingFate" style="position: absolute; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center"><div class="loader"></div></div>
 	<div 
 		class="results-container"
 		:class="{ 'hidden': !showResults, 'animate-results-container': showResults }"	
@@ -57,6 +58,7 @@ class AppData {
 	midiChlorianMax: number = 25000;
 	audio: HTMLAudioElement | null = null;
 	gridBars: Array<any> = new Array(36);
+	decidingFate: boolean = false;
 }
 
 export default defineComponent({
@@ -72,10 +74,7 @@ export default defineComponent({
 	},
 
 	computed: {
-		isAnimating() {
-			return this.verticalScanning || this.horizontalScanning || this.gridAnimating
-		},
-		resultsSubText() {
+		resultsSubText() : String {
 			if (this.results < 6250) {
 				return "I find your lack of faith disturbing."
 			} else if (this.results >= 6250 && this.results < 12500) {
@@ -87,6 +86,9 @@ export default defineComponent({
 				return "Even Master Yoda doesn't have a midi-chlorian count that high. No Jedi has."
 			}
 		},
+		isAnimating() : Boolean {
+			return this.verticalScanning || this.horizontalScanning || this.gridAnimating || this.decidingFate
+		}
 	},
 
 	methods: {
@@ -113,9 +115,15 @@ export default defineComponent({
 					setTimeout(() => {
 						this.horizontalScanning = false
 						this.gridAnimating = false
-						this.showResults = true
 						this.audio?.pause()
 						this.requestAudio()
+
+						this.decidingFate = true
+
+						setTimeout(() => {
+							this.decidingFate = false
+							this.showResults = true
+						}, 2500) 
 					}, 1700);
 				}, 1700);
 			}, 1700);
@@ -127,10 +135,37 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 :root {
-	--amethyst: #9950cc;
+	--amethyst: #E578FF;
 	--scanner-red: #a8030b;
+}
+
+.loader {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	border: 2px solid white;
+	animation: loader-spin 1s ease-in-out infinite;
+}
+
+.loader:after {
+	content: " ";
+	position: absolute;
+	left: -1px;
+	border: 33px solid white;
+	border-radius: 50%;
+	border-color: transparent white transparent white;
+}
+
+@keyframes loader-spin {
+	from {
+		transform: rotate(0de);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .grid-background {
@@ -263,17 +298,29 @@ export default defineComponent({
 	height: 150px;
 	width: 275px;
 	color: white;
-	background-color: black;
-	/* background-color: rgba(153, 81, 205, 0.6); */
-	filter: brightness(150%);
+	background: linear-gradient(45deg, black 0%, black 48%, var(--amethyst) 50%,  black 52%, black 100%);
 	cursor: pointer;
 	position: relative;
-	border-top: 4px solid #9950cc;
-	border-bottom: 4px solid #9950cc;
+	border-top: 4px solid var(--amethyst);
+	border-bottom: 4px solid var(--amethyst);
 	border-right: 0;
 	border-left: 0;
 	font-size: 24px;
 	font-family: 'Star Wars';
+	background-size: 300%;
+	animation: button-shine 6s linear infinite both;
+}
+
+@keyframes button-shine {
+	0% {
+		background-position: -20% 0%;
+	}
+	16.67% {
+		background-position: 100% 0%;
+	}
+	100% {
+		background-position: 100% 0%;
+	}
 }
 
 .sc-button:before {
@@ -283,7 +330,7 @@ export default defineComponent({
 	left: 0;
 	height: 60%;
 	width: 4px;
-	background-color: #9950cc;
+	background-color: var(--amethyst);
 }
 
 .sc-button:after {
@@ -293,7 +340,7 @@ export default defineComponent({
 	right: 0;
 	height: 60%;
 	width: 4px;
-	background-color: #9950cc;
+	background-color: var(--amethyst);
 }
 
 .welcome-badge {
