@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Action Point Tracker</title>
+	<script type="importmap">
+		{
+			"imports": {
+			"vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+			}
+		}
+	</script>
+</head>
+<body>
+	<div id="app" class="app">
+		<div class="container">
+			<h1 class="title">Points Used</h1>
+			<div class="points-used-container">
+				<p class="points-used-title" @click="resetPoints">{{ pointsUsed }}</p>
+				<span class="controls points-used-minus" @click="changePoints(-1)">-</span>
+				<span class="controls points-used-plus" @click="changePoints(1)">+</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="module">
+	import { createApp } from 'vue'
+
+	createApp({
+		data() {
+			return {
+				pointsUsed: 0
+			}
+		},
+		methods: {
+			resetPoints() {
+				this.pointsUsed = 0
+			},
+			changePoints(pointsToAdd) {
+				if (pointsToAdd < 0 && this.pointsUsed === 0) return 
+				this.pointsUsed += pointsToAdd
+			}
+		}
+	}).mount('#app')
+</script>
+
+<style>
+	body {
+		background-color: #5F256F;
+		padding: 0;
+		margin: 0;
+	}
+
+	.app {
+		height: 100vh;
+	}
+
+	.container {
+		width: fit-content;
+		height: fit-content;
+		margin: auto;
+		position: absolute;
+		inset: 0;
+		color: #98F0FA;
+		text-align: center;
+	}
+	
+	.title {
+		font-size: 3rem;
+	}
+
+	.points-used-container {
+		position: relative;
+	}
+
+	.points-used-title {
+		font-size: 5rem;
+	}
+
+	.controls {
+		position: absolute;
+		font-size: 5rem;
+		width: 45px;
+		height: 45px;
+		top: 50%;
+		transform: translate(0, -50%);
+	}
+
+	.points-used-plus {
+		line-height: 0.5;
+		right: 0;
+	}
+
+	.points-used-minus {
+		line-height: 0.3;
+		left: 0;
+	}
+</style>
