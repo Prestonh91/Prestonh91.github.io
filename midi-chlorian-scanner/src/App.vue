@@ -105,32 +105,31 @@ export default defineComponent({
 			this.showResults = false
 
 			this.fetchMidiChlorianCount()
-			this.showResults = true;
-			// this.gridAnimating = true
+			this.gridAnimating = true
 
-			// setTimeout(() => {
-			// 	this.verticalScanning = true
-			// 	this.audio?.play()
+			setTimeout(() => {
+				this.verticalScanning = true
+				this.audio?.play()
 
-			// 	setTimeout(() => {
-			// 		this.verticalScanning = false
-			// 		this.horizontalScanning = true
+				setTimeout(() => {
+					this.verticalScanning = false
+					this.horizontalScanning = true
 
-			// 		setTimeout(() => {
-			// 			this.horizontalScanning = false
-			// 			this.gridAnimating = false
-			// 			this.audio?.pause()
-			// 			this.requestAudio()
+					setTimeout(() => {
+						this.horizontalScanning = false
+						this.gridAnimating = false
+						this.audio?.pause()
+						this.requestAudio()
 
-			// 			this.decidingFate = true
+						this.decidingFate = true
 
-			// 			setTimeout(() => {
-			// 				this.decidingFate = false
-			// 				this.showResults = true
-			// 			}, 2500) 
-			// 		}, 1700);
-			// 	}, 1700);
-			// }, 1700);
+						setTimeout(() => {
+							this.decidingFate = false
+							this.showResults = true
+						}, 2000) 
+					}, 1700);
+				}, 1700);
+			}, 1700);
 		},
 		fetchMidiChlorianCount() {
 			let weightRandom: number = this.weightedRandom(1, 5)
