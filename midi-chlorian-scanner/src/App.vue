@@ -56,6 +56,7 @@ class AppData {
 	showResults: Boolean = false;
 	results: number = 0;
 	midiChlorianMax: number = 25000;
+	midiChlorianMin: number = 250;
 	audio: HTMLAudioElement | null = null;
 	gridBars: Array<any> = new Array(36);
 	decidingFate: boolean = false;
@@ -75,13 +76,15 @@ export default defineComponent({
 
 	computed: {
 		resultsSubText() : String {
-			if (this.results < 6250) {
-				return "I find your lack of faith disturbing."
+			if (this.results <= 3249) {
+				return 'Why, you stuck-up, half-witted, scruffy-looking nerf herder!'
+			} else if (this.results >= 3250 && this.results < 6250){
+				return "Your path you must decide"	
 			} else if (this.results >= 6250 && this.results < 12500) {
-				return "Your path you must decide."
+				return "The Force is strong with this one."
 				// Difficult to see. Always in motion is the future.
 			} else if (this.results >= 12500 && this.results < 18750) {
-				return "The Force is strong with this one."
+				return "For my ally is the Force, and a powerful ally it is."
 			} else {
 				return "Even Master Yoda doesn't have a midi-chlorian count that high. No Jedi has."
 			}
@@ -102,34 +105,55 @@ export default defineComponent({
 			this.showResults = false
 
 			this.fetchMidiChlorianCount()
-			this.gridAnimating = true
+			this.showResults = true;
+			// this.gridAnimating = true
 
-			setTimeout(() => {
-				this.verticalScanning = true
-				this.audio?.play()
+			// setTimeout(() => {
+			// 	this.verticalScanning = true
+			// 	this.audio?.play()
 
-				setTimeout(() => {
-					this.verticalScanning = false
-					this.horizontalScanning = true
+			// 	setTimeout(() => {
+			// 		this.verticalScanning = false
+			// 		this.horizontalScanning = true
 
-					setTimeout(() => {
-						this.horizontalScanning = false
-						this.gridAnimating = false
-						this.audio?.pause()
-						this.requestAudio()
+			// 		setTimeout(() => {
+			// 			this.horizontalScanning = false
+			// 			this.gridAnimating = false
+			// 			this.audio?.pause()
+			// 			this.requestAudio()
 
-						this.decidingFate = true
+			// 			this.decidingFate = true
 
-						setTimeout(() => {
-							this.decidingFate = false
-							this.showResults = true
-						}, 2500) 
-					}, 1700);
-				}, 1700);
-			}, 1700);
+			// 			setTimeout(() => {
+			// 				this.decidingFate = false
+			// 				this.showResults = true
+			// 			}, 2500) 
+			// 		}, 1700);
+			// 	}, 1700);
+			// }, 1700);
 		},
 		fetchMidiChlorianCount() {
-			this.results = Math.floor(Math.random() * this.midiChlorianMax)
+			let weightRandom: number = this.weightedRandom(1, 5)
+
+			let anotherRandom: number = Math.random()
+			if (weightRandom === 1)
+				this.results = this.getRandomInt(3250, 6250)
+			else if (weightRandom === 2)
+				this.results = this.getRandomInt(this.midiChlorianMin, 3250)
+			else if (weightRandom === 3)
+				this.results = this.getRandomInt(6250, 12500)
+			else if (weightRandom === 4)
+				this.results = this.getRandomInt(12500, 18750)
+			else if (weightRandom === 5)
+				this.results = this.getRandomInt(18750, this.midiChlorianMax)
+		},
+		weightedRandom(min: number, max: number): number {
+			return Math.round(max / (Math.random() * max + min)) 
+		},
+		getRandomInt(min: number, max: number) {
+			const minCeiled = Math.ceil(min)
+			const maxFloored = Math.floor(max)
+			return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled)
 		}
 	}
 })
